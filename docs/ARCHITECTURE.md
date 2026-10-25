@@ -176,7 +176,7 @@ All constants live here. Build-time overrides (`NEXT_PUBLIC_*`, inlined by Next)
 | `NEXT_PUBLIC_WORKER_URL` | `https://instantblog-api.YOUR-ACCOUNT.workers.dev` | Worker base URL (dev default `http://127.0.0.1:8787`) |
 | `NEXT_PUBLIC_SITE_URL` | Vercel production domain (`NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL`), else `https://instantblog.vercel.app` | Used for proof links |
 
-While the contract address is the zero address, `contractConfigured()` is false: the footer shows "Deploying soon" and Stamp explains that stamping isn't live yet.
+**Testnet fallback:** while `NEXT_PUBLIC_CONTRACT_MAINNET` is unset, the app runs on the live testnet contract `0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a` (chain 968): footer, stamping, verify and /posts all use it. Setting the mainnet address switches everything to chain 677 at the next build.
 
 Chain params for `wallet_addEthereumChain`: mainnet `0x2a5` (677), RPC `https://rpc.botchain.ai`, explorer `https://scan.botchain.ai`; testnet `0x3c8` (968), `https://rpc.bohr.life`, `https://scan.bohr.life`. Currency `BOT` / 18 decimals (unconfirmed — verify before launch).
 

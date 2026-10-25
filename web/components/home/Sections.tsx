@@ -1,7 +1,22 @@
 // Home page sections 1–8 (copy: docs/CONTENT_COPY.md §3).
+import {
+  Clock,
+  Feather,
+  FileCode,
+  Fingerprint,
+  GraduationCap,
+  Megaphone,
+  Newspaper,
+  NotebookPen,
+  PenLine,
+  ShieldCheck,
+  Timer,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
-import { Icon } from "../Icons";
+import { CONFIG } from "@/lib/config";
 import { BriefShot, EditorShot, ExportShot, ProofReceiptMock } from "./Mockups";
+import { SAMPLE_PROOF } from "./sample";
 
 export function Hero() {
   return (
@@ -10,39 +25,46 @@ export function Hero() {
         <Link href="/write/" className="banner-chip">
           <b>New</b> Export to Word &amp; PDF
         </Link>
-        <h1>Write it once. Publish anywhere.</h1>
+        <h1>
+          Write it once.
+          <br />
+          <span className="hl">Publish anywhere.</span>
+        </h1>
         <p className="hero-sub">
-          Pick a topic, a tone and your key points. InstantBlog drafts a sourced article in seconds — copy it or download it as PDF or Word.
+          Pick a topic, a tone and your key points. InstantBlog drafts a sourced article in under a minute. Copy it, or download it as PDF or Word.
         </p>
         <div className="hero-cta">
           <Link href="/write/" className="btn btn-primary btn-lg">
-            Write my first post
+            <NotebookPen size={18} /> Write my first post
           </Link>
-          <span className="fine">Free · No sign-up · Wallet only needed to stamp</span>
+          <span className="fine">Free. No sign-up. You only need a wallet to stamp.</span>
         </div>
-        <div className="callouts" aria-label="Formats">
-          <span className="chip chip-blue">Blog post <small>~500 words</small></span>
-          <span className="chip chip-violet">Article <small>~900 words</small></span>
-          <span className="chip chip-pink">How-to <small>~1,400 words</small></span>
-          <span className="chip chip-cyan">Listicle <small>3–5 points</small></span>
+        <div className="callouts" aria-label="Article types">
+          <span className="chip chip-blue">Blog post</span>
+          <span className="chip chip-violet">Article</span>
+          <span className="chip chip-pink">How-to</span>
+          <span className="chip chip-cyan">Listicle</span>
+          <span className="chip chip-amber">Opinion</span>
         </div>
+        <p className="lengths mono">~500 · ~900 · ~1,400 words</p>
         <div className="shot-stack" aria-hidden="true">
           <BriefShot className="shot-brief" />
           <EditorShot className="shot-editor" />
           <ExportShot className="shot-export" />
+          <span className="hand-note">every fact gets a source</span>
         </div>
       </div>
     </section>
   );
 }
 
-const AUDIENCE = [
-  { title: "Students", text: "Essays and research summaries, with every fact linked to your readings.", icon: Icon.cap, tint: "blue" },
-  { title: "Creators", text: "Newsletters and blog posts in your voice — friendly, witty or anything between.", icon: Icon.pen, tint: "pink" },
-  { title: "Founders", text: "Launch posts and updates your community will actually read.", icon: Icon.rocket, tint: "violet" },
-  { title: "Marketers", text: "Clear, sourced SEO articles from product pages and reports.", icon: Icon.chart, tint: "cyan" },
-  { title: "Developers / DevRel", text: "Tutorials and changelogs drafted from your docs.", icon: Icon.code, tint: "green" },
-  { title: "Hackathon teams", text: "Project write-ups ready before the demo ends.", icon: Icon.bolt, tint: "amber" },
+const AUDIENCE: { title: string; text: string; icon: LucideIcon; tint: string }[] = [
+  { title: "Students", text: "Essays and research summaries, with each fact tied to a reading you can cite.", icon: GraduationCap, tint: "blue" },
+  { title: "Creators", text: "Newsletters and blog posts in the tone you pick: friendly, witty or casual.", icon: Feather, tint: "pink" },
+  { title: "Founders", text: "Launch posts and product updates drafted from your notes and changelog links.", icon: Megaphone, tint: "violet" },
+  { title: "Marketers", text: "SEO articles from product pages and reports, with the sources listed at the end.", icon: Newspaper, tint: "cyan" },
+  { title: "Developers / DevRel", text: "Tutorials and changelogs drafted from your docs and pull requests.", icon: FileCode, tint: "green" },
+  { title: "Hackathon teams", text: "The project write-up for the submission form, written while the demo is fresh.", icon: Timer, tint: "amber" },
 ];
 
 export function Audience() {
@@ -51,13 +73,13 @@ export function Audience() {
       <div className="container">
         <div className="section-head">
           <h2>Who is it for?</h2>
-          <p>Anyone with something to say and not much time to say it.</p>
+          <p>People who already have the ideas and the links, and want the first draft done.</p>
         </div>
         <div className="grid-3">
           {AUDIENCE.map((a) => (
             <article className="card aud-card" key={a.title}>
               <div className="icon-tile" style={{ background: `var(--tint-${a.tint})`, color: `var(--ink-${a.tint})` }}>
-                <a.icon />
+                <a.icon size={20} strokeWidth={1.8} />
               </div>
               <h3>{a.title}</h3>
               <p>{a.text}</p>
@@ -71,12 +93,12 @@ export function Audience() {
 
 export function Problem() {
   const items = [
-    ["01", "Slow", "Hours go into getting a first draft on the page."],
-    ["02", "Generic", "Most AI text sounds like everyone else's — and nothing like you."],
-    ["03", "Unsourced", "Facts with no links you can check are a risk to publish."],
+    ["01", "Slow", "A first draft can take hours before any editing starts."],
+    ["02", "Generic", "Most AI text reads the same whatever topic you give it."],
+    ["03", "Unsourced", "A number with no link is hard to check and risky to publish."],
   ];
   return (
-    <section className="section band">
+    <section className="section band ruled-band">
       <div className="container">
         <div className="problem-head">
           <h2 className="h2">Blank pages are a slow way to start writing</h2>
@@ -97,10 +119,10 @@ export function Problem() {
 
 export function HowItWorks() {
   const steps = [
-    ["01", "Brief", "Topic, tone, 3–5 key points and up to 5 source links.", "blue"],
-    ["02", "Draft", "AI writes a structured article, with a [1][2] citation on every fact from your sources.", "violet"],
-    ["03", "Polish", "Select any sentence to rewrite, shorten or change its tone.", "pink"],
-    ["04", "Export & stamp", "Copy, PDF or Word — then stamp a proof on BOT Chain.", "cyan"],
+    ["01", "Brief", "Topic, tone, 3 to 5 key points and up to 5 source links.", "blue"],
+    ["02", "Draft", "The AI writes one section per point and cites your sources as [1], [2].", "violet"],
+    ["03", "Polish", "Select a sentence to rewrite it, shorten it or change its tone.", "pink"],
+    ["04", "Export & stamp", "Copy it, download PDF or Word, then stamp a proof on BOT Chain.", "cyan"],
   ];
   return (
     <section className="section" id="how">
@@ -127,29 +149,26 @@ export function Features() {
     <section className="section band" id="features">
       <div className="container">
         <div className="section-head">
-          <h2>We designed a faster way to write with sources</h2>
+          <h2>Built for writing with sources</h2>
         </div>
 
         <div className="feature">
           <div className="feature-text">
-            <span className="chip chip-blue">Brief → outline</span>
-            <h3>Turn 3 bullet points into a structured article</h3>
-            <p>Each key point becomes its own section, in your order. Drag to reorder before you generate.</p>
+            <span className="chip chip-blue">Outline</span>
+            <h3>Your key points become the sections</h3>
+            <p>Each point gets its own heading, in the order you set. Drag a point up or down before you generate.</p>
             <ul className="checks">
-              <li>One H2 per point</li>
-              <li>Intro and conclusion included</li>
-              <li>3 title ideas</li>
+              <li>Intro, conclusion and three title ideas included</li>
+              <li>Short, medium or long: about 500, 900 or 1,400 words</li>
             </ul>
           </div>
           <div className="feature-visual">
             <BriefShot />
-            <div className="example-card">
-              <span className="tag">Example outline</span>
+            <div className="example-card taped">
+              <span className="tag">Outline from the brief</span>
               <strong>## Scope is a feature</strong>
               <br />
               <strong>## Demo beats docs</strong>
-              <br />
-              <strong>## Judges reward clarity</strong>
             </div>
           </div>
         </div>
@@ -157,21 +176,21 @@ export function Features() {
         <div className="feature flip">
           <div className="feature-text">
             <span className="chip chip-violet">Citations</span>
-            <h3>Every fact links back to your sources</h3>
-            <p>InstantBlog reads your links and cites them as [1], [2]. Hover a citation to see where it came from.</p>
+            <h3>Every fact links back to a source</h3>
+            <p>InstantBlog reads the pages you link and cites them inline. Hover a [1] in the editor to see which source it points to.</p>
             <ul className="checks">
-              <li>Uses only your sources for facts</li>
-              <li>Sources list added for you</li>
-              <li>Paste text when a page can&apos;t be read</li>
+              <li>Facts and numbers come only from your sources</li>
+              <li>If a page won&apos;t load, paste its text instead</li>
             </ul>
           </div>
           <div className="feature-visual">
             <EditorShot />
-            <div className="example-card">
-              <span className="tag">Example citation</span>
-              Most winning teams ship one flow that works end-to-end <span className="cite">1</span>
+            <div className="example-card taped">
+              <span className="tag">Cited sentence</span>A hackathon goes by many names: hack day, hackfest, codefest <span className="cite">1</span>
               <br />
-              <span className="muted">[1] Hackathon judging guide — devpost.com</span>
+              <a className="muted" href="https://en.wikipedia.org/wiki/Hackathon" target="_blank" rel="noopener noreferrer">
+                [1] Hackathon · Wikipedia
+              </a>
             </div>
           </div>
         </div>
@@ -180,28 +199,27 @@ export function Features() {
           <div className="feature-text">
             <span className="chip chip-pink">AI editing</span>
             <h3>Edit with AI, keep your voice</h3>
-            <p>Select text and choose Rewrite, Shorten, Expand, Simplify or a new tone. Preview every change before you accept it.</p>
+            <p>Select text and pick Rewrite, Shorten, Expand, Simplify or a new tone. Nothing changes until you press Accept.</p>
             <ul className="checks">
-              <li>Accept or discard</li>
-              <li>Citations kept</li>
-              <li>Undo always works</li>
+              <li>Citations stay attached to their sentence</li>
+              <li>Undo works on every change</li>
             </ul>
           </div>
           <div className="feature-visual">
-            <div className="shot" style={{ padding: 22 }}>
-              <div className="bubble" style={{ position: "relative", transform: "none", display: "inline-flex", marginBottom: 14 }}>
-                <span style={{ padding: "6px 10px", fontSize: 12.5 }}>Rewrite</span>
-                <span style={{ padding: "6px 10px", fontSize: 12.5, background: "rgba(255,255,255,.14)", borderRadius: 100 }}>Shorten</span>
-                <span style={{ padding: "6px 10px", fontSize: 12.5 }}>Expand</span>
-                <span style={{ padding: "6px 10px", fontSize: 12.5 }}>Tone ⌄</span>
+            <div className="shot ruled-shot" style={{ padding: 22 }}>
+              <div className="bubble bubble-static">
+                <span>Rewrite</span>
+                <span className="on">Shorten</span>
+                <span>Expand</span>
+                <span>Tone ⌄</span>
               </div>
               <p style={{ fontSize: 14, lineHeight: 1.7 }}>
-                <span className="diff-old">A tight scope leaves you a lot more time at the end of the weekend to polish the experience</span>{" "}
-                <span className="diff-new">A tight scope leaves time for polish</span> <span className="cite">2</span>
+                <span className="diff-old">Pick the one flow you can demo in under a minute and build only that.</span>{" "}
+                <span className="diff-new">Build only the one flow you can demo in a minute.</span>
               </p>
             </div>
-            <div className="example-card">
-              <span className="tag">Shorten · preview</span>
+            <div className="example-card taped">
+              <span className="tag">Shorten preview</span>
               <span className="btn btn-xs btn-secondary">Discard</span> <span className="btn btn-xs btn-primary">Accept</span>
             </div>
           </div>
@@ -209,20 +227,19 @@ export function Features() {
 
         <div className="feature flip">
           <div className="feature-text">
-            <span className="chip chip-cyan">Exports</span>
-            <h3>Copy to Docs, Notion or Medium — or download PDF and Word</h3>
-            <p>Rich text keeps headings, links and lists. PDF and Word files come out clean and ready to share.</p>
+            <span className="chip chip-cyan">Export</span>
+            <h3>Paste into Docs, Notion or Medium, or download PDF and Word</h3>
+            <p>Rich text keeps headings, links and lists. The .docx uses real Word heading styles, so the navigation pane works.</p>
             <ul className="checks">
-              <li>Rich text, Markdown, plain text</li>
-              <li>A4 PDF</li>
-              <li>.docx with headings</li>
+              <li>Rich text, Markdown or plain text</li>
+              <li>A4 PDF with a byline and the sources</li>
             </ul>
           </div>
           <div className="feature-visual">
             <ExportShot />
-            <div className="example-card">
-              <span className="tag">Example export</span>
-              why-small-dapps-win-hackathons.docx <span className="muted">· 18 KB</span>
+            <div className="example-card taped">
+              <span className="tag">Downloaded</span>
+              <PenLine size={13} style={{ verticalAlign: -2 }} /> why-small-dapps-win-hackathons.docx
             </div>
           </div>
         </div>
@@ -232,39 +249,44 @@ export function Features() {
 }
 
 export function ProofSection() {
+  const trust: [LucideIcon, string, string, string][] = [
+    [Fingerprint, "blue", "Only the fingerprint goes on-chain", "A SHA-256 hash, the title and a few counts. The article text stays in your browser."],
+    [Clock, "violet", "Timestamped on-chain", "The proof records your wallet address and the block time."],
+    [ShieldCheck, "green", "Anyone can verify a copy", "Paste a copy into Verify. One changed character means no match."],
+  ];
   return (
     <section className="section proof-section" id="proof">
       <div className="container proof-grid">
         <ProofReceiptMock />
         <div>
-          <h2 className="h2">Prove you wrote it first</h2>
+          <h2 className="h2">Stamp it before you publish</h2>
           <p className="muted" style={{ marginTop: 12, fontSize: 18 }}>
-            Stamp your article on BOT Chain. Anyone can check a copy against your proof, without seeing your text.
+            InstantBlog saves your article&apos;s fingerprint on BOT Chain. Anyone can check a copy against it later without seeing your text.
           </p>
           <div className="trust">
-            {[
-              [Icon.lock, "blue", "Only the fingerprint goes on-chain", "We save a SHA-256 fingerprint, the title and a few numbers. Never your article."],
-              [Icon.clock, "violet", "Timestamped forever", "The proof records your wallet and the exact time you stamped it."],
-              [Icon.check, "green", "Anyone can verify a copy", "Paste any copy into Verify to see if it matches a proof."],
-            ].map(([I, tint, t, d]) => {
-              const Ico = I as () => React.JSX.Element;
-              return (
-                <div className="trust-item" key={t as string}>
-                  <div className="icon-tile" style={{ background: `var(--tint-${tint})`, color: `var(--ink-${tint})` }}>
-                    <Ico />
-                  </div>
-                  <div>
-                    <h3>{t as string}</h3>
-                    <p>{d as string}</p>
-                  </div>
+            {trust.map(([Ico, tint, t, d]) => (
+              <div className="trust-item" key={t}>
+                <div className="icon-tile" style={{ background: `var(--tint-${tint})`, color: `var(--ink-${tint})` }}>
+                  <Ico size={20} strokeWidth={1.8} />
                 </div>
-              );
-            })}
+                <div>
+                  <h3>{t}</h3>
+                  <p>{d}</p>
+                </div>
+              </div>
+            ))}
           </div>
-          <Link href="/verify/" className="text-link">
-            Verify an article →
-          </Link>
-          <p className="fine-print">A proof shows who stamped this exact text and when — not that every word was written without AI.</p>
+          <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+            <Link href="/verify/" className="text-link">
+              Verify an article →
+            </Link>
+            {CONFIG.USE_TESTNET && (
+              <Link href={`/verify/?proof=${SAMPLE_PROOF.id}`} className="text-link muted">
+                See the sample proof →
+              </Link>
+            )}
+          </div>
+          <p className="fine-print">A proof shows who stamped this exact text and when. It does not show that every word was written without AI.</p>
         </div>
       </div>
     </section>
@@ -272,13 +294,13 @@ export function ProofSection() {
 }
 
 const FAQ = [
-  ["Is it free?", "Yes. Writing, editing and exports are free. Stamping on BOT Chain costs a tiny network fee in BOT, paid from your own wallet. There are hourly limits to keep the AI fair for everyone."],
-  ["Does the AI make things up?", "We tell it to use only your sources for facts, numbers and quotes, and to cite each one. It can still make mistakes, so always check facts — and the citations make that quick. With no sources, the draft says so at the top."],
-  ["Which sources can it read?", "Most public web pages: blogs, news, docs and Wikipedia. Paywalled, login-only or private pages can't be read; paste their text instead. Up to 5 sources per article."],
-  ["Can I edit the draft?", "Of course. Type anywhere, use the toolbar for headings, lists and links, or select text and ask the AI to rewrite, shorten, expand, simplify or change the tone. Every AI change waits for your OK."],
+  ["Is it free?", "Yes. Writing, editing and exports are free. Stamping costs a small network fee in BOT, paid from your own wallet. Hourly limits keep the AI available for everyone."],
+  ["Does the AI make things up?", "It is told to take facts, numbers and quotes only from your sources and to cite each one. It can still get things wrong, so check the facts before you publish. The citations show you where to look. Without sources, the draft says so at the top."],
+  ["Which sources can it read?", "Most public pages: blogs, news, docs and Wikipedia. It can't read paywalled, login-only or private pages, so paste their text instead. Up to 5 sources per article."],
+  ["Can I edit the draft?", "Yes. Type anywhere, use the toolbar for headings, lists and links, or select text and ask the AI to rewrite, shorten, expand, simplify or change the tone. Every AI change waits for you to accept it."],
   ["Which formats can I download?", "PDF and Word (.docx). You can also copy rich text for Google Docs, Notion or Medium, or copy Markdown or plain text."],
-  ["What goes on BOT Chain?", "A SHA-256 fingerprint of your article, its title, word count, tone, number of sources, your wallet address and the time. The article text never leaves your browser for the chain."],
-  ["Do I need a wallet?", "Only to stamp. You can write, edit and download without one. Verifying a copy doesn't need a wallet either."],
+  ["What goes on BOT Chain?", "A SHA-256 fingerprint of your article, its title, word count, tone, number of sources, your wallet address and the time. The article text never goes on-chain."],
+  ["Do I need a wallet?", "Only to stamp. Writing, editing, downloading and verifying work without one."],
 ];
 
 export function Faq() {
@@ -287,7 +309,13 @@ export function Faq() {
       <div className="container faq-grid">
         <div>
           <h2 className="h2">Questions, answered</h2>
-          <p>Still curious? The code is open on GitHub.</p>
+          <p>
+            The code is open source{" "}
+            <a href={CONFIG.GITHUB_URL} target="_blank" rel="noopener noreferrer">
+              on GitHub
+            </a>
+            .
+          </p>
         </div>
         <div className="faq">
           {FAQ.map(([q, a], i) => (
@@ -310,14 +338,14 @@ export function ClosingCta() {
   ];
   return (
     <section className="cta-band">
-      <h2>Create a sourced article in seconds</h2>
-      <p>Your topic, your points, your sources — drafted, polished and ready to publish.</p>
+      <h2>Write your first sourced article</h2>
+      <p>Bring a topic, three key points and a few links.</p>
       <Link href="/write/" className="btn btn-invert btn-lg">
-        Write my first post
+        <NotebookPen size={18} /> Write my first post
       </Link>
       <div className="fan" aria-hidden="true">
         {cards.map(([type, tone, title]) => (
-          <div className="fan-card" key={title}>
+          <div className="fan-card ruled" key={title}>
             <div className="mini-chips">
               <span className="chip chip-violet">{type}</span>
               <span className="chip chip-blue">{tone}</span>
@@ -325,7 +353,7 @@ export function ClosingCta() {
             </div>
             <h4>{title}</h4>
             <div className="fan-lines">
-              <i /> <i /> <i /> <i /> <i /> <i />
+              <i /> <i /> <i /> <i /> <i />
             </div>
           </div>
         ))}

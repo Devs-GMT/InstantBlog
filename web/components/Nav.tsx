@@ -1,37 +1,57 @@
 "use client";
+// Dark tab navbar hanging from the top edge (logo · links · white pill CTA).
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Brand } from "./Brand";
-import { WalletButton } from "./WalletButton";
+
+const LINKS = [
+  ["/#how", "How it works"],
+  ["/#features", "Features"],
+  ["/verify/", "Verify"],
+  ["/#faq", "FAQ"],
+] as const;
 
 export function Nav() {
-  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 8);
-    on();
-    window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
-  }, []);
+    if (!open) return;
+    const close = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", close);
+    return () => document.removeEventListener("keydown", close);
+  }, [open]);
+
   return (
-    <header className={`nav${scrolled ? " scrolled" : ""}`}>
-      <div className="container nav-inner">
-        <Brand />
-        <nav className="nav-links" aria-label="Main">
-          <Link href="/#how">How it works</Link>
-          <Link href="/#features">Features</Link>
-          <Link href="/#proof">Proof</Link>
-          <Link href="/#faq">FAQ</Link>
+    <header className="navtab-wrap">
+      <div className="navtab">
+        <Brand light />
+        <nav className="navtab-links" aria-label="Main">
+          {LINKS.map(([href, label]) => (
+            <Link key={href} href={href}>
+              {label}
+            </Link>
+          ))}
         </nav>
-        <div className="nav-actions">
-          <Link href="/verify/" className="btn btn-ghost btn-sm hide-sm">
-            Verify
-          </Link>
-          <WalletButton />
-          <Link href="/write/" className="btn btn-primary btn-sm hide-sm">
-            Write my first post
-          </Link>
-        </div>
+        <Link href="/write/" className="navtab-cta">
+          Start writing
+        </Link>
+        <button type="button" className="navtab-burger" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          {open ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
+      {open && (
+        <nav className="navtab-sheet" aria-label="Main">
+          {LINKS.map(([href, label]) => (
+            <Link key={href} href={href} onClick={() => setOpen(false)}>
+              {label}
+            </Link>
+          ))}
+          <Link href="/posts/" onClick={() => setOpen(false)}>
+            My posts
+          </Link>
+        </nav>
+      )}
     </header>
   );
 }

@@ -26,12 +26,14 @@ const TESTNET: ChainParams = {
 };
 
 const ZERO = "0x0000000000000000000000000000000000000000";
-const USE_TESTNET = process.env.NEXT_PUBLIC_USE_TESTNET === "1";
 
 const CONTRACTS = {
-  mainnet: process.env.NEXT_PUBLIC_CONTRACT_MAINNET || ZERO, // TODO mainnet address after deploy
+  mainnet: process.env.NEXT_PUBLIC_CONTRACT_MAINNET || ZERO, // set NEXT_PUBLIC_CONTRACT_MAINNET after the mainnet deploy
   testnet: process.env.NEXT_PUBLIC_CONTRACT_TESTNET || "0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a", // BOT Chain testnet 968
 };
+
+// Until a mainnet address exists, the app runs on the live testnet contract (instead of a zero address).
+const USE_TESTNET = process.env.NEXT_PUBLIC_USE_TESTNET === "1" || CONTRACTS.mainnet.toLowerCase() === ZERO;
 
 const CHAIN = USE_TESTNET ? TESTNET : MAINNET;
 const EXPLORER = CHAIN.blockExplorerUrls[0];

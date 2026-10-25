@@ -1,12 +1,12 @@
 "use client";
 // Receipt footer — PRD §11. Live total() from the contract; address from CONFIG only.
+import { Copy } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { total } from "@/lib/chain";
 import { CONFIG, contractConfigured } from "@/lib/config";
 import { copyText, fmtNum, shortAddr } from "@/lib/format";
 import { Brand } from "./Brand";
-import { Icon } from "./Icons";
 import { useUI } from "./Providers";
 import { Receipt } from "./Receipt";
 
@@ -34,7 +34,7 @@ export function Footer() {
                 <a className="network-link" href={CONFIG.BOTCHAIN_URL} target="_blank" rel="noopener noreferrer">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/botchain-logo.svg" alt="" width={18} height={18} />
-                  BOT Chain ↗
+                  {CONFIG.USE_TESTNET ? "BOT Chain testnet" : "BOT Chain"} ↗
                 </a>
               ),
             },
@@ -42,14 +42,14 @@ export function Footer() {
             {
               label: "Contract",
               value: (
-                <button type="button" className="copyable mono" title={`${addr} — click to copy`} onClick={async () => (await copyText(addr)) && toast("Address copied")}>
-                  {shortAddr(addr)} <Icon.copy />
+                <button type="button" className="copyable mono" title={`${addr} (click to copy)`} onClick={async () => (await copyText(addr)) && toast("Address copied")}>
+                  {shortAddr(addr)} <Copy size={13} style={{ verticalAlign: -2 }} />
                 </button>
               ),
             },
             { label: "Articles stamped", value: <span className="mono">{count}</span> },
           ]}
-          total={{ label: "Status", value: contractConfigured() ? "✓ Verified on-chain" : "Deploying soon" }}
+          total={{ label: "Status", value: contractConfigured() ? "✓ Live on-chain" : "Deploying soon" }}
         >
           <a className="btn btn-primary btn-block" href={CONFIG.explorerAddress(addr)} target="_blank" rel="noopener noreferrer">
             View on explorer ↗
@@ -95,7 +95,7 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <p className="footer-bottom">© 2026 InstantBlog · AI-assisted writing — always check your facts</p>
+        <p className="footer-bottom">© 2026 InstantBlog · AI-assisted writing. Always check your facts.</p>
       </div>
     </footer>
   );

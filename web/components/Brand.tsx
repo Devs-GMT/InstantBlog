@@ -1,19 +1,23 @@
 import Link from "next/link";
 
-export function LogoMark({ className = "brand-mark" }: { className?: string }) {
+/** Notebook mark: spiral-bound page with ruled lines and a pen stroke. `light` for dark backgrounds. */
+export function LogoMark({ className = "brand-mark", light = false }: { className?: string; light?: boolean }) {
+  const page = light ? "#FFFFFF" : "#0D111B";
+  const ink = light ? "#0D111B" : "#FFFFFF";
   return (
     <svg className={className} viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <path d="M9 3h10l8 8v13a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5Z" fill="#0D111B" />
-      <path d="M19 3v5a3 3 0 0 0 3 3h5" fill="#1AB4D7" />
-      <path d="M16.6 9.5 11 18h4.2l-1 6.5L20 15.7h-4.3l.9-6.2Z" fill="#fff" />
+      <rect x="7" y="3" width="21" height="26" rx="5" fill={page} />
+      <path d="M12 11.5h10M12 16h10M12 20.5h6" stroke={ink} strokeWidth="1.8" strokeLinecap="round" opacity=".9" />
+      <path d="M4 8.5h5M4 14h5M4 19.5h5M4 25h5" stroke="#1AB4D7" strokeWidth="2.4" strokeLinecap="round" />
+      <path d="m20.5 24.2 4.6-4.6 1.6 1.6-4.6 4.6-2.2.6.6-2.2Z" fill="#1AB4D7" />
     </svg>
   );
 }
 
-export function Brand({ href = "/" }: { href?: string }) {
+export function Brand({ href = "/", light = false }: { href?: string; light?: boolean }) {
   return (
-    <Link href={href} className="brand" aria-label="InstantBlog home">
-      <LogoMark />
+    <Link href={href} className={`brand${light ? " brand-light" : ""}`} aria-label="InstantBlog home">
+      <LogoMark light={light} />
       <span>InstantBlog</span>
     </Link>
   );

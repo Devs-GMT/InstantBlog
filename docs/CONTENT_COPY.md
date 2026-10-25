@@ -1,18 +1,20 @@
 # InstantBlog — Content & UI Copy
 
-This file holds every user-facing string, so it can be pasted straight into the build. Voice: friendly, plain and short. Use sentence case, and avoid the hype words "revolutionary", "unlock" and "seamless".
+This file holds every user-facing string, so it can be pasted straight into the build. Voice: friendly, plain and short. Use sentence case.
+
+**Copy rules (anti AI-slop):** no em dashes in short UI copy; none of the words seamless, unlock, elevate, empower, leverage, supercharge, robust, delve, game-changer; no rhetorical questions, faux-insight setups or cute kicker lines; no claim we can't back ("in seconds", "prove you wrote it"); and **never invented data in mockups**: sample content must be real (see `web/components/home/sample.ts`, stamped on testnet as proof #2) and testimonials only from real testers with permission.
 
 ---
 
 ## 1. Meta
 
-- `<title>`: InstantBlog — Write a sourced article in minutes
-- Description: Pick a topic, a tone and your key points. InstantBlog drafts a sourced article with citations. Copy it, or download PDF or Word, and stamp proof you wrote it on BOT Chain.
+- `<title>`: InstantBlog: write a sourced article in minutes
+- Description: Pick a topic, a tone and your key points. InstantBlog drafts a sourced article with citations. Copy it or download PDF or Word, then stamp a timestamped proof on BOT Chain.
 - OG title: Write it once. Publish anywhere.
 
 ## 2. Navbar
 
-Logo · How it works · Features · Proof · FAQ · **Verify** · **[Write my first post]** · wallet pill (`Connect wallet` / `0xAB…9f3c` / `Switch to BOT Chain` / `Install MetaMask`)
+Dark tab hanging from the top edge: logo (notebook mark) · How it works · Features · Verify · FAQ · white pill **[Start writing]**. Mobile: logo · **[Start writing]** · menu button (sheet: How it works, Features, Verify, FAQ, My posts). The wallet pill lives in the writer top bar, not the landing nav.
 
 ---
 
@@ -20,90 +22,85 @@ Logo · How it works · Features · Proof · FAQ · **Verify** · **[Write my fi
 
 ### § 1 Hero
 - Banner chip: **New** · Export to Word & PDF
-- H1: **Write it once. Publish anywhere.**
-- Sub: Pick a topic, a tone and your key points. InstantBlog drafts a sourced article in seconds — copy it or download it as PDF or Word.
+- H1: **Write it once.** / **Publish anywhere.** (second line highlighted like a marker pen)
+- Sub: Pick a topic, a tone and your key points. InstantBlog drafts a sourced article in under a minute. Copy it, or download it as PDF or Word.
 - CTA: **Write my first post**
-- Under CTA (small, muted): Free · No sign-up · Wallet only needed to stamp
-- Format callouts: Blog post `~500 words` · Article `~900 words` · How-to `~1,400 words` · Listicle `3–5 points`
-  > The brief maps lengths, not types, to word counts. The callout shows the three lengths across the first three chips and "3–5 points" on Listicle, which keeps the numbers honest.
+- Under CTA (small, muted): Free. No sign-up. You only need a wallet to stamp.
+- Type chips: Blog post · Article · How-to · Listicle · Opinion — then mono line `~500 · ~900 · ~1,400 words`
+- Handwritten margin note (desktop only): every fact gets a source
 
 ### § 2 Who is it for?
 - H2: **Who is it for?**
-- Sub: Anyone with something to say and not much time to say it.
+- Sub: People who already have the ideas and the links, and want the first draft done.
 
 | Card | Line |
 |---|---|
-| Students | Essays and research summaries, with every fact linked to your readings. |
-| Creators | Newsletters and blog posts in your voice — friendly, witty or anything between. |
-| Founders | Launch posts and updates your community will actually read. |
-| Marketers | Clear, sourced SEO articles from product pages and reports. |
-| Developers / DevRel | Tutorials and changelogs drafted from your docs. |
-| Hackathon teams | Project write-ups ready before the demo ends. |
+| Students | Essays and research summaries, with each fact tied to a reading you can cite. |
+| Creators | Newsletters and blog posts in the tone you pick: friendly, witty or casual. |
+| Founders | Launch posts and product updates drafted from your notes and changelog links. |
+| Marketers | SEO articles from product pages and reports, with the sources listed at the end. |
+| Developers / DevRel | Tutorials and changelogs drafted from your docs and pull requests. |
+| Hackathon teams | The project write-up for the submission form, written while the demo is fresh. |
 
 ### § 3 The problem
 - H2: **Blank pages are a slow way to start writing**
-- **Slow:** Hours go into getting a first draft on the page.
-- **Generic:** Most AI text sounds like everyone else's — and nothing like you.
-- **Unsourced:** Facts with no links you can check are a risk to publish.
+- **Slow:** A first draft can take hours before any editing starts.
+- **Generic:** Most AI text reads the same whatever topic you give it.
+- **Unsourced:** A number with no link is hard to check and risky to publish.
 
 ### § 4 How it works
 - H2: **From idea to finished draft in four steps**
-- **01 Brief:** Topic, tone, 3–5 key points and up to 5 source links.
-- **02 Draft:** AI writes a structured article, with a [1][2] citation on every fact from your sources.
-- **03 Polish:** Select any sentence to rewrite, shorten or change its tone.
-- **04 Export & stamp:** Copy, PDF or Word — then stamp a proof on BOT Chain.
+- **01 Brief:** Topic, tone, 3 to 5 key points and up to 5 source links.
+- **02 Draft:** The AI writes one section per point and cites your sources as [1], [2].
+- **03 Polish:** Select a sentence to rewrite it, shorten it or change its tone.
+- **04 Export & stamp:** Copy it, download PDF or Word, then stamp a proof on BOT Chain.
 
 ### § 5 Features
-- H2: **We designed a faster way to write with sources**
+- H2: **Built for writing with sources**
 
 | Row | Chip | H3 | Body | Bullets |
 |---|---|---|---|---|
-| 1 | Brief → outline | Turn 3 bullet points into a structured article | Each key point becomes its own section, in your order. Drag to reorder before you generate. | One H2 per point · Intro and conclusion included · 3 title ideas |
-| 2 | Citations | Every fact links back to your sources | InstantBlog reads your links and cites them as [1], [2]. Hover a citation to see where it came from. | Uses only your sources for facts · Sources list added for you · Paste text when a page can't be read |
-| 3 | AI editing | Edit with AI, keep your voice | Select text and choose Rewrite, Shorten, Expand, Simplify or a new tone. Preview every change before you accept it. | Accept or discard · Citations kept · Undo always works |
-| 4 | Exports | Copy to Docs, Notion or Medium — or download PDF and Word | Rich text keeps headings, links and lists. PDF and Word files come out clean and ready to share. | Rich text, Markdown, plain text · A4 PDF · .docx with headings |
+| 1 | Outline | Your key points become the sections | Each point gets its own heading, in the order you set. Drag a point up or down before you generate. | Intro, conclusion and three title ideas included · Short, medium or long: about 500, 900 or 1,400 words |
+| 2 | Citations | Every fact links back to a source | InstantBlog reads the pages you link and cites them inline. Hover a [1] in the editor to see which source it points to. | Facts and numbers come only from your sources · If a page won't load, paste its text instead |
+| 3 | AI editing | Edit with AI, keep your voice | Select text and pick Rewrite, Shorten, Expand, Simplify or a new tone. Nothing changes until you press Accept. | Citations stay attached to their sentence · Undo works on every change |
+| 4 | Export | Paste into Docs, Notion or Medium, or download PDF and Word | Rich text keeps headings, links and lists. The .docx uses real Word heading styles, so the navigation pane works. | Rich text, Markdown or plain text · A4 PDF with a byline and the sources |
 
-**Example output cards:** generate these with the real app on launch day and paste them here. Example placeholders to replace:
-1. Brief "3 points" → the generated H2 list
-2. A sentence with `[1]` + its Sources line
-3. Before/after of "Shorten"
-4. The export menu with "Copied ✓"
-
-> Only add quotes from real testers, with their permission. Never invent testimonials.
+Example cards (taped notes) all use the real sample article: its outline, its cited sentence with `[1] Hackathon · Wikipedia`, a Shorten preview of one of its sentences, and its .docx filename.
 
 ### § 6 Proof on BOT Chain
-- H2: **Prove you wrote it first**
-- Sub: Stamp your article on BOT Chain. Anyone can check a copy against your proof, without seeing your text.
-- **Only the fingerprint goes on-chain:** We save a SHA-256 fingerprint, the title and a few numbers. Never your article.
-- **Timestamped forever:** The proof records your wallet and the exact time you stamped it.
-- **Anyone can verify a copy:** Paste any copy into Verify to see if it matches a proof.
-- Link: **Verify an article →**
-- Fine print: A proof shows who stamped this exact text and when — not that every word was written without AI.
+- H2: **Stamp it before you publish**
+- Sub: InstantBlog saves your article's fingerprint on BOT Chain. Anyone can check a copy against it later without seeing your text.
+- **Only the fingerprint goes on-chain:** A SHA-256 hash, the title and a few counts. The article text stays in your browser.
+- **Timestamped on-chain:** The proof records your wallet address and the block time.
+- **Anyone can verify a copy:** Paste a copy into Verify. One changed character means no match.
+- Links: **Verify an article →** · **See the sample proof →** (`/verify/?proof=2` while on testnet)
+- Fine print: A proof shows who stamped this exact text and when. It does not show that every word was written without AI.
+- Receipt: the real proof #2 of the sample article (testnet), button **Open this proof**.
 
 ### § 7 FAQs
-- H2: **Questions, answered**
+- H2: **Questions, answered** · side text: The code is open source on GitHub.
 
 | Q | A |
 |---|---|
-| Is it free? | Yes. Writing, editing and exports are free. Stamping on BOT Chain costs a tiny network fee in BOT, paid from your own wallet. There are hourly limits to keep the AI fair for everyone. |
-| Does the AI make things up? | We tell it to use only your sources for facts, numbers and quotes, and to cite each one. It can still make mistakes, so always check facts — and the citations make that quick. With no sources, the draft says so at the top. |
-| Which sources can it read? | Most public web pages: blogs, news, docs and Wikipedia. Paywalled, login-only or private pages can't be read; paste their text instead. Up to 5 sources per article. |
-| Can I edit the draft? | Of course. Type anywhere, use the toolbar for headings, lists and links, or select text and ask the AI to rewrite, shorten, expand, simplify or change the tone. Every AI change waits for your OK. |
+| Is it free? | Yes. Writing, editing and exports are free. Stamping costs a small network fee in BOT, paid from your own wallet. Hourly limits keep the AI available for everyone. |
+| Does the AI make things up? | It is told to take facts, numbers and quotes only from your sources and to cite each one. It can still get things wrong, so check the facts before you publish. The citations show you where to look. Without sources, the draft says so at the top. |
+| Which sources can it read? | Most public pages: blogs, news, docs and Wikipedia. It can't read paywalled, login-only or private pages, so paste their text instead. Up to 5 sources per article. |
+| Can I edit the draft? | Yes. Type anywhere, use the toolbar for headings, lists and links, or select text and ask the AI to rewrite, shorten, expand, simplify or change the tone. Every AI change waits for you to accept it. |
 | Which formats can I download? | PDF and Word (.docx). You can also copy rich text for Google Docs, Notion or Medium, or copy Markdown or plain text. |
-| What goes on BOT Chain? | A SHA-256 fingerprint of your article, its title, word count, tone, number of sources, your wallet address and the time. The article text never leaves your browser for the chain. |
-| Do I need a wallet? | Only to stamp. You can write, edit and download without one. Verifying a copy doesn't need a wallet either. |
+| What goes on BOT Chain? | A SHA-256 fingerprint of your article, its title, word count, tone, number of sources, your wallet address and the time. The article text never goes on-chain. |
+| Do I need a wallet? | Only to stamp. Writing, editing, downloading and verifying work without one. |
 
 ### § 8 Closing CTA
-- H2: **Create a sourced article in seconds**
-- Sub: Your topic, your points, your sources — drafted, polished and ready to publish.
+- H2: **Write your first sourced article**
+- Sub: Bring a topic, three key points and a few links.
 - CTA: **Write my first post**
-- Mockup cards: "How to deploy your first contract" (How-to · Friendly · 3 sources) · "7 tools every hackathon team needs" (Listicle · Witty · 3 sources) · "Small dApps win hackathons" (Opinion · Inspiring · 3 sources)
+- Fanned ruled-paper cards (example briefs): "How to deploy your first contract" (How-to · Friendly · 3 sources) · "7 tools every hackathon team needs" (Listicle · Witty · 3 sources) · "Small dApps win hackathons" (Opinion · Inspiring · 3 sources)
 
 ### Footer
-- Receipt title: **Proof of authorship** · rows Network / Chain ID / Contract / Articles stamped / Status **✓ Verified on-chain** · **View on explorer ↗**
+- Receipt title: **Proof of authorship** · rows Network (BOT Chain / BOT Chain testnet) / Chain ID / Contract / Articles stamped / Status **✓ Live on-chain** · **View on explorer ↗**
 - Chips: Blog · Article · PDF · Word
 - Brand line: InstantBlog · built on BOT Chain
-- Bottom: © 2026 InstantBlog · AI-assisted writing — always check your facts
+- Bottom: © 2026 InstantBlog · AI-assisted writing. Always check your facts.
 
 ---
 

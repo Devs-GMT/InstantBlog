@@ -191,7 +191,7 @@ Section vertical rhythm: 96 px desktop / 64 px mobile. There must be no horizont
 
 | # | Layout | Visual notes |
 |---|---|---|
-| Nav | Logo left · links (How it works · Features · Proof · FAQ) · **[Verify]** ghost · **[Write my first post]** primary sm | Sticky, white at 80% + backdrop blur after 8 px of scroll |
+| Nav | Dark tab (`--primary`) hanging from the top edge, max 680 px, 60 px tall, bottom corners 22 px with concave "ears" joining the top edge (radial-gradient pseudo-elements). Notebook logo (light variant) · links (How it works · Features · Verify · FAQ, white 78% → 100%) · white pill **Start writing**. Mobile: links collapse into a menu sheet | Sticky at top; reference: user-supplied screenshot |
 | 1 Hero | Centred column 760 px | Banner chip (`--tint-violet`, "New" in a white mini-pill inside) → H1 56/40 → subtext Body L muted (max 560) → primary pill lg → format callout row: 4 tint chips each with a mono sub-label "~500 w" etc. → **screenshot stack**: 3 shots overlapping (export menu −4°, editor 0° centre front, brief +3°), each `--r-card` + `--shadow-lg`, slight parallax on scroll (≤ 12 px, disabled for `prefers-reduced-motion`) |
 | 2 Who | H2 centred + 3×2 grid of audience cards (mobile: 1 col, tablet: 2) | Icon tiles cycle blue / pink / violet / cyan / green / amber |
 | 3 Problem | H2 left, 3 blocks in a row, each with a big muted numeral or icon + title + 1 line | White panel band behind it for contrast |
@@ -232,6 +232,13 @@ Section vertical rhythm: 96 px desktop / 64 px mobile. There must be no horizont
 Receipt width 440 px desktop, 100% mobile. Link groups: a 4-column grid (brand + 3 groups) → 2 columns on tablet → stacked on mobile.
 
 ---
+
+## 8b. Notebook motifs (use sparingly)
+
+- **Ruled paper** (`.ruled`): faint blue lines every 22 px + red margin line; on product shots, fan cards, the problem band.
+- **Spiral binding** (`.spiral`) on the brief shot; **washi tape** (`.taped`) on example cards; **marker highlight** (`.hl`) on one hero phrase; one **handwritten margin note** in Caveat (`--font-hand`), desktop only.
+- Icons: Lucide (ISC licence) notebook/writing set: NotebookPen, Feather, GraduationCap, Megaphone, Newspaper, FileCode, Timer, Fingerprint, Clock, ShieldCheck.
+- Logo: notebook mark (spiral rings, ruled lines, pen) in `components/Brand.tsx` and `public/logo-mark.svg`.
 
 ## 9. Motion
 
