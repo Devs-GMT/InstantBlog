@@ -17,12 +17,12 @@ Covers the system overview, repo layout, front-end modules, data model, fingerpr
                       ▼                               ▼                               ▼
    ┌────────────── Cloudflare Worker ─────────┐   ┌─────────────────────────────────────────────┐
    │ POST /extract-url  → fetch + Readability │   │ BOT Chain mainnet (677)  rpc.botchain.ai     │
-   │ POST /blog/draft   → Claude (SSE stream) │   │   InstantBlog.sol  stamp / getProof / ...    │
-   │ POST /blog/edit    → Claude (JSON)       │   │ Explorer: scan.botchain.ai                   │
-   │ KV: rate limits · Secret: ANTHROPIC_KEY  │   └─────────────────────────────────────────────┘
+   │ POST /blog/draft   → Gemini (SSE stream) │   │   InstantBlog.sol  stamp / getProof / ...    │
+   │ POST /blog/edit    → Gemini (JSON)       │   │ Explorer: scan.botchain.ai                   │
+   │ KV: rate limits · Secret: GEMINI_API_KEY │   └─────────────────────────────────────────────┘
    └───────────────┬──────────────────────────┘
                    ▼
-         Anthropic Messages API (claude-opus-5-5)
+         Google Gemini API (gemini-2.5-flash, free tier)
 ```
 
 **Trust boundaries**
@@ -50,7 +50,7 @@ InstantBlog/
 │     ├─ extract.ts    /extract-url (Readability + linkedom, 2 MB / 5 s caps)
 │     ├─ draft.ts      /blog/draft (SSE: meta/delta/ping/done/error)
 │     ├─ edit.ts       /blog/edit (10 actions, missingCitations)
-│     ├─ claude.ts     Anthropic client, fallback beta, error mapping
+│     ├─ gemini.ts     Gemini REST client (SSE parse, finish reasons, error mapping)
 │     ├─ prompts.ts    system prompts (AI_PROMPTS.md)
 │     ├─ limits.ts     validation, source budget, token cap
 │     ├─ ratelimit.ts  KV hourly counters
@@ -231,7 +231,7 @@ paste → fingerprint → proofsForHash(hash) → ids[] → getProof(min id) →
 
 ## 9. Security and privacy checklist
 
-- API key only in Worker secrets (`wrangler secret put ANTHROPIC_API_KEY`). Never in the repo or the front end.
+- API key only in Worker secrets (`wrangler secret put GEMINI_API_KEY`). Never in the repo or the front end.
 - CORS: exact allow-list from `ALLOWED_ORIGINS` (production domain; `http://localhost:5173` only in `.dev.vars`).
 - The Worker never logs request bodies. Logs carry route, status, error code and timing only.
 - All model HTML goes through DOMPurify before it reaches the DOM. Links get `rel="noopener noreferrer"` and `target="_blank"`.

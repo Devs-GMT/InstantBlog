@@ -559,3 +559,8 @@ button.chip { border: 0; cursor: pointer; font: inherit; font-size: 13px; font-w
   .fan-card { width: 272px; }
   .fan-card:nth-child(2) { margin-left: -136px; }
 }
+
+/* selectable chips (Type, Voice tone): keep the hairline border — beats `button.chip { border: 0 }` */
+button.chip.chip-select { border: 1px solid var(--border-strong); background: var(--card); }
+button.chip.chip-select:hover { background: var(--panel); }
+button.chip.chip-select[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }

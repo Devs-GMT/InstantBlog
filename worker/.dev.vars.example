@@ -1,2 +1,4 @@
-ANTHROPIC_API_KEY=sk-ant-...
+# Free key: https://aistudio.google.com/apikey
+GEMINI_API_KEY=
 ALLOWED_ORIGINS=http://localhost:5173
+# MOCK_AI=1   # canned AI output, no key needed

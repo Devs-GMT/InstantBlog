@@ -4,7 +4,7 @@
 
 - [ ] **Mainnet contract address:** `0x…` → https://scan.botchain.ai/address/0x… (verified source)
 - [ ] **Live website:** https://instantblog.vercel.app (drafting + exports working on the live domain)
-- [ ] **GitHub repo:** `InstantBlog.sol` + plain-English README. **No API key committed** (`git grep -nI "sk-ant"` is empty)
+- [ ] **GitHub repo:** `InstantBlog.sol` + plain-English README. **No API key committed** (`git grep -nI "AIza"` is empty)
 - [ ] **X post** with the demo clip, tagging **@BOTChain_ai**
 - [ ] Demo articles stamped on mainnet: #1 how-to, #2 listicle, #3 opinion
 
@@ -42,4 +42,4 @@ Record at 1440×900, cursor highlight on, no API keys or private tabs visible.
 
 ## 4. One-paragraph description (for forms)
 
-InstantBlog is an AI blog and article writer that stays honest about its facts. You give it a topic, type, tone, length, 3–5 key points and up to 5 source links. A Cloudflare Worker reads the sources, and Claude drafts a structured article with [n] citations, using only those sources for facts. You edit with AI helpers on selected text (rewrite, shorten, expand, change tone, simplify, fix grammar), each previewed with Accept/Discard. Then you copy rich text or Markdown, or download PDF or .docx, all generated in the browser. Finally, you stamp a SHA-256 fingerprint of the article, with its title, word count, tone and source count, on BOT Chain mainnet. Anyone can paste a copy into /verify to check it against the proof, with no wallet needed. The text itself never goes on-chain.
+InstantBlog is an AI blog and article writer that stays honest about its facts. You give it a topic, type, tone, length, 3–5 key points and up to 5 source links. A Cloudflare Worker reads the sources, and Google Gemini drafts a structured article with [n] citations, using only those sources for facts. You edit with AI helpers on selected text (rewrite, shorten, expand, change tone, simplify, fix grammar), each previewed with Accept/Discard. Then you copy rich text or Markdown, or download PDF or .docx, all generated in the browser. Finally, you stamp a SHA-256 fingerprint of the article, with its title, word count, tone and source count, on BOT Chain mainnet. Anyone can paste a copy into /verify to check it against the proof, with no wallet needed. The text itself never goes on-chain.

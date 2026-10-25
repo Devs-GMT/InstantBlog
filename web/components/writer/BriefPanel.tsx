@@ -32,9 +32,10 @@ export function BriefPanel({ brief, update, locked, highlight, footer }: Props) 
 
         <div className="field">
           <span className="label">Type</span>
-          <div className="seg" role="group" aria-label="Type">
+          {/* 5 options don't fit one segmented track in a 380px panel — use wrapping chips like Voice tone */}
+          <div className="chips-wrap" role="group" aria-label="Type">
             {TYPES.map(([v, l]) => (
-              <button key={v} type="button" aria-pressed={brief.type === v} onClick={() => set("type", v)}>
+              <button key={v} type="button" className="chip chip-select" aria-pressed={brief.type === v} onClick={() => set("type", v)}>
                 {l}
               </button>
             ))}

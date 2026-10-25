@@ -1,6 +1,6 @@
 # CLAUDE.md — InstantBlog
 
-AI blog/article writer: brief (topic, type, tone, length, 3–5 key points, 0–5 source URLs) → Worker reads sources → Claude streams a cited Markdown draft → AI edits on selected text (preview + Accept/Discard) → Copy / PDF / .docx → stamp a SHA-256 fingerprint on BOT Chain → anyone verifies a copy at `/verify`.
+AI blog/article writer: brief (topic, type, tone, length, 3–5 key points, 0–5 source URLs) → Worker reads sources → Gemini streams a cited Markdown draft → AI edits on selected text (preview + Accept/Discard) → Copy / PDF / .docx → stamp a SHA-256 fingerprint on BOT Chain → anyone verifies a copy at `/verify`.
 
 ## Where things are specified
 
@@ -19,7 +19,7 @@ When code and a doc disagree, ask; if the doc is wrong, update the doc in the sa
 ## Stack
 
 - `web/` — **Next.js 16 (App Router) static export** (`output: "export"`, `trailingSlash: true`) deployed on **Vercel** from `origin/main` (Root Directory `web`). React 19, TypeScript, Tiptap v3, ethers v6, marked, turndown, DOMPurify, html2pdf.js, docx — all from npm at the exact versions in `web/package.json`. Plain CSS with design tokens (no Tailwind).
-- `worker/` — Cloudflare Worker, TypeScript, `@anthropic-ai/sdk`, `@mozilla/readability` + `linkedom`, KV binding `RL`.
+- `worker/` — Cloudflare Worker, TypeScript, Gemini REST API via `fetch` (no SDK), `@mozilla/readability` + `linkedom`, KV binding `RL`.
 - `contracts/` — Foundry project (`src/InstantBlog.sol`), Solidity ^0.8.20, compile 0.8.24, EVM `paris`, optimizer 200.
 - `tests/` — Node test runner; fingerprint vectors run against `web/lib/fingerprint.ts`.
 
@@ -42,7 +42,7 @@ node --test
 
 ## Rules that must not break
 
-- **Never commit secrets.** `ANTHROPIC_API_KEY` lives only in `wrangler secret` / `worker/.dev.vars`. No keys in `web/`.
+- **Never commit secrets.** `GEMINI_API_KEY` lives only in `wrangler secret` / `worker/.dev.vars`. No keys in `web/`.
 - **All chain/site constants live in `web/lib/config.ts` only** (contract address, chain params, Worker URL, explorer URLs; overridable via `NEXT_PUBLIC_*` build env). Don't hard-code them elsewhere.
 - **`web/lib/fingerprint.ts` is frozen after mainnet launch**, and so is the `marked` version (pinned exactly). Any change must keep `tests/fingerprint.test.mjs` passing; otherwise old proofs stop verifying. Stamp and verify use the same function.
 - Only the hash, title (≤160 bytes, cut by bytes), words, tone (0–5), sources (0–5) go on-chain — never article text.
@@ -50,7 +50,7 @@ node --test
 - ethers v6: read the Proof tuple **by index** (`r[6]` for `at`) — `Result.at` is `Array.prototype.at`.
 - Model output is sanitised with DOMPurify before touching the DOM. Tiptap v3 `insertContentAt` inserts the raw string verbatim when it parses to plain unmarked text, so pass decoded text in that case and HTML only when it has formatting (see `inlineContent()` in `useAiTools.tsx`).
 - Worker: CORS exact allow-list, SSRF guard on every fetch **and every redirect hop**, rate limits, and **never log article/selection/source text**. `MOCK_AI` must never be set in production.
-- LLM: model from `env.MODEL` (`claude-opus-5-5`); draft effort `medium`, edit effort `low`; don't send `thinking: {type:"disabled"}` or `budget_tokens` (400 on this model); always handle `stop_reason === "refusal"`.
+- LLM: Google Gemini (free tier), model from `env.MODEL` (default `gemini-2.5-flash`), called from `worker/src/gemini.ts`. Drop `thought` parts; map finish reasons (SAFETY etc. → `refusal`, MAX_TOKENS → `max_tokens`); `maxOutputTokens` includes thinking tokens. Free-tier data may be used by Google — keep the Privacy page honest about it.
 - Editor content is never lost: snapshot before Generate, AI accepts are one undo step, errors keep content.
 - Writing, AI and exports must work without MetaMask; only Stamp needs a wallet. `/verify` never needs one.
 - localStorage access always in try/catch; app must work without it.

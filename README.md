@@ -11,7 +11,7 @@
 ## How it works
 
 1. **Brief.** Choose a topic, a type (blog post, article, how-to, listicle, opinion), a voice tone, a length, 3–5 key points and up to 5 source links.
-2. **Draft.** Our server reads your sources and an AI (Claude) writes the article. Each key point becomes a section. Facts from your sources carry citations like [1][2], and a Sources list is added at the end.
+2. **Draft.** Our server reads your sources and an AI (Google Gemini) writes the article. Each key point becomes a section. Facts from your sources carry citations like [1][2], and a Sources list is added at the end.
 3. **Polish.** Select any text to Rewrite, Shorten, Expand, Change tone, Simplify or Fix grammar. You see a preview first and choose Accept or Discard.
 4. **Export.** Copy rich text (for Google Docs, Notion, Medium), Markdown or plain text, or download PDF or Word (.docx). All of this happens in your browser.
 5. **Stamp.** Click *Stamp on BOT Chain*. Your browser computes a SHA-256 fingerprint of the article. The fingerprint, the title, the word count, the tone and the number of sources are saved on-chain with a timestamp. **Your article text is never put on-chain.**
@@ -31,13 +31,13 @@
 
 ## Tech
 
-Next.js 16 (static export) · React 19 · Tiptap editor · marked · html2pdf.js · docx · ethers.js v6 · Cloudflare Workers · Claude (Anthropic API) · Solidity 0.8.24 on BOT Chain
+Next.js 16 (static export) · React 19 · Tiptap editor · marked · html2pdf.js · docx · ethers.js v6 · Cloudflare Workers · Google Gemini API (free tier) · Solidity 0.8.24 on BOT Chain
 
 ## Run it yourself
 
 ```bash
 # 1. Worker (local, no API key needed with the mock AI)
-cd worker && npm ci && cp .dev.vars.example .dev.vars   # add MOCK_AI=1 to try it without a key
+cd worker && npm ci && cp .dev.vars.example .dev.vars   # free Gemini key from aistudio.google.com/apikey, or MOCK_AI=1
 npx wrangler dev --port 8787
 
 # 2. Website
@@ -51,7 +51,7 @@ To go live: deploy the contract with Foundry (`forge script script/Deploy.s.sol 
 
 ## Privacy
 
-Drafts are saved only in your browser. Text you send to draft or edit is processed by our Worker and the AI provider. It is not stored or logged by us. Stamping makes the fingerprint, the title, the numbers shown and your wallet address public on BOT Chain, permanently.
+Drafts are saved only in your browser. Text you send to draft or edit goes through our Worker to Google's Gemini API. We don't store or log it, but on Gemini's free tier Google may use it to improve its products, so don't paste anything confidential. Stamping makes the fingerprint, the title, the numbers shown and your wallet address public on BOT Chain, permanently.
 
 ## Licence
 

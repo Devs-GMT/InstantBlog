@@ -298,6 +298,7 @@ export function ProofSection() {
 
 const FAQ = [
   ["Is it free?", "Yes. Writing, editing and exports are free. Stamping costs a small network fee in BOT, paid from your own wallet. Hourly limits keep the AI available for everyone."],
+  ["Which AI does it use?", "Google Gemini (a Flash model on the free tier). Google may use free-tier text to improve its products, so don't paste anything confidential into a brief."],
   ["Does the AI make things up?", "It is told to take facts, numbers and quotes only from your sources and to cite each one. It can still get things wrong, so check the facts before you publish. The citations show you where to look. Without sources, the draft says so at the top."],
   ["Which sources can it read?", "Most public pages: blogs, news, docs and Wikipedia. It can't read paywalled, login-only or private pages, so paste their text instead. Up to 5 sources per article."],
   ["Can I edit the draft?", "Yes. Type anywhere, use the toolbar for headings, lists and links, or select text and ask the AI to rewrite, shorten, expand, simplify or change the tone. Every AI change waits for you to accept it."],

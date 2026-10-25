@@ -175,4 +175,4 @@ See [WORKER_API § 8](WORKER_API.md#8-worker-test-commands). Expected: every pri
 4. Download .docx → opens.
 5. Stamp on mainnet → proof card → open the proof link on the laptop without a wallet.
 6. Paste the plain-text copy into /verify → ✓ Matches.
-7. `git grep -nI "sk-ant\|ANTHROPIC_API_KEY=" ` → nothing.
+7. `git grep -nI "AIza\|GEMINI_API_KEY=." ` → nothing.

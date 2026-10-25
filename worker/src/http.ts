@@ -1,7 +1,9 @@
 // Shared HTTP helpers: env type, CORS, JSON + error envelope.
 
 export interface Env {
-  ANTHROPIC_API_KEY: string;
+  GEMINI_API_KEY: string;
+  /** Optional override, e.g. a local fake Gemini server in tests. */
+  GEMINI_BASE_URL?: string;
   ALLOWED_ORIGINS: string;
   MODEL: string;
   LIMIT_DRAFT?: string;

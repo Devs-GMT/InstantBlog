@@ -1,6 +1,6 @@
 // POST /blog/draft — streams Markdown as SSE: meta → delta* → done | error.
-import { Env } from "./http";
-import { client, FALLBACK_BETA, mapUpstream, usedFallback } from "./claude";
+import { Env, HttpError } from "./http";
+import { streamText } from "./gemini";
 import { DraftInput } from "./limits";
 import { DRAFT_SYSTEM, buildDraftUser } from "./prompts";
 
@@ -16,6 +16,7 @@ export function draft(
   const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>();
   const writer = writable.getWriter();
   const enc = new TextEncoder();
+  const upstream = new AbortController();
   let closed = false;
 
   const send = async (event: string, data: unknown) => {
@@ -24,50 +25,32 @@ export function draft(
       await writer.write(enc.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
     } catch {
       closed = true; // client went away
+      upstream.abort();
     }
   };
 
   const run = async () => {
-    const anthropic = client(env);
     let lastSend = Date.now();
     const ping = setInterval(() => {
       if (Date.now() - lastSend >= PING_MS) void send("ping", {});
     }, PING_MS);
+    req.signal?.addEventListener("abort", () => upstream.abort());
 
     try {
       await send("meta", { model: env.MODEL, sources: input.sources.length });
-      const stream = anthropic.beta.messages.stream({
-        model: env.MODEL,
-        max_tokens: 16000,
-        output_config: { effort: "medium" },
-        betas: [FALLBACK_BETA],
-        fallbacks: "default",
-        system: DRAFT_SYSTEM,
-        messages: [{ role: "user", content: buildDraftUser(input) }],
-      });
-      req.signal?.addEventListener("abort", () => stream.abort());
-
-      for await (const ev of stream) {
-        if (closed) {
-          stream.abort();
-          break;
-        }
-        if (ev.type === "content_block_delta" && ev.delta.type === "text_delta") {
-          await send("delta", { t: ev.delta.text });
+      const done = await streamText(env, DRAFT_SYSTEM, buildDraftUser(input), {
+        // Gemini counts "thinking" tokens against this budget, so leave room above the ~2k-token article.
+        maxOutputTokens: 8192,
+        signal: upstream.signal,
+        onText: async (t) => {
+          await send("delta", { t });
           lastSend = Date.now();
-        }
-      }
-      if (!closed) {
-        const final = await stream.finalMessage();
-        await send("done", {
-          stop: final.stop_reason,
-          fallback: usedFallback(final.usage),
-          outputTokens: final.usage.output_tokens,
-        });
-      }
+        },
+      });
+      await send("done", { stop: done.stop, fallback: false, outputTokens: done.outputTokens });
     } catch (err) {
-      if (!closed) {
-        const e = mapUpstream(err);
+      if (!closed && (err as Error)?.name !== "AbortError") {
+        const e = err instanceof HttpError ? err : new HttpError(500, "internal", "Something went wrong. Try again.");
         await send("error", { code: e.code, message: e.message });
       }
       console.log(JSON.stringify({ route: "draft", error: (err as Error)?.name ?? "unknown" }));

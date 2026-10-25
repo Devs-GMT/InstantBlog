@@ -12,7 +12,7 @@ A time-boxed plan, with each task tied to its PRD requirement IDs. Every phase e
 |---|---|---|
 | 0.0 | Create the repo and the folders from [ARCHITECTURE § 2](ARCHITECTURE.md#2-repository-layout). Smoke-test the CDN URLs in [ARCHITECTURE § 3](ARCHITECTURE.md#3-front-end-libraries-cdn-pinned) | All libs load in a blank page with no console errors |
 | 0.1 | MetaMask: add BOT Chain testnet (968) and mainnet (677). Get testnet BOT from the faucet and a little mainnet BOT | Balances on both |
-| 0.2 | Cloudflare: `wrangler login`, create the KV namespace, `wrangler secret put ANTHROPIC_API_KEY`. Set a monthly spend cap in the Anthropic Console | `wrangler whoami` OK |
+| 0.2 | Cloudflare: `wrangler login`, create the KV namespace, `wrangler secret put GEMINI_API_KEY` (free key from Google AI Studio) | `wrangler whoami` OK |
 | 0.3 | Create the Vercel project from the GitHub repo (Root Directory `web`) | Preview URL builds |
 
 ---
@@ -119,7 +119,7 @@ A time-boxed plan, with each task tied to its PRD requirement IDs. Every phase e
 
 | # | Task |
 |---|---|
-| 8.1 | README final pass ([template in repo root](../README.md)): address, live URL, how it works, honesty note, **no keys** (`git grep -i "sk-ant"` returns nothing) |
+| 8.1 | README final pass ([template in repo root](../README.md)): address, live URL, how it works, honesty note, **no keys** (`git grep -nI "AIza"` returns nothing) |
 | 8.2 | Record the demo clip following [SUBMISSION § 2](SUBMISSION.md#2-demo-script-60-90-s) |
 | 8.3 | Post on X tagging @BOTChain_ai ([draft](SUBMISSION.md#3-x-post)) |
 | 8.4 | Fill in the submission checklist |

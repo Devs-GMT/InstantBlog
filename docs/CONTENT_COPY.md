@@ -83,6 +83,7 @@ Example cards (taped notes) all use the real sample article: its outline, its ci
 | Q | A |
 |---|---|
 | Is it free? | Yes. Writing, editing and exports are free. Stamping costs a small network fee in BOT, paid from your own wallet. Hourly limits keep the AI available for everyone. |
+| Which AI does it use? | Google Gemini (a Flash model on the free tier). Google may use free-tier text to improve its products, so don't paste anything confidential into a brief. |
 | Does the AI make things up? | It is told to take facts, numbers and quotes only from your sources and to cite each one. It can still get things wrong, so check the facts before you publish. The citations show you where to look. Without sources, the draft says so at the top. |
 | Which sources can it read? | Most public pages: blogs, news, docs and Wikipedia. It can't read paywalled, login-only or private pages, so paste their text instead. Up to 5 sources per article. |
 | Can I edit the draft? | Yes. Type anywhere, use the toolbar for headings, lists and links, or select text and ask the AI to rewrite, shorten, expand, simplify or change the tone. Every AI change waits for you to accept it. |
@@ -204,5 +205,5 @@ Example cards (taped notes) all use the real sample article: its outline, its ci
 
 ## 10. Legal stubs (short, honest)
 
-- **Privacy:** Drafts are saved only in your browser. To draft and edit, the text you send is processed by our server and an AI provider, and is not stored or logged by us. Stamping publishes a fingerprint, the title, the numbers shown and your wallet address on a public blockchain, permanently.
+- **Privacy:** Drafts are saved only in your browser. To draft and edit, the text you send goes through our server to Google's Gemini API. We don't store or log it. On Gemini's free tier, Google may use it to improve its products and human reviewers may read it, so don't paste anything confidential. Stamping publishes a fingerprint, the title, the numbers shown and your wallet address on a public blockchain, permanently.
 - **Terms:** InstantBlog is provided as-is. You're responsible for what you publish. AI can be wrong — check facts and respect the sources' copyright.

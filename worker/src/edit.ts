@@ -1,30 +1,13 @@
 // POST /blog/edit — one-shot AI edit; returns {text, missingCitations} or {titles}.
-import { Env } from "./http";
-import { client, FALLBACK_BETA, mapUpstream, refusal } from "./claude";
+import { Env, HttpError } from "./http";
+import { generateText } from "./gemini";
 import { EditInput, missingCitations } from "./limits";
 import { buildEditUser, editSystem } from "./prompts";
 
 export async function edit(env: Env, input: EditInput) {
-  let message;
-  try {
-    message = await client(env).beta.messages.create({
-      model: env.MODEL,
-      max_tokens: 4000,
-      output_config: { effort: "low" },
-      betas: [FALLBACK_BETA],
-      fallbacks: "default",
-      system: editSystem(input.brief.tone),
-      messages: [{ role: "user", content: buildEditUser(input) }],
-    });
-  } catch (err) {
-    throw mapUpstream(err);
-  }
-  if (message.stop_reason === "refusal") throw refusal();
-
-  const text = message.content
-    .map((b) => (b.type === "text" ? b.text : ""))
-    .join("")
-    .trim();
+  const res = await generateText(env, editSystem(input.brief.tone), buildEditUser(input), { maxOutputTokens: 4096 });
+  if (res.stop === "refusal") throw new HttpError(422, "refusal", "The AI couldn't write this one. Try rephrasing.");
+  const text = res.text.trim();
 
   if (input.action === "titles") {
     const titles = text

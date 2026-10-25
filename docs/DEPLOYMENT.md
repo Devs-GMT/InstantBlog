@@ -54,7 +54,7 @@ cd worker
 npm ci
 npx wrangler login
 npx wrangler kv namespace create RL           # paste the id into wrangler.toml
-npx wrangler secret put ANTHROPIC_API_KEY     # paste key; never commit it
+npx wrangler secret put GEMINI_API_KEY        # free key from https://aistudio.google.com/apikey; never commit it
 npx wrangler deploy
 npx wrangler tail                             # watch logs (should show no article text)
 ```
@@ -62,7 +62,7 @@ npx wrangler tail                             # watch logs (should show no artic
 - `ALLOWED_ORIGINS` in `wrangler.toml` = the production origin(s). Default: `https://instantblog.vercel.app,https://instantblog-*.vercel.app` (the `*` entry matches one label fragment, which covers Vercel preview URLs such as `instantblog-git-main-devs-gmt.vercel.app`). Update it if the Vercel project name or a custom domain differs. Remove `http://localhost:5173` for production.
 - Local dev: copy `.dev.vars.example` to `.dev.vars`. Add `MOCK_AI=1` to test the whole UI without an API key. **`.dev.vars` is gitignored; `MOCK_AI` must never be set in production.**
 - Optional: a custom route `api.instantblog.xyz/*` → Worker (Cloudflare DNS needed).
-- Set a **monthly spend limit** in the Anthropic Console as a hard stop on cost.
+- Gemini free tier: no billing needed. Its quota is per Google Cloud project; if you later enable billing, set a budget alert in Google Cloud.
 
 ---
 
@@ -99,7 +99,7 @@ npx serve out -l 5173
 - [ ] Footer shows the mainnet address, "✓ Verified on-chain", and the explorer link works
 - [ ] Worker `ALLOWED_ORIGINS` = the live origin(s) only; `MOCK_AI` unset
 - [ ] 2–3 demo articles stamped on mainnet (how-to, listicle, opinion)
-- [ ] `git grep -nI "sk-ant"` → nothing. `.dev.vars` not committed
+- [ ] `git grep -nI "AIza"` → nothing (Gemini keys start with AIza). `.dev.vars` not committed
 - [ ] Replace `web/public/botchain-logo.svg` (placeholder) with the official BOT Chain mark
 - [ ] README updated (address, live URL)
 

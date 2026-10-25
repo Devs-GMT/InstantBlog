@@ -32,8 +32,8 @@ Shared Cloudflare Worker (from Week 1) with three routes. TypeScript, deployed w
 | 413 | `too_large` | Body > 200 KB or input over cap after trimming |
 | 422 | `unreadable` | `/extract-url` couldn't read the page (with `reason`) |
 | 429 | `rate_limited` | Hourly limit hit |
-| 502 | `upstream` | Claude/API error |
-| 503 | `overloaded` | Upstream 529/overloaded |
+| 502 | `upstream` | Gemini API error |
+| 503 | `overloaded` | Gemini 429 (free quota) / 500 / 503 |
 | 500 | `internal` | Anything else |
 
 ---
@@ -49,13 +49,13 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ALLOWED_ORIGINS = "https://instantblog.vercel.app,https://instantblog-*.vercel.app"   # "*" = one label fragment (Vercel previews)
-MODEL = "claude-opus-5-5"
+MODEL = "gemini-2.5-flash"
 
 [[kv_namespaces]]
 binding = "RL"
 id = "<kv-id>"
 
-# secret (never commit): wrangler secret put ANTHROPIC_API_KEY
+# secret (never commit): wrangler secret put GEMINI_API_KEY   (free key: https://aistudio.google.com/apikey)
 ```
 
 ---
@@ -118,7 +118,7 @@ The total source text must fit in **~40,000 chars** (~10k tokens). If it's over,
 
 ```
 event: meta
-data: {"model":"claude-opus-5-5","sources":3}
+data: {"model":"gemini-2.5-flash","sources":3}
 
 event: delta
 data: {"t":"# Why small dApps win hackathons\n<!-- titles: … -->\n\n"}
@@ -142,58 +142,28 @@ Headers: `content-type: text/event-stream; charset=utf-8`, `cache-control: no-ca
 
 **Client:** `fetch` + `res.body.getReader()` + a small SSE line parser (EventSource can't POST). `AbortController` powers **[Stop]**. The Worker passes the abort upstream (`request.signal` → `stream.abort()`).
 
-### 4.4 Implementation sketch
+### 4.4 Implementation (`worker/src/draft.ts` + `worker/src/gemini.ts`)
 
-```ts
-// worker/src/draft.ts
-import Anthropic from "@anthropic-ai/sdk";
-import { DRAFT_SYSTEM, buildDraftUser } from "./prompts";
+Gemini REST, no SDK: `POST {GEMINI_BASE_URL}/models/{MODEL}:streamGenerateContent?alt=sse` with header `x-goog-api-key` and body
 
-export async function draft(req: Request, env: Env, body: DraftBody): Promise<Response> {
-  const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
-  const { readable, writable } = new TransformStream();
-  const w = writable.getWriter();
-  const enc = new TextEncoder();
-  const send = (event: string, data: unknown) =>
-    w.write(enc.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
-
-  (async () => {
-    try {
-      await send("meta", { model: env.MODEL, sources: body.sources.length });
-      const stream = client.beta.messages.stream({
-        model: env.MODEL,                      // "claude-opus-5-5"
-        max_tokens: 16000,
-        output_config: { effort: "medium" },
-        betas: ["server-side-fallback-2026-07-01"],
-        fallbacks: "default",                  // server-side refusal fallback
-        system: DRAFT_SYSTEM,
-        messages: [{ role: "user", content: buildDraftUser(body) }],
-      });
-      req.signal.addEventListener("abort", () => stream.abort());
-      for await (const ev of stream) {
-        if (ev.type === "content_block_delta" && ev.delta.type === "text_delta") {
-          await send("delta", { t: ev.delta.text });
-        }
-      }
-      const final = await stream.finalMessage();
-      const fallback = (final.usage.iterations ?? []).some((i: any) => i.type === "fallback_message");
-      await send("done", { stop: final.stop_reason, fallback, outputTokens: final.usage.output_tokens });
-    } catch (err) {
-      await send("error", mapError(err));    // never include request text
-    } finally {
-      await w.close();
-    }
-  })();
-
-  return new Response(readable, { headers: { ...sseHeaders, ...cors(req, env) } });
+```json
+{
+  "systemInstruction": { "parts": [{ "text": "<DRAFT_SYSTEM>" }] },
+  "contents": [{ "role": "user", "parts": [{ "text": "<brief + sources>" }] }],
+  "generationConfig": { "maxOutputTokens": 8192, "temperature": 0.7 }
 }
 ```
 
+Gemini answers with SSE lines `data: {"candidates":[{"content":{"parts":[{"text":"…"}]},"finishReason":"STOP"}],"usageMetadata":{…}}`. The Worker re-emits each text part as our own `delta` event, so the client protocol above doesn't depend on the provider.
+
 Notes:
 
-- On `claude-opus-5-5`, thinking is always adaptive and can't be disabled. Don't send `thinking: {type:"disabled"}` or `budget_tokens` (400). Thinking blocks stream with empty text by default, so the first `delta` may lag by a few seconds. That's why the UI shows "Reading your sources…" after `meta`.
-- **Always check `stop_reason === "refusal"`.** With `fallbacks: "default"` the API retries on a fallback model inside the same call. If it still refuses, the UI shows the "model declined" state.
-- Before writing any code, confirm the exact SDK typings for `fallbacks` / `betas` against the installed `@anthropic-ai/sdk` version. If a typing is missing, use a typed cast rather than dropping the feature.
+- **Thought parts are dropped.** Parts with `"thought": true` (model reasoning, if ever returned) never reach the article.
+- **Finish reasons:** `STOP` → `end_turn`; `MAX_TOKENS` → `max_tokens`; `SAFETY`, `RECITATION`, `BLOCKLIST`, `PROHIBITED_CONTENT`, `SPII` → `refusal`; `promptFeedback.blockReason` → `refusal`. The UI shows the "AI couldn't write this one" state for `refusal`.
+- **`maxOutputTokens` includes thinking tokens** on Gemini 2.5+ models, so it's set well above the ~2k-token article (8,192).
+- **Abort:** `request.signal` and a failed write to the client both abort the upstream fetch.
+- **Upstream errors:** 429 (free quota) → `overloaded` "The free AI quota is used up for the moment…"; 500/503 → `overloaded`; others → `upstream`. No request text in errors or logs.
+- **Local testing without a key:** set `GEMINI_BASE_URL` to a fake server that speaks the same wire format (used in development), or `MOCK_AI=1` for canned output.
 
 ---
 
@@ -223,7 +193,7 @@ Notes:
 { "titles": ["…", "…", "…"] }                     // action = titles
 ```
 
-Implementation: the non-streaming `client.beta.messages.create(...)` with `max_tokens: 4000`, `output_config: { effort: "low" }` and the same fallback beta. Read text blocks only. For `titles`, split the output into lines, strip numbering and quotes, and take 3.
+Implementation: non-streaming `POST …/models/{MODEL}:generateContent` with `maxOutputTokens: 4096`, temperature 0.4. Text parts only (thought parts dropped). For `titles`, split the output into lines, strip numbering and quotes, and take 3.
 
 Post-check (Worker): for actions with a selection, compute which `[n]` markers are in the selection but missing from the output and return them as `"missingCitations": [2]`. The UI warns with that list (PRD E-6).
 
@@ -259,14 +229,17 @@ export async function streamDraft(payload, { onMeta, onDelta, onDone, onError, s
 
 ## 7. LLM configuration
 
-| Route | Model | Effort | max_tokens | Stream |
-|---|---|---|---|---|
-| draft | `claude-opus-5-5` | `medium` | 16,000 | yes |
-| edit (all actions) | `claude-opus-5-5` | `low` | 4,000 | no |
+Provider: **Google Gemini API** (Google AI Studio key, free tier). Model from the `MODEL` var, default `gemini-2.5-flash`.
 
-- Pricing (Oct 2026): $4 / MTok in, $20 / MTok out. A typical Medium draft (~10k in + ~2k out incl. thinking) costs ≈ $0.08. 10 drafts per IP per hour caps abuse at about $0.80 per IP per hour. Also set a **monthly spend limit** in the Anthropic Console.
-- The prompts are static strings, which keeps the system prompt cacheable. Prompt caching is optional for the MVP (the system prompt is below the minimum cacheable size on its own).
-- The model id lives in the `MODEL` var, so it can be changed without a code edit.
+| Route | Endpoint | maxOutputTokens | Temperature | Stream |
+|---|---|---|---|---|
+| draft | `:streamGenerateContent?alt=sse` | 8,192 | 0.7 | yes |
+| edit (all actions) | `:generateContent` | 4,096 | 0.4 | no |
+
+- **Free tier:** Flash / Flash-Lite models only; Pro models are paid. Limits are per project (requests per minute and per day) and Google changes them; check the live quota in AI Studio. Our own per-IP limits (10 drafts, 60 edits per hour) sit in front of that.
+- **Data use on the free tier:** Google's terms allow it to use free-tier inputs and outputs to improve its products, and human reviewers may read them. The Privacy page and FAQ say so. Don't put anything confidential in a brief while on the free tier; switching the AI Studio project to a paid plan changes this.
+- **Changing the model:** `MODEL` is a plain var in `wrangler.toml`, so a newer Flash model is a config change. List the models your key can use with `curl -H "x-goog-api-key: $KEY" https://generativelanguage.googleapis.com/v1beta/models`.
+- The prompts are static strings (`worker/src/prompts.ts`) and provider-neutral.
 
 ---
 
