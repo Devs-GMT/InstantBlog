@@ -30,7 +30,7 @@ const USE_TESTNET = process.env.NEXT_PUBLIC_USE_TESTNET === "1";
 
 const CONTRACTS = {
   mainnet: process.env.NEXT_PUBLIC_CONTRACT_MAINNET || ZERO, // TODO mainnet address after deploy
-  testnet: process.env.NEXT_PUBLIC_CONTRACT_TESTNET || ZERO, // TODO testnet address after deploy
+  testnet: process.env.NEXT_PUBLIC_CONTRACT_TESTNET || "0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a", // BOT Chain testnet 968
 };
 
 const CHAIN = USE_TESTNET ? TESTNET : MAINNET;

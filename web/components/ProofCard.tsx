@@ -18,7 +18,7 @@ export function ProofCard({ proof, txHash, versions, onClose }: { proof: Proof; 
         </button>
       )}
       <Receipt
-        title={`Stamped #${proof.id}`}
+        title={onClose ? `Stamped #${proof.id}` : "Proof of authorship"}
         badge={onClose ? undefined : `#${proof.id}`}
         rows={[
           { label: "Title", value: proof.title, title: proof.title },

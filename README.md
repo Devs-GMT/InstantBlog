@@ -4,6 +4,7 @@
 
 - 🌐 **Live:** https://instantblog.xyz  <!-- TODO -->
 - 📜 **Contract (BOT Chain mainnet, chain ID 677):** `0x0000000000000000000000000000000000000000` → [view on scan.botchain.ai](https://scan.botchain.ai/address/0x0000000000000000000000000000000000000000)  <!-- TODO -->
+- 🧪 **Contract (BOT Chain testnet, chain ID 968):** `0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a` → [view on scan.bohr.life](https://scan.bohr.life/address/0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a)
 
 ---
 
