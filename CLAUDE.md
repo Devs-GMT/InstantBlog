@@ -9,7 +9,7 @@ Read the relevant doc before building a part; the docs are the source of truth.
 - Requirements + IDs (W-, B-, D-, E-, X-, P-, V-, M-): `docs/PRD.md`
 - Phase order, checkpoints, cut lines: `docs/BUILD_PLAN.md`
 - Repo layout, libs, data model, fingerprint, config: `docs/ARCHITECTURE.md`
-- Contract + ABI + Remix settings: `docs/CONTRACT_SPEC.md`
+- Contract + ABI + compiler settings: `docs/CONTRACT_SPEC.md` (deploy: `docs/DEPLOYMENT.md` §2, Foundry)
 - Worker routes, SSE protocol, SSRF guard, LLM config: `docs/WORKER_API.md`
 - Prompts: `docs/AI_PROMPTS.md` · UI tokens/layout: `docs/DESIGN_SYSTEM.md` · All UI strings: `docs/CONTENT_COPY.md`
 - Tests + fingerprint vectors: `docs/TEST_PLAN.md` · Deploy: `docs/DEPLOYMENT.md`
@@ -20,7 +20,7 @@ When code and a doc disagree, ask; if the doc is wrong, update the doc in the sa
 
 - `web/` — **Next.js 16 (App Router) static export** (`output: "export"`, `trailingSlash: true`) hosted on GitHub Pages. React 19, TypeScript, Tiptap v3, ethers v6, marked, turndown, DOMPurify, html2pdf.js, docx — all from npm at the exact versions in `web/package.json`. Plain CSS with design tokens (no Tailwind).
 - `worker/` — Cloudflare Worker, TypeScript, `@anthropic-ai/sdk`, `@mozilla/readability` + `linkedom`, KV binding `RL`.
-- `contracts/InstantBlog.sol` — Solidity ^0.8.20, compile 0.8.24, EVM `paris`, optimizer 200.
+- `contracts/` — Foundry project (`src/InstantBlog.sol`), Solidity ^0.8.20, compile 0.8.24, EVM `paris`, optimizer 200.
 - `tests/` — Node test runner; fingerprint vectors run against `web/lib/fingerprint.ts`.
 
 ## Commands
@@ -68,5 +68,5 @@ node --test
 
 - `npm run typecheck` + `npm run build` in `web/`; `node --test` in `tests/`.
 - Run the TEST_PLAN case IDs for the area you touched; for UI changes check 375 px and 1280 px.
-- Contract changes: run the CONTRACT_SPEC §8 checklist on testnet (chain 968) before mainnet (677).
+- Contract changes: `forge test` in `contracts/`, then deploy to testnet (968) before mainnet (677).
 - Worker changes: run the curl suite in WORKER_API §8, including the SSRF URLs.

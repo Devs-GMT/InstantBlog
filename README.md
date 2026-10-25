@@ -22,7 +22,7 @@
 
 | Path | What |
 |---|---|
-| `contracts/InstantBlog.sol` | The smart contract. No tokens, no payments, no admin. |
+| `contracts/` | Foundry project: `src/InstantBlog.sol` (no tokens, no payments, no admin), tests and deploy script |
 | `web/` | The website — a Next.js static export on GitHub Pages: home, writer, verify, my posts |
 | `worker/` | Cloudflare Worker: reads source links and talks to the AI. The API key is a Worker secret, **never in this repo**. |
 | `tests/` | Fingerprint test vectors (the hash must never change after launch) |
@@ -46,7 +46,7 @@ cd web && npm ci && npm run dev                         # http://localhost:5173
 cd tests && npm ci && node --test
 ```
 
-To go live: deploy `contracts/InstantBlog.sol` with Remix (EVM version *paris*), deploy the Worker with `npx wrangler deploy`, set the contract address and Worker URL as GitHub Actions variables, and push — the Pages workflow builds and publishes `web/`. Full steps: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+To go live: deploy the contract with Foundry (`forge script script/Deploy.s.sol --broadcast`, see DEPLOYMENT), deploy the Worker with `npx wrangler deploy`, set the contract address and Worker URL as GitHub Actions variables, and push — the Pages workflow builds and publishes `web/`. Full steps: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Privacy
 

@@ -38,7 +38,7 @@ Covers the system overview, repo layout, front-end modules, data model, fingerpr
 ```
 InstantBlog/
 ├─ README.md · CLAUDE.md · .gitignore
-├─ contracts/InstantBlog.sol            # see CONTRACT_SPEC.md
+├─ contracts/                           # Foundry: src/InstantBlog.sol · test/ · script/Deploy.s.sol (CONTRACT_SPEC.md)
 ├─ docs/                                # this documentation set
 ├─ tests/fingerprint.test.mjs           # locks fingerprint v1 (runs against web/lib/fingerprint.ts)
 ├─ worker/                              # Cloudflare Worker (WORKER_API.md)

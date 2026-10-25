@@ -17,15 +17,33 @@ The order matters: **testnet contract → Worker → site preview → mainnet co
 
 ---
 
-## 2. Contract (Remix)
+## 2. Contract (Foundry)
 
-1. Open remix.ethereum.org → new file `InstantBlog.sol` → paste `contracts/InstantBlog.sol`.
-2. Solidity Compiler: **0.8.24**, *Advanced* → EVM version **paris**, optimizer **on / 200**. Compile.
-3. Deploy & Run: *Injected Provider – MetaMask*, check that the chain ID shown is 968 → **Deploy** → confirm.
-4. Run the [testnet checklist](CONTRACT_SPEC.md#8-manual-test-checklist-testnet-968). (The same checks already pass on a local Hardhat chain.)
-5. Switch MetaMask to **677** → Deploy again → copy the **address**.
-6. scan.botchain.ai → contract → **Verify & Publish** → Solidity single file, 0.8.24, MIT, optimizer yes/200, EVM paris → paste the source.
-7. Put the address in two places: the GitHub Actions variable `NEXT_PUBLIC_CONTRACT_MAINNET` (or the default in `web/lib/config.ts`) and `README.md`.
+`contracts/` is a Foundry project (`foundry.toml`: solc 0.8.24, EVM **paris**, optimizer 200; RPC aliases `botchain` and `botchain_testnet`). `forge-std` is a git submodule — after cloning run `git submodule update --init`.
+
+```bash
+cd contracts
+forge test                                   # 7 tests incl. fuzz — mirrors CONTRACT_SPEC §8
+
+# Burner deployer: key lives ONLY in contracts/.env (gitignored), never printed or committed
+#   DEPLOYER_ADDRESS=0x…   PRIVATE_KEY=0x…
+cast balance $DEPLOYER_ADDRESS --rpc-url botchain_testnet --ether
+
+# Dry run (no tx) → shows gas + BOT needed (~836k gas ≈ 0.017 BOT at 20 gwei)
+forge script script/Deploy.s.sol --rpc-url botchain_testnet
+
+# Deploy (forge loads PRIVATE_KEY from contracts/.env)
+forge script script/Deploy.s.sol --rpc-url botchain_testnet --broadcast    # testnet 968 first
+forge script script/Deploy.s.sol --rpc-url botchain --broadcast            # then mainnet 677
+```
+
+1. Fund the burner address with a little BOT on the target network (≈ 0.05 BOT covers the deploy + a few demo stamps).
+2. Deploy to testnet, then smoke-test with `cast`: `cast send <addr> "stamp(bytes32,string,uint32,uint8,uint8)" 0x…01 "Hello" 100 0 0 --rpc-url botchain_testnet --private-key $PRIVATE_KEY`, then `cast call <addr> "total()(uint256)"`.
+3. Deploy to mainnet. The address is printed and saved in `broadcast/Deploy.s.sol/677/run-latest.json` (safe to commit — public tx data).
+4. Verify the source on scan.botchain.ai → contract → **Verify & Publish** → Solidity single file, 0.8.24, MIT, optimizer yes/200, EVM paris (or `forge verify-contract` if the explorer exposes a Blockscout/Etherscan-compatible API).
+5. Put the address in the GitHub Actions variable `NEXT_PUBLIC_CONTRACT_MAINNET` (testnet: `NEXT_PUBLIC_CONTRACT_TESTNET`) and in `README.md`.
+
+> The burner wallet is only a deployer. It has no special rights in the contract (there is no owner/admin), so it can be discarded after deploying.
 
 ---
 
