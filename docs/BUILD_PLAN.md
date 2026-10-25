@@ -13,7 +13,7 @@ A time-boxed plan, with each task tied to its PRD requirement IDs. Every phase e
 | 0.0 | Create the repo and the folders from [ARCHITECTURE § 2](ARCHITECTURE.md#2-repository-layout). Smoke-test the CDN URLs in [ARCHITECTURE § 3](ARCHITECTURE.md#3-front-end-libraries-cdn-pinned) | All libs load in a blank page with no console errors |
 | 0.1 | MetaMask: add BOT Chain testnet (968) and mainnet (677). Get testnet BOT from the faucet and a little mainnet BOT | Balances on both |
 | 0.2 | Cloudflare: `wrangler login`, create the KV namespace, `wrangler secret put ANTHROPIC_API_KEY`. Set a monthly spend cap in the Anthropic Console | `wrangler whoami` OK |
-| 0.3 | Register / point the custom domain (DNS takes time) | CNAME record created |
+| 0.3 | Create the Vercel project from the GitHub repo (Root Directory `web`) | Preview URL builds |
 
 ---
 
@@ -110,7 +110,7 @@ A time-boxed plan, with each task tied to its PRD requirement IDs. Every phase e
 |---|---|---|
 | 7.1 | Deploy `InstantBlog.sol` to **mainnet 677** with the same settings. Verify the source on scan.botchain.ai | The contract page shows verified code |
 | 7.2 | `config.js` → `CONTRACT_ADDRESS`, `DEPLOY_BLOCK`, `USE_TESTNET=false`. Update the README | One constant changed |
-| 7.3 | `scripts/build-pages.sh` → push → GitHub Pages + CNAME + "Enforce HTTPS". Worker `ALLOWED_ORIGINS` includes the domain | Live URL loads `/write` directly (200) |
+| 7.3 | Set Vercel env vars → push to `main` → production deploy. Worker `ALLOWED_ORIGINS` includes the Vercel domain | Live URL loads `/write/` directly (200) |
 | 7.4 | Stamp **2–3 demo articles** on mainnet (how-to, listicle, opinion) | The footer counter shows ≥ 3 |
 
 ---

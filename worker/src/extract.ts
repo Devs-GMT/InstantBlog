@@ -9,7 +9,7 @@ const MAX_HOPS = 3;
 const TIMEOUT_MS = 5000;
 const MAX_WORDS = 3000;
 const MIN_WORDS = 80;
-const UA = "InstantBlogBot/1.0 (+https://instantblog.xyz)";
+const UA = "InstantBlogBot/1.0 (+https://instantblog.vercel.app)";
 
 type Reason = "blocked_address" | "bad_url" | "timeout" | "too_large" | "not_html" | "http_error" | "empty";
 

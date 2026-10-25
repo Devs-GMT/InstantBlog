@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-// Static export for GitHub Pages: every route becomes <route>/index.html.
+// Static export (served by Vercel): every route becomes <route>/index.html. No server features needed.
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,

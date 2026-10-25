@@ -7,7 +7,7 @@ Covers the system overview, repo layout, front-end modules, data model, fingerpr
 ## 1. System overview
 
 ```
-              ┌──────────────── Browser — Next.js static export on GitHub Pages ────────────────┐
+              ┌──────────────── Browser — Next.js static export on Vercel ─────────────────────┐
               │  /  (home)   /write/   /verify/   /posts/   /about/ /guides/ /privacy/ /terms/   │
               │                                                                                 │
               │  Tiptap v3 editor · brief · exports (Clipboard / html2pdf / docx) · SHA-256      │
@@ -57,8 +57,9 @@ InstantBlog/
 │     └─ mock.ts       dev-only canned AI (MOCK_AI=1)
 └─ web/                                 # Next.js 16 App Router, output: "export"
    ├─ next.config.ts · package.json · tsconfig.json
-   ├─ scripts/flatten-rsc.mjs           # post-export: RSC payload aliases for GitHub Pages
-   ├─ public/  CNAME · .nojekyll · favicon.svg · logo-mark.svg · botchain-logo.svg
+   ├─ scripts/flatten-rsc.mjs           # post-export: RSC payload aliases for static hosting
+   ├─ vercel.json                        # framework nextjs, npm ci, npm run build
+   ├─ public/  favicon.svg · logo-mark.svg · botchain-logo.svg
    ├─ app/
    │  ├─ layout.tsx                     # fonts (next/font), metadata, <Providers>
    │  ├─ page.tsx                       # home: 8 sections + footer
@@ -173,7 +174,7 @@ All constants live here. Build-time overrides (`NEXT_PUBLIC_*`, inlined by Next)
 | `NEXT_PUBLIC_CONTRACT_TESTNET` | zero address | Testnet contract |
 | `NEXT_PUBLIC_USE_TESTNET` | unset | `1` → chain 968 + testnet contract |
 | `NEXT_PUBLIC_WORKER_URL` | `https://instantblog-api.YOUR-ACCOUNT.workers.dev` | Worker base URL (dev default `http://127.0.0.1:8787`) |
-| `NEXT_PUBLIC_SITE_URL` | `https://instantblog.xyz` | Used for proof links |
+| `NEXT_PUBLIC_SITE_URL` | Vercel production domain (`NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL`), else `https://instantblog.vercel.app` | Used for proof links |
 
 While the contract address is the zero address, `contractConfigured()` is false: the footer shows "Deploying soon" and Stamp explains that stamping isn't live yet.
 
@@ -183,7 +184,7 @@ Chain params for `wallet_addEthereumChain`: mainnet `0x2a5` (677), RPC `https://
 
 ## 7. Routing (static hosting)
 
-- `next.config.ts`: `output: "export"`, `trailingSlash: true`, `images.unoptimized` → every route is `<route>/index.html`, so deep links return 200 on GitHub Pages. Internal links use trailing slashes (`/write/`).
+- `next.config.ts`: `output: "export"`, `trailingSlash: true`, `images.unoptimized` → every route is `<route>/index.html`, so deep links return 200 on any static host (Vercel serves the export). Internal links use trailing slashes (`/write/`).
 - `scripts/flatten-rsc.mjs` runs after `next build`: Next 16 writes RSC payloads as `<route>/__next.<seg>/__PAGE__.txt` while client navigation requests `<route>/__next.<seg>.__PAGE__.txt`; the script writes the dot-joined aliases so client-side navigation doesn't 404.
 - Query strings: `/verify/?proof=12` (proof card), `/write/?new=1` (fresh draft), `/write/?id=<draftId>` (open a draft).
 - No API routes, middleware, server actions or image optimisation — static export only.

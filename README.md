@@ -2,7 +2,7 @@
 
 **Write a sourced blog post or article in minutes.** Pick a topic, a tone and 3–5 key points, and add your source links. The AI drafts the post with citations and helps you polish it. You can copy it or download it as PDF or Word, then stamp proof that you wrote it on **BOT Chain**.
 
-- 🌐 **Live:** https://instantblog.xyz  <!-- TODO -->
+- 🌐 **Live:** https://instantblog.vercel.app  <!-- TODO: confirm Vercel domain -->
 - 📜 **Contract (BOT Chain mainnet, chain ID 677):** `0x0000000000000000000000000000000000000000` → [view on scan.botchain.ai](https://scan.botchain.ai/address/0x0000000000000000000000000000000000000000)  <!-- TODO -->
 - 🧪 **Contract (BOT Chain testnet, chain ID 968):** `0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a` → [view on scan.bohr.life](https://scan.bohr.life/address/0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a)
 
@@ -24,7 +24,7 @@
 | Path | What |
 |---|---|
 | `contracts/` | Foundry project: `src/InstantBlog.sol` (no tokens, no payments, no admin), tests and deploy script |
-| `web/` | The website — a Next.js static export on GitHub Pages: home, writer, verify, my posts |
+| `web/` | The website — Next.js (static export) deployed on Vercel from `main`: home, writer, verify, my posts |
 | `worker/` | Cloudflare Worker: reads source links and talks to the AI. The API key is a Worker secret, **never in this repo**. |
 | `tests/` | Fingerprint test vectors (the hash must never change after launch) |
 | `docs/` | Product and build documentation ([start here](docs/README.md)) |
@@ -47,7 +47,7 @@ cd web && npm ci && npm run dev                         # http://localhost:5173
 cd tests && npm ci && node --test
 ```
 
-To go live: deploy the contract with Foundry (`forge script script/Deploy.s.sol --broadcast`, see DEPLOYMENT), deploy the Worker with `npx wrangler deploy`, set the contract address and Worker URL as GitHub Actions variables, and push — the Pages workflow builds and publishes `web/`. Full steps: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+To go live: deploy the contract with Foundry (`forge script script/Deploy.s.sol --broadcast`, see DEPLOYMENT), deploy the Worker with `npx wrangler deploy`, import the repo in Vercel with Root Directory `web`, set the contract address and Worker URL as env vars, and push to `main`. Full steps: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Privacy
 

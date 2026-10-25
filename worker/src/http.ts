@@ -35,11 +35,21 @@ export class HttpError extends Error {
   }
 }
 
+/**
+ * ALLOWED_ORIGINS is a comma-separated list of exact origins. An entry may contain "*" to match
+ * one DNS-label fragment (no dots), e.g. "https://instantblog-*.vercel.app" for Vercel previews.
+ */
 export function allowedOrigin(req: Request, env: Env): string | null {
   const origin = req.headers.get("origin");
   if (!origin) return null;
   const list = env.ALLOWED_ORIGINS.split(",").map((s) => s.trim()).filter(Boolean);
-  return list.includes(origin) ? origin : null;
+  return list.some((p) => originMatches(p, origin)) ? origin : null;
+}
+
+export function originMatches(pattern: string, origin: string): boolean {
+  if (!pattern.includes("*")) return pattern === origin;
+  const re = new RegExp("^" + pattern.split("*").map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[a-z0-9-]+") + "$", "i");
+  return re.test(origin);
 }
 
 export function corsHeaders(origin: string | null): Record<string, string> {

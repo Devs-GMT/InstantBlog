@@ -18,7 +18,7 @@ When code and a doc disagree, ask; if the doc is wrong, update the doc in the sa
 
 ## Stack
 
-- `web/` — **Next.js 16 (App Router) static export** (`output: "export"`, `trailingSlash: true`) hosted on GitHub Pages. React 19, TypeScript, Tiptap v3, ethers v6, marked, turndown, DOMPurify, html2pdf.js, docx — all from npm at the exact versions in `web/package.json`. Plain CSS with design tokens (no Tailwind).
+- `web/` — **Next.js 16 (App Router) static export** (`output: "export"`, `trailingSlash: true`) deployed on **Vercel** from `origin/main` (Root Directory `web`). React 19, TypeScript, Tiptap v3, ethers v6, marked, turndown, DOMPurify, html2pdf.js, docx — all from npm at the exact versions in `web/package.json`. Plain CSS with design tokens (no Tailwind).
 - `worker/` — Cloudflare Worker, TypeScript, `@anthropic-ai/sdk`, `@mozilla/readability` + `linkedom`, KV binding `RL`.
 - `contracts/` — Foundry project (`src/InstantBlog.sol`), Solidity ^0.8.20, compile 0.8.24, EVM `paris`, optimizer 200.
 - `tests/` — Node test runner; fingerprint vectors run against `web/lib/fingerprint.ts`.

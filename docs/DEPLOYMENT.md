@@ -41,7 +41,7 @@ forge script script/Deploy.s.sol --rpc-url botchain --broadcast            # the
 2. Deploy to testnet, then smoke-test with `cast`: `cast send <addr> "stamp(bytes32,string,uint32,uint8,uint8)" 0x…01 "Hello" 100 0 0 --rpc-url botchain_testnet --private-key $PRIVATE_KEY`, then `cast call <addr> "total()(uint256)"`.
 3. Deploy to mainnet. The address is printed and saved in `broadcast/Deploy.s.sol/677/run-latest.json` (safe to commit — public tx data).
 4. Verify the source on scan.botchain.ai → contract → **Verify & Publish** → Solidity single file, 0.8.24, MIT, optimizer yes/200, EVM paris (or `forge verify-contract` if the explorer exposes a Blockscout/Etherscan-compatible API).
-5. Put the address in the GitHub Actions variable `NEXT_PUBLIC_CONTRACT_MAINNET` (testnet: `NEXT_PUBLIC_CONTRACT_TESTNET`) and in `README.md`.
+5. Put the address in the Vercel env var `NEXT_PUBLIC_CONTRACT_MAINNET` (testnet: `NEXT_PUBLIC_CONTRACT_TESTNET`) and in `README.md`.
 
 > The burner wallet is only a deployer. It has no special rights in the contract (there is no owner/admin), so it can be discarded after deploying.
 
@@ -59,26 +59,29 @@ npx wrangler deploy
 npx wrangler tail                             # watch logs (should show no article text)
 ```
 
-- `ALLOWED_ORIGINS` in `wrangler.toml` = the exact production origins (custom domain and/or `https://<org>.github.io`). Remove `http://localhost:5173` for production.
+- `ALLOWED_ORIGINS` in `wrangler.toml` = the production origin(s). Default: `https://instantblog.vercel.app,https://instantblog-*.vercel.app` (the `*` entry matches one label fragment, which covers Vercel preview URLs such as `instantblog-git-main-devs-gmt.vercel.app`). Update it if the Vercel project name or a custom domain differs. Remove `http://localhost:5173` for production.
 - Local dev: copy `.dev.vars.example` to `.dev.vars`. Add `MOCK_AI=1` to test the whole UI without an API key. **`.dev.vars` is gitignored; `MOCK_AI` must never be set in production.**
 - Optional: a custom route `api.instantblog.xyz/*` → Worker (Cloudflare DNS needed).
 - Set a **monthly spend limit** in the Anthropic Console as a hard stop on cost.
 
 ---
 
-## 4. Site (Next.js static export → GitHub Pages)
+## 4. Site (Next.js → Vercel, from `origin/main`)
 
-The workflow `.github/workflows/pages.yml` builds `web/` (`npm ci && npm run build` → `web/out`) and deploys it on every push to `main` that touches `web/`.
+The web app deploys to **Vercel** from the GitHub repo `Devs-GMT/InstantBlog`, branch `main`. Every push to `main` makes a production deployment; other branches/PRs get preview URLs. `web/vercel.json` pins the framework (`nextjs`), `npm ci` and `npm run build` (which includes the `flatten-rsc` post-step for the static export).
 
-1. Repo → Settings → Pages → Source: **GitHub Actions**.
-2. Repo → Settings → Secrets and variables → Actions → **Variables**:
+1. vercel.com → **Add New… → Project → Import Git Repository** → `Devs-GMT/InstantBlog`.
+2. **Root Directory: `web`** (important — the repo is a monorepo). Framework preset: Next.js (auto). Production branch: `main`.
+3. **Environment Variables** (Production, and Preview if wanted):
    - `NEXT_PUBLIC_WORKER_URL` = deployed Worker URL
-   - `NEXT_PUBLIC_SITE_URL` = `https://instantblog.xyz` (or the github.io URL)
-   - `NEXT_PUBLIC_CONTRACT_MAINNET` = mainnet address (and `NEXT_PUBLIC_CONTRACT_TESTNET` / `NEXT_PUBLIC_USE_TESTNET=1` for a testnet preview)
-3. Custom domain: `web/public/CNAME` contains `instantblog.xyz`. At the DNS provider, an apex domain gets A records to `185.199.108.153`, `185.199.109.153`, `185.199.110.153` and `185.199.111.153`. A `www` subdomain gets a CNAME to `<org>.github.io`.
-4. Settings → Pages → Custom domain → wait for the DNS check → tick **Enforce HTTPS** (the clipboard API needs HTTPS).
-5. **Without a custom domain** (project URL `https://<org>.github.io/InstantBlog/`), set `basePath: "/InstantBlog"` in `next.config.ts` and remove `public/CNAME`, otherwise assets 404.
-6. Check that `/write/` and `/verify/?proof=1` load directly (200) and the console shows no CORS or 404 errors.
+   - `NEXT_PUBLIC_CONTRACT_MAINNET` = mainnet address
+   - Optional: `NEXT_PUBLIC_SITE_URL` (defaults to the Vercel production domain via `NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL`), `NEXT_PUBLIC_USE_TESTNET=1` (+ `NEXT_PUBLIC_CONTRACT_TESTNET`) for a testnet preview — the testnet address `0x4625…F72a` is already the default.
+4. Deploy. `NEXT_PUBLIC_*` values are inlined at build time, so **redeploy after changing them**.
+5. Make sure the Worker's `ALLOWED_ORIGINS` contains the production domain (and the preview pattern) — see §3.
+6. Custom domain (optional): Vercel → Project → Settings → Domains → add the domain and follow the DNS instructions; then add that origin to `ALLOWED_ORIGINS`.
+7. Check that `/write/` and `/verify/?proof=1` load directly (200) and the console shows no CORS or 404 errors.
+
+CLI alternative (needs `vercel login`): `cd web && npx vercel link` (pick the project) → `npx vercel --prod`.
 
 Local production preview:
 
@@ -92,7 +95,7 @@ npx serve out -l 5173
 
 ## 5. Go-live checklist
 
-- [ ] Actions variables set: mainnet contract, Worker URL, site URL (`NEXT_PUBLIC_USE_TESTNET` unset)
+- [ ] Vercel env vars set: mainnet contract, Worker URL (`NEXT_PUBLIC_USE_TESTNET` unset in Production) — then redeploy
 - [ ] Footer shows the mainnet address, "✓ Verified on-chain", and the explorer link works
 - [ ] Worker `ALLOWED_ORIGINS` = the live origin(s) only; `MOCK_AI` unset
 - [ ] 2–3 demo articles stamped on mainnet (how-to, listicle, opinion)
@@ -102,6 +105,6 @@ npx serve out -l 5173
 
 ## 6. Rollback
 
-- **Front end:** revert the commit → Pages redeploys in about 1 min.
+- **Front end:** Vercel → Deployments → pick the previous production deployment → **Promote to Production** (instant), or revert the commit on `main`.
 - **Worker:** `npx wrangler rollback`.
 - **Contract:** it's immutable. If it's broken, deploy a new one and switch the address variable (old proofs stay readable at the old address, so keep it listed in the README).

@@ -3,7 +3,7 @@
 ## 1. Checklist
 
 - [ ] **Mainnet contract address:** `0x…` → https://scan.botchain.ai/address/0x… (verified source)
-- [ ] **Live website:** https://instantblog.xyz (drafting + exports working on the live domain)
+- [ ] **Live website:** https://instantblog.vercel.app (drafting + exports working on the live domain)
 - [ ] **GitHub repo:** `InstantBlog.sol` + plain-English README. **No API key committed** (`git grep -nI "sk-ant"` is empty)
 - [ ] **X post** with the demo clip, tagging **@BOTChain_ai**
 - [ ] Demo articles stamped on mainnet: #1 how-to, #2 listicle, #3 opinion
@@ -33,12 +33,12 @@ Record at 1440×900, cursor highlight on, no API keys or private tabs visible.
 >
 > Then stamp proof you wrote it on @BOTChain_ai — only the fingerprint goes on-chain.
 >
-> 🔗 instantblog.xyz
+> 🔗 instantblog.vercel.app
 > 📜 scan.botchain.ai/address/0x…
 >
 > #BuildOnBOTChain
 
-(Alt, shorter) "Topic + tone + 3 points + your sources → a sourced article in seconds, exported to Word/PDF and stamped on @BOTChain_ai. Built in a week ⚡ instantblog.xyz"
+(Alt, shorter) "Topic + tone + 3 points + your sources → a sourced article in seconds, exported to Word/PDF and stamped on @BOTChain_ai. Built in a week ⚡ instantblog.vercel.app"
 
 ## 4. One-paragraph description (for forms)
 

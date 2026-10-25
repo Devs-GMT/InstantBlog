@@ -48,7 +48,7 @@ compatibility_date = "2026-10-01"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-ALLOWED_ORIGINS = "https://instantblog.xyz,https://<user>.github.io"
+ALLOWED_ORIGINS = "https://instantblog.vercel.app,https://instantblog-*.vercel.app"   # "*" = one label fragment (Vercel previews)
 MODEL = "claude-opus-5-5"
 
 [[kv_namespaces]]
@@ -79,7 +79,7 @@ id = "<kv-id>"
 1. `new URL(url)`. Protocol must be `http:` or `https:`. Port must be empty, `80` or `443`. No `user:pass@`.
 2. Hostname is not `localhost`, does not end with `.localhost`, `.local`, `.internal`, `.lan` or `.home.arpa`, and is not a bare single-label name.
 3. If the hostname is an IP literal (v4, v6 or `[…]`), reject `0.0.0.0/8`, `10/8`, `100.64/10`, `127/8`, `169.254/16`, `172.16/12`, `192.0.0/24`, `192.168/16`, `198.18/15`, `224/4` and up, `::`, `::1`, `fc00::/7`, `fe80::/10` and `::ffff:<blocked v4>`. Also reject decimal, hex and octal IPv4 forms (e.g. `2130706433`, `0x7f.1`). Normalise with `new URL` first, then test.
-4. `fetch(url, { redirect: "manual", signal: AbortSignal.timeout(5000), headers: { "user-agent": "InstantBlogBot/1.0 (+https://instantblog.xyz)", accept: "text/html,text/plain" } })`. Never forward client cookies or headers.
+4. `fetch(url, { redirect: "manual", signal: AbortSignal.timeout(5000), headers: { "user-agent": "InstantBlogBot/1.0 (+https://instantblog.vercel.app)", accept: "text/html,text/plain" } })`. Never forward client cookies or headers.
 5. On 3xx, read `Location`, resolve it against the current URL, and go back to step 1. Max **3 hops**.
 6. `content-type` must start with `text/html` or `text/plain`.
 7. Read the body through a reader and abort after **2 MB**.

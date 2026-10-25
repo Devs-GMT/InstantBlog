@@ -36,9 +36,11 @@ const CONTRACTS = {
 const CHAIN = USE_TESTNET ? TESTNET : MAINNET;
 const EXPLORER = CHAIN.blockExplorerUrls[0];
 const DEV = process.env.NODE_ENV === "development";
+// Vercel exposes the production domain to Next builds automatically (system env var).
+const VERCEL_URL = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
 
 export const CONFIG = {
-  SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || (DEV ? "http://localhost:5173" : "https://instantblog.xyz"),
+  SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || (DEV ? "http://localhost:5173" : VERCEL_URL ? `https://${VERCEL_URL}` : "https://instantblog.vercel.app"),
   WORKER_URL: process.env.NEXT_PUBLIC_WORKER_URL || (DEV ? "http://127.0.0.1:8787" : "https://instantblog-api.YOUR-ACCOUNT.workers.dev"),
   USE_TESTNET,
   CHAIN,

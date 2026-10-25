@@ -78,7 +78,7 @@ See [§ 12 Out of scope](#12-out-of-scope-mvp).
 - [ ] **Exports:** Copy (rich text, Markdown, plain text), Download PDF, Download .docx.
 - [ ] **Home page with 8 sections** (§ 8).
 - [ ] **Mainnet deployment.** Contract is on BOT Chain mainnet, its address is in the README and the footer, and it shows on scan.botchain.ai.
-- [ ] **Live website.** Public URL (GitHub Pages + custom domain) and a live Worker. Works on mobile and desktop.
+- [ ] **Live website.** Public URL (Vercel, deployed from `main`) and a live Worker. Works on mobile and desktop.
 - [ ] **BOT Chain footer.** Clickable BOT Chain logo → botchain.ai, and **View on explorer** → the mainnet contract (§ 11).
 
 ---
@@ -347,7 +347,7 @@ Publishing directly to WordPress or Medium, image generation, SEO scoring, plagi
 | 1 | **What gets hashed** | The brief says "SHA-256 of normalised Markdown". We hash the **canonical text**: Markdown → rendered → visible text, with list/heading markers and the AI footer line stripped, NFC-normalised and whitespace collapsed ([ARCHITECTURE § 5](ARCHITECTURE.md#5-fingerprint-canonicalisation)). | `/verify` promises "paste *any* copy". A rich-text copy pasted back as plain text has no `##` or `**`, so a raw-Markdown hash would never match it. The canonical text matches Markdown and plain-text copies of the same article. |
 | 2 | **Proof ids** | 1-based (`#1` is the first stamp). The `proofs` array is private. Use `getProof(id)`. | "Stamped #0" reads badly, and a public 0-indexed getter next to 1-based ids invites off-by-one bugs. |
 | 3 | **Editor** | Tiptap v2 (ESM via esm.sh, pinned) + BubbleMenu. Quill 2 is the fallback if the time box is blown. | Tiptap gives the selection bubble, transactions (one-step undo) and decorations for citation hover. |
-| 4 | **Routing on GitHub Pages** | One `index.html` with a tiny router. A deploy step copies it to `write/index.html`, `verify/index.html` and `posts/index.html` (plus `404.html`). | Clean `/write` URLs return HTTP 200 on GitHub Pages, which has no rewrites. |
+| 4 | **Front end & hosting** | Next.js 16 static export (`trailingSlash`), deployed on Vercel from `origin/main` (Root Directory `web`). | Every route is a real `index.html`, so deep links return 200; preview URLs per branch. (Changed from the brief's single `index.html` on GitHub Pages.) |
 | 5 | **LLM** | Claude via the Anthropic TypeScript SDK in the Worker. Model `claude-opus-5-5` for drafts (effort `medium`) and edits (effort `low`). Server-side refusal fallback is enabled. | Best grounding quality. One model keeps prompts and caching simple. Details in [WORKER_API § 7](WORKER_API.md#7-llm-configuration). |
 | 6 | **Rate limiting** | KV counter per IP per hour bucket (`rl:<ip>:<yyyymmddhh>`, TTL 3,700 s). | The Workers Rate Limiting binding only supports 10 s / 60 s windows, and an approximate count is fine for an MVP. |
 | 7 | **Native currency** | `BOT`, 18 decimals | Unconfirmed in official docs. Verify on botchain.ai / chainlist before mainnet (see [DEPLOYMENT](DEPLOYMENT.md)). |

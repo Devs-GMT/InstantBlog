@@ -1,4 +1,4 @@
-// Post-export fix for static hosting (GitHub Pages has no rewrites).
+// Post-export fix for static hosting of `output: "export"` (Vercel / any static host).
 // Next 16 writes RSC segment payloads as  <route>/__next.<seg>/__PAGE__.txt
 // but client navigation requests        <route>/__next.<seg>.__PAGE__.txt
 // Copy every file inside a "__next.*" folder to the dot-joined sibling name.
