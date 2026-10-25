@@ -50,7 +50,7 @@ node --test
 - ethers v6: read the Proof tuple **by index** (`r[6]` for `at`) — `Result.at` is `Array.prototype.at`.
 - Model output is sanitised with DOMPurify before touching the DOM. Tiptap v3 `insertContentAt` inserts the raw string verbatim when it parses to plain unmarked text, so pass decoded text in that case and HTML only when it has formatting (see `inlineContent()` in `useAiTools.tsx`).
 - Worker: CORS exact allow-list, SSRF guard on every fetch **and every redirect hop**, rate limits, and **never log article/selection/source text**. `MOCK_AI` must never be set in production.
-- LLM: Google Gemini (free tier), model from `env.MODEL` (default `gemini-2.5-flash`), called from `worker/src/gemini.ts`. Drop `thought` parts; map finish reasons (SAFETY etc. → `refusal`, MAX_TOKENS → `max_tokens`); `maxOutputTokens` includes thinking tokens. Free-tier data may be used by Google — keep the Privacy page honest about it.
+- LLM: Google Gemini (free tier), model from `env.MODEL` (default `gemini-3.6-flash`), called from `worker/src/gemini.ts`. Drop `thought` parts; map finish reasons (SAFETY etc. → `refusal`, MAX_TOKENS → `max_tokens`); `maxOutputTokens` includes thinking tokens. Free-tier data may be used by Google — keep the Privacy page honest about it.
 - Editor content is never lost: snapshot before Generate, AI accepts are one undo step, errors keep content.
 - Writing, AI and exports must work without MetaMask; only Stamp needs a wallet. `/verify` never needs one.
 - localStorage access always in try/catch; app must work without it.

@@ -23,11 +23,16 @@ function stopFrom(reason?: string): Stop | null {
   return REFUSALS.has(reason) ? "refusal" : "end_turn";
 }
 
-function request(system: string, user: string, maxOutputTokens: number, temperature: number) {
+// No temperature override: Google recommends the default (1.0) for Gemini 3 models; lower values can cause looping.
+function request(model: string, system: string, user: string, maxOutputTokens: number) {
   return {
     systemInstruction: { parts: [{ text: system }] },
     contents: [{ role: "user", parts: [{ text: user }] }],
-    generationConfig: { maxOutputTokens, temperature },
+    generationConfig: {
+      maxOutputTokens,
+      // Gemini 3 thinks before answering; "low" cuts time-to-first-token a lot for writing tasks.
+      ...(/^gemini-3/.test(model) ? { thinkingConfig: { thinkingLevel: "low" } } : {}),
+    },
   };
 }
 
@@ -70,9 +75,9 @@ export async function streamText(
   env: Env,
   system: string,
   user: string,
-  opts: { maxOutputTokens: number; temperature?: number; signal?: AbortSignal; onText: (t: string) => Promise<void> | void },
+  opts: { maxOutputTokens: number; signal?: AbortSignal; onText: (t: string) => Promise<void> | void },
 ): Promise<Done> {
-  const res = await call(env, "streamGenerateContent", request(system, user, opts.maxOutputTokens, opts.temperature ?? 0.7), opts.signal);
+  const res = await call(env, "streamGenerateContent", request(env.MODEL, system, user, opts.maxOutputTokens), opts.signal);
   if (!res.body) throw new HttpError(502, "upstream", "The AI stream didn't start.");
   const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
   let buf = "";
@@ -104,8 +109,8 @@ export async function streamText(
 }
 
 /** One-shot generation. */
-export async function generateText(env: Env, system: string, user: string, opts: { maxOutputTokens: number; temperature?: number }) {
-  const res = await call(env, "generateContent", request(system, user, opts.maxOutputTokens, opts.temperature ?? 0.4));
+export async function generateText(env: Env, system: string, user: string, opts: { maxOutputTokens: number }) {
+  const res = await call(env, "generateContent", request(env.MODEL, system, user, opts.maxOutputTokens));
   const chunk = (await res.json()) as Chunk;
   if (chunk.promptFeedback?.blockReason) return { text: "", stop: "refusal" as Stop };
   return { text: textOf(chunk), stop: stopFrom(chunk.candidates?.[0]?.finishReason) ?? "end_turn" };

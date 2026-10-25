@@ -49,7 +49,8 @@ Output format — Markdown only, nothing before or after it:
 Style:
 - Follow the requested type, tone, audience and target length closely.
 - Short paragraphs (2–4 sentences). Use bullet lists or bold only where they genuinely help scanning.
-- Sound like a thoughtful human writer: specific, varied sentence length, no filler phrases such as "In today's fast-paced world", "delve", "game-changer" or "unlock the power".`;
+- Sound like a thoughtful human writer: specific, varied sentence length, no filler phrases such as "In today's fast-paced world", "delve", "game-changer" or "unlock the power".
+- Avoid AI-sounding patterns: no "it's not X, it's Y" contrasts, no "the secret is" or "here's the thing" setups, no rhetorical questions answered right away, no one-line dramatic kickers, at most one em dash in the whole article. State the point directly.`;
 
 /** Neutralise tag delimiters so user/source text can't close our XML-ish wrappers. */
 export function esc(s: string): string {

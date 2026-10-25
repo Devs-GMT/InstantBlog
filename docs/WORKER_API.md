@@ -49,7 +49,7 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ALLOWED_ORIGINS = "https://instantblog.vercel.app,https://instantblog-*.vercel.app"   # "*" = one label fragment (Vercel previews)
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.6-flash"
 
 [[kv_namespaces]]
 binding = "RL"
@@ -118,7 +118,7 @@ The total source text must fit in **~40,000 chars** (~10k tokens). If it's over,
 
 ```
 event: meta
-data: {"model":"gemini-2.5-flash","sources":3}
+data: {"model":"gemini-3.6-flash","sources":3}
 
 event: delta
 data: {"t":"# Why small dApps win hackathons\n<!-- titles: … -->\n\n"}
@@ -229,7 +229,7 @@ export async function streamDraft(payload, { onMeta, onDelta, onDone, onError, s
 
 ## 7. LLM configuration
 
-Provider: **Google Gemini API** (Google AI Studio key, free tier). Model from the `MODEL` var, default `gemini-2.5-flash`.
+Provider: **Google Gemini API** (Google AI Studio key, free tier). Model from the `MODEL` var, default `gemini-3.6-flash`.
 
 | Route | Endpoint | maxOutputTokens | Temperature | Stream |
 |---|---|---|---|---|

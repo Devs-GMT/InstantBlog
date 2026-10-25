@@ -22,7 +22,7 @@ Covers the system overview, repo layout, front-end modules, data model, fingerpr
    │ KV: rate limits · Secret: GEMINI_API_KEY │   └─────────────────────────────────────────────┘
    └───────────────┬──────────────────────────┘
                    ▼
-         Google Gemini API (gemini-2.5-flash, free tier)
+         Google Gemini API (gemini-3.6-flash, free tier)
 ```
 
 **Trust boundaries**
