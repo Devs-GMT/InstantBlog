@@ -23,21 +23,30 @@
 | Path | What |
 |---|---|
 | `contracts/InstantBlog.sol` | The smart contract. No tokens, no payments, no admin. |
-| `web/` | The static website (GitHub Pages): home, writer, verify, my posts |
+| `web/` | The website — a Next.js static export on GitHub Pages: home, writer, verify, my posts |
 | `worker/` | Cloudflare Worker: reads source links and talks to the AI. The API key is a Worker secret, **never in this repo**. |
+| `tests/` | Fingerprint test vectors (the hash must never change after launch) |
 | `docs/` | Product and build documentation ([start here](docs/README.md)) |
 
 ## Tech
 
-HTML/CSS/JS · Tiptap editor · marked · html2pdf.js · docx · ethers.js v6 · Cloudflare Workers · Claude (Anthropic API) · Solidity 0.8.24 on BOT Chain
+Next.js 16 (static export) · React 19 · Tiptap editor · marked · html2pdf.js · docx · ethers.js v6 · Cloudflare Workers · Claude (Anthropic API) · Solidity 0.8.24 on BOT Chain
 
 ## Run it yourself
 
-1. Deploy `contracts/InstantBlog.sol` with Remix (EVM version *paris*) and put the address in `web/js/config.js`.
-2. `cd worker && npm i && npx wrangler secret put ANTHROPIC_API_KEY && npx wrangler deploy`, then put the Worker URL in `web/js/config.js`.
-3. Serve `web/` with any static server, or push it to GitHub Pages.
+```bash
+# 1. Worker (local, no API key needed with the mock AI)
+cd worker && npm ci && cp .dev.vars.example .dev.vars   # add MOCK_AI=1 to try it without a key
+npx wrangler dev --port 8787
 
-Full steps: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+# 2. Website
+cd web && npm ci && npm run dev                         # http://localhost:5173
+
+# 3. Tests
+cd tests && npm ci && node --test
+```
+
+To go live: deploy `contracts/InstantBlog.sol` with Remix (EVM version *paris*), deploy the Worker with `npx wrangler deploy`, set the contract address and Worker URL as GitHub Actions variables, and push — the Pages workflow builds and publishes `web/`. Full steps: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Privacy
 

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev -p 5173",
-    "build": "next build",
+    "build": "next build && node scripts/flatten-rsc.mjs",
     "start": "npx serve out -l 5173",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."

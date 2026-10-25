@@ -18,47 +18,55 @@ When code and a doc disagree, ask; if the doc is wrong, update the doc in the sa
 
 ## Stack
 
-- `web/` — static site (GitHub Pages), vanilla ES modules, no build step. Libraries from CDN at the **pinned versions in ARCHITECTURE §3** (ethers 6.13.4, Tiptap 2.10.3 via esm.sh, marked 15.0.4, turndown 7.2.0, DOMPurify 3.2.3, html2pdf.js 0.10.2, docx 9.1.0). Never use unpinned or `@latest` URLs.
+- `web/` — **Next.js 16 (App Router) static export** (`output: "export"`, `trailingSlash: true`) hosted on GitHub Pages. React 19, TypeScript, Tiptap v3, ethers v6, marked, turndown, DOMPurify, html2pdf.js, docx — all from npm at the exact versions in `web/package.json`. Plain CSS with design tokens (no Tailwind).
 - `worker/` — Cloudflare Worker, TypeScript, `@anthropic-ai/sdk`, `@mozilla/readability` + `linkedom`, KV binding `RL`.
 - `contracts/InstantBlog.sol` — Solidity ^0.8.20, compile 0.8.24, EVM `paris`, optimizer 200.
+- `tests/` — Node test runner; fingerprint vectors run against `web/lib/fingerprint.ts`.
 
 ## Commands
 
 ```bash
-# site (any static server, from repo root)
-npx serve web -l 5173
-bash scripts/build-pages.sh          # copies index.html → write/ verify/ posts/ 404.html
+# web (from web/)
+npm run dev                          # http://localhost:5173, talks to the local Worker
+npm run build                        # next build + scripts/flatten-rsc.mjs → out/
+npm run typecheck
 
-# worker
-cd worker && npx wrangler dev        # needs worker/.dev.vars (gitignored)
-cd worker && npx wrangler deploy
-cd worker && npx wrangler tail
-npx tsc --noEmit -p worker           # typecheck
+# worker (from worker/)
+npx wrangler dev --port 8787         # needs worker/.dev.vars (gitignored); MOCK_AI=1 = canned AI, no key needed
+npx wrangler deploy
+npx tsc --noEmit
+
+# tests (from tests/)
+node --test
 ```
 
 ## Rules that must not break
 
 - **Never commit secrets.** `ANTHROPIC_API_KEY` lives only in `wrangler secret` / `worker/.dev.vars`. No keys in `web/`.
-- **All chain/site constants live in `web/js/config.js` only** (contract address, chain params, Worker URL, explorer URLs). Don't hard-code them elsewhere.
-- **`web/js/fingerprint.js` is frozen after mainnet launch.** Any change to `canonicalText()` must keep the TEST_PLAN §4 vectors passing; otherwise old proofs stop verifying. Stamp and verify must use the same function.
+- **All chain/site constants live in `web/lib/config.ts` only** (contract address, chain params, Worker URL, explorer URLs; overridable via `NEXT_PUBLIC_*` build env). Don't hard-code them elsewhere.
+- **`web/lib/fingerprint.ts` is frozen after mainnet launch**, and so is the `marked` version (pinned exactly). Any change must keep `tests/fingerprint.test.mjs` passing; otherwise old proofs stop verifying. Stamp and verify use the same function.
 - Only the hash, title (≤160 bytes, cut by bytes), words, tone (0–5), sources (0–5) go on-chain — never article text.
 - Tone enum is shared by UI, Worker and contract: 0 Friendly, 1 Professional, 2 Witty, 3 Inspiring, 4 Academic, 5 Casual.
-- Model output is HTML-sanitised with DOMPurify before touching the DOM.
-- Worker: CORS exact allow-list, SSRF guard on every fetch **and every redirect hop**, rate limits, and **never log article/selection/source text**.
+- ethers v6: read the Proof tuple **by index** (`r[6]` for `at`) — `Result.at` is `Array.prototype.at`.
+- Model output is sanitised with DOMPurify before touching the DOM. Tiptap v3 `insertContentAt` inserts the raw string verbatim when it parses to plain unmarked text, so pass decoded text in that case and HTML only when it has formatting (see `inlineContent()` in `useAiTools.tsx`).
+- Worker: CORS exact allow-list, SSRF guard on every fetch **and every redirect hop**, rate limits, and **never log article/selection/source text**. `MOCK_AI` must never be set in production.
 - LLM: model from `env.MODEL` (`claude-opus-5-5`); draft effort `medium`, edit effort `low`; don't send `thinking: {type:"disabled"}` or `budget_tokens` (400 on this model); always handle `stop_reason === "refusal"`.
 - Editor content is never lost: snapshot before Generate, AI accepts are one undo step, errors keep content.
 - Writing, AI and exports must work without MetaMask; only Stamp needs a wallet. `/verify` never needs one.
 - localStorage access always in try/catch; app must work without it.
+- Static export only: no API routes, no server actions, no `next/image` optimisation, no middleware. Anything using `window` lives in client components (the writer loads with `ssr: false`).
 
 ## Conventions
 
-- Plain ES modules, one module per concern as listed in ARCHITECTURE §2; no frameworks, no bundler for `web/`.
-- CSS uses tokens from `web/css/tokens.css`; no raw hex colours in components.
+- `web/lib/` = framework-free logic (testable); `web/components/` = React UI; one concern per file as in ARCHITECTURE §2.
+- CSS uses tokens from `web/app/styles/tokens.css`; no raw hex colours in components.
 - UI copy comes from `docs/CONTENT_COPY.md` verbatim; add new strings there first.
-- Reference requirement IDs in commit messages where useful (e.g. `feat(edit): preview accept/discard (E-4, E-5)`).
+- Commit at each milestone with a descriptive message. **No Claude co-author / attribution lines in commits or PRs.**
+- Avoid `\uXXXX` escapes in files written by tools — they can be turned into invisible raw characters; check with grep afterwards.
 
 ## Verifying work
 
+- `npm run typecheck` + `npm run build` in `web/`; `node --test` in `tests/`.
 - Run the TEST_PLAN case IDs for the area you touched; for UI changes check 375 px and 1280 px.
 - Contract changes: run the CONTRACT_SPEC §8 checklist on testnet (chain 968) before mainnet (677).
 - Worker changes: run the curl suite in WORKER_API §8, including the SSRF URLs.

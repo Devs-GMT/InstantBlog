@@ -188,7 +188,9 @@ The title is UTF-8, so cut it by **bytes**, not characters: `while (new TextEnco
 4. Title of 161 bytes → `TitleTooLong`. Title of 160 bytes passes (also try one with multi-byte emoji)
 5. `words = 0` → `ZeroWords`. `tone = 6` → `BadTone`. `sources = 6` → `TooManySources`. Zero hash → `EmptyHash`
 6. `proofsOf(you)` → `[1, 2]`. The event shows on scan.bohr.life
-7. Gas: record the cost of a typical stamp (~120–160k gas with a 60-char title) for the README
+7. Gas: record the cost of a typical stamp for the README. Measured on a local Hardhat chain (0.8.24, paris, optimizer 200): **~226k gas** for the first stamp with a 5-char title, **~289k gas** with a 160-byte title (first writes to fresh storage slots dominate).
+
+> **ethers v6 gotcha:** `getProof()` returns a `Result`, and `result.at` is `Array.prototype.at`, not the `at` field. Read the tuple by index (`r[6]` for the timestamp) — see `web/lib/chain.ts`.
 
 ## 9. Gas and size notes
 

@@ -40,6 +40,16 @@ const LABELS: Record<EditAction, string> = {
 
 const SELECTION_ACTIONS: EditAction[] = ["rewrite", "shorten", "expand", "simplify", "grammar"];
 
+/**
+ * Tiptap v3 insertContentAt: if the parsed content is only unmarked text, it inserts the ORIGINAL string
+ * verbatim (entities/tags stay literal). So pass decoded text when there's no formatting, HTML otherwise.
+ */
+function inlineContent(html: string): string {
+  const el = document.createElement("div");
+  el.innerHTML = html;
+  return el.children.length ? html : el.textContent || "";
+}
+
 type Opts = {
   editor: Editor | null;
   brief: Brief;
@@ -182,7 +192,7 @@ export function useAiTools({ editor, brief, disabled, paperRef, onTitles, toast 
   const accept = useCallback(() => {
     if (!editor || !sugg?.text) return;
     const inline = sugg.inline && !/\n\n|^#{1,6}\s|^[-*+]\s|^\d+\.\s|^>/m.test(sugg.text.trim());
-    const html = inline ? mdToInlineHtml(sugg.text.trim()) : mdToHtml(sugg.text);
+    const html = inline ? inlineContent(mdToInlineHtml(sugg.text.trim())) : mdToHtml(sugg.text);
     editor.setEditable(true);
     const chain = editor.chain().focus();
     if (sugg.to > sugg.from) chain.insertContentAt({ from: sugg.from, to: sugg.to }, html).run();
