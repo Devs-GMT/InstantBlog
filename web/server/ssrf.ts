@@ -33,6 +33,14 @@ export function guardUrl(raw: string, base?: URL): GuardResult {
   return { ok: true, url };
 }
 
+/** True for loopback, private, link-local (incl. cloud metadata 169.254.169.254), CGNAT, multicast, etc. */
+export function isBlockedAddress(ip: string): boolean {
+  const v4 = parseIPv4(ip);
+  if (v4) return isBlockedIPv4(v4);
+  if (ip.includes(":")) return isBlockedIPv6(ip.replace(/^\[|\]$/g, ""));
+  return true; // not an IP literal we understand → refuse
+}
+
 function parseIPv4(host: string): number[] | null {
   const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(host);
   if (!m) return null;

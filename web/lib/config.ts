@@ -43,7 +43,8 @@ const VERCEL_URL = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
 
 export const CONFIG = {
   SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || (DEV ? "http://localhost:5173" : VERCEL_URL ? `https://${VERCEL_URL}` : "https://instantblog.vercel.app"),
-  WORKER_URL: process.env.NEXT_PUBLIC_WORKER_URL || (DEV ? "http://127.0.0.1:8787" : "https://instantblog-api.YOUR-ACCOUNT.workers.dev"),
+  /** API lives in this Next app (/api/*). Override only to point a local build at another deployment. */
+  API_BASE: process.env.NEXT_PUBLIC_API_BASE || "",
   USE_TESTNET,
   CHAIN,
   CHAIN_ID_NUM: parseInt(CHAIN.chainId, 16),

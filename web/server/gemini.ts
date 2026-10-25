@@ -1,6 +1,7 @@
 // Google Gemini API client (REST, no SDK). Free tier via a Google AI Studio key.
 // Docs: https://ai.google.dev/gemini-api/docs — streaming uses :streamGenerateContent?alt=sse.
-import { Env, HttpError } from "./http";
+import type { Env } from "./env";
+import { HttpError } from "./http";
 
 const DEFAULT_BASE = "https://generativelanguage.googleapis.com/v1beta";
 

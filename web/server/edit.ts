@@ -1,5 +1,6 @@
-// POST /blog/edit — one-shot AI edit; returns {text, missingCitations} or {titles}.
-import { Env, HttpError } from "./http";
+// POST /api/blog/edit — one-shot AI edit; returns {text, missingCitations} or {titles}.
+import type { Env } from "./env";
+import { HttpError } from "./http";
 import { generateText } from "./gemini";
 import { EditInput, missingCitations } from "./limits";
 import { buildEditUser, editSystem } from "./prompts";

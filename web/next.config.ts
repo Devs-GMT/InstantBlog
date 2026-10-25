@@ -1,11 +1,11 @@
 import type { NextConfig } from "next";
 
-// Static export (served by Vercel): every route becomes <route>/index.html. No server features needed.
+// Runs on Vercel as a normal Next.js app: pages + /api route handlers (server/ holds the API logic).
 const nextConfig: NextConfig = {
-  output: "export",
   trailingSlash: true,
-  images: { unoptimized: true },
   reactStrictMode: true,
+  // Parsed/fetched at runtime on the server; keep them out of the bundle.
+  serverExternalPackages: ["linkedom", "@mozilla/readability", "undici"],
 };
 
 export default nextConfig;

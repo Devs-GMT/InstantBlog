@@ -1,4 +1,4 @@
-// Worker client: /extract-url, /blog/draft (SSE over fetch), /blog/edit. docs/WORKER_API.md.
+// API client for the same-origin route handlers: /api/extract-url, /api/blog/draft (SSE over fetch), /api/blog/edit. docs/API.md.
 import { CONFIG } from "./config";
 
 export class ApiError extends Error {
@@ -34,7 +34,7 @@ function toApiError(payload: ErrorPayload, fallbackCode = "internal") {
 async function post(path: string, body: unknown, signal?: AbortSignal) {
   let res: Response;
   try {
-    res = await fetch(CONFIG.WORKER_URL + path, {
+    res = await fetch(CONFIG.API_BASE + path, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(body),
@@ -51,14 +51,14 @@ async function post(path: string, body: unknown, signal?: AbortSignal) {
 export type ExtractResult = { url: string; finalUrl: string; title: string; siteName: string | null; text: string; words: number; truncated: boolean };
 
 export async function extractUrl(url: string, signal?: AbortSignal): Promise<ExtractResult> {
-  return (await post("/extract-url", { url }, signal)).json();
+  return (await post("/api/extract-url/", { url }, signal)).json();
 }
 
 export type EditAction = "rewrite" | "shorten" | "expand" | "tone" | "simplify" | "grammar" | "intro" | "conclusion" | "titles" | "section";
 export type EditResult = { text?: string; missingCitations?: number[]; titles?: string[] };
 
 export async function editText(payload: Record<string, unknown>, signal?: AbortSignal): Promise<EditResult> {
-  return (await post("/blog/edit", payload, signal)).json();
+  return (await post("/api/blog/edit/", payload, signal)).json();
 }
 
 export type DraftDone = { stop: string; fallback: boolean; outputTokens: number };
@@ -68,7 +68,7 @@ export async function streamDraft(
   payload: Record<string, unknown>,
   h: { onMeta?: (m: { model: string; sources: number }) => void; onDelta: (t: string) => void; onDone?: (d: DraftDone) => void; signal?: AbortSignal },
 ) {
-  const res = await post("/blog/draft", payload, h.signal);
+  const res = await post("/api/blog/draft/", payload, h.signal);
   if (!res.body) throw new ApiError("upstream", "The draft stream didn't start.");
   const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
   let buf = "";

@@ -1,7 +1,8 @@
-// POST /extract-url — fetch a public page and return its main article text.
+// POST /api/extract-url — fetch a public page and return its main article text.
 import { Readability } from "@mozilla/readability";
 import { parseHTML } from "linkedom";
 import { HttpError } from "./http";
+import { isBlockedError, safeFetch } from "./safeFetch";
 import { guardUrl } from "./ssrf";
 
 const MAX_BYTES = 2 * 1024 * 1024;
@@ -36,11 +37,11 @@ export async function extractUrl(body: { url?: unknown }) {
 
   const deadline = AbortSignal.timeout(TIMEOUT_MS);
   let current = first.url;
-  let res: Response | null = null;
+  let res: Awaited<ReturnType<typeof safeFetch>> | null = null;
 
   try {
     for (let hop = 0; hop <= MAX_HOPS; hop++) {
-      res = await fetch(current.toString(), {
+      res = await safeFetch(current.toString(), {
         redirect: "manual",
         signal: deadline,
         headers: { "user-agent": UA, accept: "text/html,application/xhtml+xml,text/plain;q=0.8" },
@@ -100,12 +101,13 @@ export async function extractUrl(body: { url?: unknown }) {
     };
   } catch (err) {
     if (err instanceof HttpError) throw err;
+    if (isBlockedError(err)) throw unreadable("blocked_address");
     if (err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError")) throw unreadable("timeout");
     throw unreadable("http_error");
   }
 }
 
-async function readCapped(res: Response): Promise<Uint8Array> {
+async function readCapped(res: Awaited<ReturnType<typeof safeFetch>>): Promise<Uint8Array> {
   if (!res.body) return new Uint8Array();
   const reader = res.body.getReader();
   const chunks: Uint8Array[] = [];
