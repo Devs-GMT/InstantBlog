@@ -1,6 +1,7 @@
 "use client";
-// Copy ⌄ · PDF · .docx (top bar) and the mobile Export tab list. PRD X-1…X-7.
+// Copy · PDF · .docx (top bar) and the mobile Export tab list. PRD X-1…X-7.
 import type { Editor } from "@tiptap/react";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { copyText, fmtDate, shortAddr } from "@/lib/format";
 import { docTitle } from "@/lib/editorUtil";
@@ -87,7 +88,7 @@ export function ExportButtons({ ex, prefs, setPrefs }: { ex: Ex; prefs: Prefs; s
     <div className="export-btns" style={{ display: "flex", gap: 8 }}>
       <div className="drop" ref={ref}>
         <button type="button" className="btn btn-secondary btn-sm" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-          Copy ⌄
+          Copy <ChevronDown size={15} />
         </button>
         {open && (
           <div className="menu" role="menu" style={{ left: 0, right: "auto", minWidth: 260 }}>

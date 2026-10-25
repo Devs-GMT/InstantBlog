@@ -1,5 +1,6 @@
 // Home page sections 1–8 (copy: docs/CONTENT_COPY.md §3).
 import {
+  ChevronDown,
   Clock,
   Feather,
   FileCode,
@@ -211,7 +212,9 @@ export function Features() {
                 <span>Rewrite</span>
                 <span className="on">Shorten</span>
                 <span>Expand</span>
-                <span>Tone ⌄</span>
+                <span>
+                  Tone <ChevronDown size={13} />
+                </span>
               </div>
               <p style={{ fontSize: 14, lineHeight: 1.7 }}>
                 <span className="diff-old">Pick the one flow you can demo in under a minute and build only that.</span>{" "}

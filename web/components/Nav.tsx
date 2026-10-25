@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Brand } from "./Brand";
+import { WalletButton } from "./WalletButton";
 
 const LINKS = [
   ["/#how", "How it works"],
@@ -33,6 +34,9 @@ export function Nav() {
             </Link>
           ))}
         </nav>
+        <div className="navtab-wallet">
+          <WalletButton />
+        </div>
         <Link href="/write/" className="navtab-cta">
           Start writing
         </Link>
@@ -50,6 +54,9 @@ export function Nav() {
           <Link href="/posts/" onClick={() => setOpen(false)}>
             My posts
           </Link>
+          <div className="navtab-sheet-wallet">
+            <WalletButton />
+          </div>
         </nav>
       )}
     </header>

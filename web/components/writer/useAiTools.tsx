@@ -1,6 +1,7 @@
 "use client";
 // AI editing: floating selection toolbar + preview card + panel helpers. PRD E-1…E-7.
 import type { Editor } from "@tiptap/react";
+import { ChevronDown } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { editText, type ApiError, type EditAction } from "@/lib/api";
 import { usableSources } from "@/lib/brief";
@@ -235,7 +236,7 @@ export function useAiTools({ editor, brief, disabled, paperRef, onTitles, toast 
       <span className="sep" />
       <span style={{ position: "relative" }}>
         <button type="button" aria-expanded={toneOpen} onClick={() => setToneOpen((o) => !o)}>
-          Change tone ⌄
+          Change tone <ChevronDown size={14} />
         </button>
         {toneOpen && (
           <div className="tone-menu" role="menu">

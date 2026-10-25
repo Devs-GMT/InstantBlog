@@ -5,7 +5,7 @@ import { copyText, shortAddr } from "@/lib/format";
 import { useUI } from "./Providers";
 import { useWallet } from "./WalletProvider";
 
-/** Connect / Install MetaMask / Switch to BOT Chain / 0xAB…9f3c ⌄ */
+/** Connect / Install MetaMask / Switch to BOT Chain / 0xAB…9f3c menu */
 export function WalletButton() {
   const w = useWallet();
   const { toast } = useUI();

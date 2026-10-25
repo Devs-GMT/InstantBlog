@@ -14,7 +14,7 @@ This file holds every user-facing string, so it can be pasted straight into the 
 
 ## 2. Navbar
 
-Dark tab hanging from the top edge: logo (notebook mark) · How it works · Features · Verify · FAQ · white pill **[Start writing]**. Mobile: logo · **[Start writing]** · menu button (sheet: How it works, Features, Verify, FAQ, My posts). The wallet pill lives in the writer top bar, not the landing nav.
+Dark tab hanging from the top edge: logo (notebook mark) · How it works · Features · Verify · FAQ · outline pill wallet button (`Connect wallet` / `0xAB…9f3c` / `Switch to BOT Chain` / `Install MetaMask`) · white pill **[Start writing]**. Below 1024 px the links move into a menu sheet that floats over the page; below 768 px the wallet button moves into that sheet as a full-width white button.
 
 ---
 
