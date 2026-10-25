@@ -1,0 +1,20 @@
+import Link from "next/link";
+
+export function LogoMark({ className = "brand-mark" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <path d="M9 3h10l8 8v13a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5Z" fill="#0D111B" />
+      <path d="M19 3v5a3 3 0 0 0 3 3h5" fill="#1AB4D7" />
+      <path d="M16.6 9.5 11 18h4.2l-1 6.5L20 15.7h-4.3l.9-6.2Z" fill="#fff" />
+    </svg>
+  );
+}
+
+export function Brand({ href = "/" }: { href?: string }) {
+  return (
+    <Link href={href} className="brand" aria-label="InstantBlog home">
+      <LogoMark />
+      <span>InstantBlog</span>
+    </Link>
+  );
+}

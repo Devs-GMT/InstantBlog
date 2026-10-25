@@ -1,12 +1,10 @@
-// Locks fingerprint v1 (docs/TEST_PLAN.md §4). If this fails, fix the code — not the vectors.
+// Locks fingerprint v1 (web/lib/fingerprint.ts; marked resolves from web/node_modules) (docs/TEST_PLAN.md §4). If this fails, fix the code — not the vectors.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DOMParser } from "linkedom";
-import { marked } from "marked";
 
 globalThis.DOMParser = DOMParser;
-globalThis.marked = marked;
-const { canonicalText, fingerprint, wordCount } = await import("../web/js/fingerprint.js");
+const { canonicalText, fingerprint, wordCount } = await import("../web/lib/fingerprint.ts");
 
 const V1 = `# Hello world
 

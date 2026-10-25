@@ -2,6 +2,10 @@
   "name": "instantblog-tests",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test" },
-  "devDependencies": { "linkedom": "^0.18.14", "marked": "15.0.4" }
+  "scripts": {
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "linkedom": "^0.18.14"
+  }
 }

@@ -1,0 +1,43 @@
+/* Design tokens — see docs/DESIGN_SYSTEM.md §2. Components use these, never raw hex. */
+:root {
+  --bg: #F7FAFC;
+  --card: #FFFFFF;
+  --panel: #FAFAFA;
+  --border: rgba(0, 0, 0, .06);
+  --border-strong: rgba(0, 0, 0, .12);
+
+  --text: #1E1E1E;
+  --muted: #666666;
+  --faint: #9A9A9A;
+
+  --primary: #0D111B;
+  --primary-hover: #222838;
+  --on-primary: #FFFFFF;
+
+  --tint-blue: rgba(0, 152, 242, .16);   --ink-blue: #0069AB;
+  --tint-pink: rgba(242, 0, 201, .16);   --ink-pink: #A1008C;
+  --tint-violet: rgba(108, 85, 252, .16); --ink-violet: #4B39D6;
+  --tint-cyan: rgba(26, 180, 215, .16);  --ink-cyan: #0A7690;
+  --tint-green: rgba(44, 160, 28, .14);  --ink-green: #1C6E10;
+  --tint-amber: rgba(245, 166, 35, .18); --ink-amber: #8A5100;
+  --tint-red: rgba(229, 57, 53, .14);    --ink-red: #AD231C;
+
+  --accent: #1AB4D7;
+  --success: #2CA01C;
+
+  --r-pill: 100px; --r-card: 20px; --r-card-sm: 16px; --r-input: 12px;
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, .04), 0 1px 3px rgba(16, 24, 40, .06);
+  --shadow-md: 0 8px 24px rgba(16, 24, 40, .06), 0 2px 6px rgba(16, 24, 40, .04);
+  --shadow-lg: 0 24px 60px rgba(16, 24, 40, .10), 0 6px 16px rgba(16, 24, 40, .06);
+
+  --font-display: var(--ff-nunito), "Nunito", ui-rounded, system-ui, sans-serif;
+  --font-body: var(--ff-inter), "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: var(--ff-newsreader), "Newsreader", Georgia, serif;
+  --font-mono: var(--ff-mono), "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px;
+  --container: 1120px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  color-scheme: light;
+}

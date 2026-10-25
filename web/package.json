@@ -1,0 +1,34 @@
+{
+  "name": "instantblog-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev -p 5173",
+    "build": "next build",
+    "start": "npx serve out -l 5173",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@tiptap/extensions": "3.32.0",
+    "@tiptap/pm": "3.32.0",
+    "@tiptap/react": "3.32.0",
+    "@tiptap/starter-kit": "3.32.0",
+    "docx": "9.14.0",
+    "dompurify": "3.4.17",
+    "ethers": "6.17.0",
+    "html2pdf.js": "0.14.0",
+    "marked": "15.0.4",
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "turndown": "7.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19",
+    "@types/turndown": "^5.0.6",
+    "typescript": "~5.9.0"
+  }
+}
