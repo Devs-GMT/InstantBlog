@@ -42,7 +42,7 @@ InstantBlog/
 └─ web/                                 # Next.js 16 App Router on Vercel (pages + API)
    ├─ next.config.ts · package.json · tsconfig.json
    ├─ .env.example                      # server env template (copy to .env.local, gitignored)
-   ├─ vercel.json                        # framework nextjs, npm ci, npm run build
+   ├─ vercel.json                        # framework nextjs, pnpm install --frozen-lockfile, pnpm build
    ├─ public/  favicon.svg · logo-mark.svg · botchain-logo.svg
    ├─ app/
    │  ├─ api/  extract-url/ · blog/draft/ · blog/edit/ · health/   # route.ts handlers

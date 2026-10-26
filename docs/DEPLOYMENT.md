@@ -51,7 +51,7 @@ forge script script/Deploy.s.sol --rpc-url botchain --broadcast            # the
 
 There is no separate backend to deploy: `/api/extract-url`, `/api/blog/draft` and `/api/blog/edit` are route handlers in `web/app/api/` and ship with every Vercel deployment.
 
-- Local: `cp web/.env.example web/.env.local`, set `GEMINI_API_KEY` (free key: https://aistudio.google.com/apikey) or `MOCK_AI=1`, then `npm run dev`.
+- Local: `cp web/.env.example web/.env.local`, set `GEMINI_API_KEY` (free key: https://aistudio.google.com/apikey) or `MOCK_AI=1`, then `pnpm dev` (http://localhost:3000).
 - Production: set the same server env vars in Vercel (§4). `MOCK_AI` must stay unset.
 - Gemini free tier: no billing needed; quota is per Google Cloud project. If you enable billing later, set a budget alert in Google Cloud.
 - Optional shared rate limits: create a free Upstash Redis database (Vercel Marketplace → Upstash) and set `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`. Without them, limits are counted per serverless instance.
@@ -60,7 +60,7 @@ There is no separate backend to deploy: `/api/extract-url`, `/api/blog/draft` an
 
 ## 4. Site + API (Next.js → Vercel, from `origin/main`)
 
-Every push to `main` makes a production deployment; other branches/PRs get preview URLs. `web/vercel.json` pins the framework (`nextjs`), `npm ci` and `npm run build`.
+Every push to `main` makes a production deployment; other branches/PRs get preview URLs. `web/vercel.json` pins the framework (`nextjs`), `pnpm install --frozen-lockfile` and `pnpm build`; `package.json` pins `packageManager: pnpm@11.24.0`.
 
 1. vercel.com → **Add New… → Project → Import Git Repository** → `Devs-GMT/InstantBlog`.
 2. **Root Directory: `web`** (the repo also holds `contracts/`, `docs/`, `tests/`). Framework preset: Next.js (auto). Production branch: `main`.
@@ -80,8 +80,8 @@ Local production preview:
 
 ```bash
 cd web
-npm run build && npm start          # reads web/.env.local; http://localhost:5173 (pages + /api)
-MOCK_AI=1 npm start                 # same, with canned AI output (no Gemini calls)
+pnpm build && pnpm start           # reads web/.env.local; http://localhost:3000 (pages + /api)
+MOCK_AI=1 pnpm start               # same, with canned AI output (no Gemini calls)
 ```
 
 ---

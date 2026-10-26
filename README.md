@@ -36,11 +36,11 @@ Next.js 16 on Vercel (pages + API routes) · React 19 · Tiptap editor · marked
 
 ```bash
 # 1. App (pages + API)
-cd web && npm ci && cp .env.example .env.local   # free Gemini key from aistudio.google.com/apikey, or MOCK_AI=1
-npm run dev                                        # http://localhost:5173
+cd web && pnpm install && cp .env.example .env.local   # free Gemini key from aistudio.google.com/apikey, or MOCK_AI=1
+pnpm dev                                                # http://localhost:3000
 
 # 2. Tests
-cd tests && npm ci && node --test
+cd tests && pnpm install && node --test
 ```
 
 To go live: deploy the contract with Foundry (`forge script script/Deploy.s.sol --broadcast`, see DEPLOYMENT), import the repo in Vercel with Root Directory `web`, set `GEMINI_API_KEY` (and later the mainnet contract address) as env vars, and push to `main`. One deploy covers the site and the API. Full steps: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).

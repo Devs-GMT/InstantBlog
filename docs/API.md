@@ -220,10 +220,10 @@ Provider: **Google Gemini API** (Google AI Studio key, free tier). Model from th
 
 ## 8. API test commands
 
-Run against `npm start` (production server on :5173). `MOCK_AI=1 npm start` for deterministic drafts.
+Run against a server on :3000 (`pnpm dev`, or `pnpm build && pnpm start`). Start it with `MOCK_AI=1` for deterministic drafts.
 
 ```bash
-B=http://localhost:5173; H="content-type: application/json"
+B=http://localhost:3000; H="content-type: application/json"
 curl -s $B/api/health/
 curl -s -X POST $B/api/extract-url/ -H "$H" -d '{"url":"https://en.wikipedia.org/wiki/Hackathon"}' | jq .title,.words
 # SSRF must fail with 422 blocked_address (literal IPs, inward hostnames)

@@ -27,17 +27,18 @@ When code and a doc disagree, ask; if the doc is wrong, update the doc in the sa
 ## Commands
 
 ```bash
-# web (from web/) — needs web/.env.local (copy .env.example; GEMINI_API_KEY or MOCK_AI=1)
-npm run dev                          # http://localhost:5173 (pages + /api)
-npm run build && npm start           # production build + server on :5173
-npm run typecheck
+# web (from web/) — pnpm only; needs web/.env.local (copy .env.example; GEMINI_API_KEY or MOCK_AI=1)
+pnpm install
+pnpm dev                             # http://localhost:3000 (pages + /api) — the user runs this themselves
+pnpm build && pnpm start             # production build + server on :3000
+pnpm typecheck
 
 # contracts (from contracts/)
 forge test
 forge script script/Deploy.s.sol --rpc-url botchain_testnet --broadcast   # PRIVATE_KEY in contracts/.env
 
 # tests (from tests/)
-node --test
+pnpm install && node --test
 ```
 
 ## Rules that must not break
@@ -60,12 +61,13 @@ node --test
 - `web/lib/` = client logic, `web/server/` = server logic, `web/components/` = React UI; one concern per file.
 - CSS uses tokens from `web/app/styles/tokens.css`; no raw hex colours in components.
 - UI copy comes from `docs/CONTENT_COPY.md` (including its anti-slop rules); add new strings there first.
-- Use npm (not pnpm) in `web/` — one lockfile.
+- **pnpm only** (`packageManager: pnpm@11.24.0`); never commit a `package-lock.json`. Vercel installs with `pnpm install --frozen-lockfile`.
+- **Don't start `pnpm dev` / `pnpm start` in the background** — the user runs the app in their own terminal on port 3000. Builds, typechecks and tests are fine.
 - Commit at each milestone with a descriptive message. **No Claude co-author / attribution lines in commits or PRs.**
 - Avoid `\uXXXX` escapes in files written by tools — they can be turned into invisible raw characters; check with grep afterwards.
 
 ## Verifying work
 
-- `npm run typecheck` + `npm run build` in `web/`; `node --test` in `tests/`; `forge test` in `contracts/`.
+- `pnpm typecheck` + `pnpm build` in `web/`; `node --test` in `tests/`; `forge test` in `contracts/`.
 - Run the TEST_PLAN case IDs for the area you touched; for UI changes check 375 px and 1280 px.
-- API changes: run the curl suite in `docs/API.md` §8, including the SSRF URLs, against `npm start`.
+- API changes: run the curl suite in `docs/API.md` §8, including the SSRF URLs, against the user's running server (`pnpm start` / `pnpm dev`, :3000).

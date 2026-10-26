@@ -42,7 +42,7 @@ const DEV = process.env.NODE_ENV === "development";
 const VERCEL_URL = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
 
 export const CONFIG = {
-  SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || (DEV ? "http://localhost:5173" : VERCEL_URL ? `https://${VERCEL_URL}` : "https://instantblog.vercel.app"),
+  SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || (DEV ? "http://localhost:3000" : VERCEL_URL ? `https://${VERCEL_URL}` : "https://instantblog.vercel.app"),
   /** API lives in this Next app (/api/*). Override only to point a local build at another deployment. */
   API_BASE: process.env.NEXT_PUBLIC_API_BASE || "",
   USE_TESTNET,
