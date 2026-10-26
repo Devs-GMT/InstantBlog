@@ -485,7 +485,7 @@ button.chip { border: 0; cursor: pointer; font: inherit; font-size: 13px; font-w
 .navtab-links a:hover { color: #fff; background: rgba(255, 255, 255, .08); }
 .navtab-cta { display: inline-flex; align-items: center; height: 40px; padding: 0 22px; border-radius: var(--r-pill); background: #fff; color: var(--primary); font-weight: 600; font-size: 14.5px; text-decoration: none; white-space: nowrap; transition: background .16s, transform .16s var(--ease); }
 .navtab-cta:hover { background: #E9ECF1; transform: translateY(-1px); }
-.navtab-burger { display: none; width: 40px; height: 40px; border: 0; border-radius: 12px; background: rgba(255, 255, 255, .08); color: #fff; place-items: center; cursor: pointer; }
+.navtab-burger { display: none; width: 40px; height: 40px; border: 0; border-radius: 12px; background: transparent; color: #fff; place-items: center; cursor: pointer; }
 .navtab-sheet { pointer-events: auto; margin-top: 8px; width: min(680px, calc(100% - 32px)); background: var(--primary); border-radius: 18px; padding: 8px; display: grid; box-shadow: var(--shadow-lg); }
 .navtab-sheet a { color: #fff; text-decoration: none; padding: 12px 14px; border-radius: 12px; font-weight: 500; }
 .navtab-sheet a:hover { background: rgba(255, 255, 255, .08); }
