@@ -16,12 +16,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { CONFIG } from "@/lib/config";
+import { HeroNotes } from "./HeroNotes";
 import { BriefShot, EditorShot, ExportShot, ProofReceiptMock } from "./Mockups";
 import { SAMPLE_PROOF } from "./sample";
 
 export function Hero() {
   return (
     <section className="hero">
+      <HeroNotes />
       <div className="container">
         <Link href="/write/" className="banner-chip">
           <b>New</b> Export to Word &amp; PDF
@@ -165,7 +167,8 @@ export function Features() {
           </div>
           <div className="feature-visual">
             <BriefShot />
-            <div className="example-card taped">
+            <div className="example-card sticky sticky--yellow" style={{ "--tilt": "-3deg", "--flex": "1" } as React.CSSProperties}>
+              <span className="tape" />
               <span className="tag">Outline from the brief</span>
               <strong>## Scope is a feature</strong>
               <br />
@@ -186,7 +189,8 @@ export function Features() {
           </div>
           <div className="feature-visual">
             <EditorShot />
-            <div className="example-card taped">
+            <div className="example-card sticky sticky--pink" style={{ "--tilt": "2.5deg", "--flex": "1.2" } as React.CSSProperties}>
+              <span className="tape" />
               <span className="tag">Cited sentence</span>A hackathon goes by many names: hack day, hackfest, codefest <span className="cite">1</span>
               <br />
               <a className="muted" href="https://en.wikipedia.org/wiki/Hackathon" target="_blank" rel="noopener noreferrer">
@@ -221,7 +225,8 @@ export function Features() {
                 <span className="diff-new">Build only the one flow you can demo in a minute.</span>
               </p>
             </div>
-            <div className="example-card taped">
+            <div className="example-card sticky sticky--blue" style={{ "--tilt": "-2deg", "--flex": "0.9" } as React.CSSProperties}>
+              <span className="tape" />
               <span className="tag">Shorten preview</span>
               <span className="btn btn-xs btn-secondary">Discard</span> <span className="btn btn-xs btn-primary">Accept</span>
             </div>
@@ -240,7 +245,8 @@ export function Features() {
           </div>
           <div className="feature-visual">
             <ExportShot />
-            <div className="example-card taped">
+            <div className="example-card sticky sticky--green" style={{ "--tilt": "3deg", "--flex": "1.1" } as React.CSSProperties}>
+              <span className="tape" />
               <span className="tag">Downloaded</span>
               <PenLine size={13} style={{ verticalAlign: -2 }} /> why-small-dapps-win-hackathons.docx
             </div>
