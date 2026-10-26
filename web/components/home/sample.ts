@@ -19,14 +19,21 @@ Show the result first, then explain how it works. A short live demo answers most
 1. [1] Hackathon — https://en.wikipedia.org/wiki/Hackathon
 `;
 
-/** Real proof: stamp tx 0xd6480c8bdebb515f93b32d9b60f1b994e834717c60f9b288c171bbd74455b5ed on BOT Chain testnet (968). */
-export const SAMPLE_PROOF = {
-  network: "testnet" as const,
-  id: 2,
+const COMMON = {
   hash: "0x9a28482d821a4e422a6866df4c0829d5d9bc8d6ad3c5097116ee9e52ca6f8c19",
   words: 77,
   tone: "Friendly",
   sources: 1,
-  date: "Oct 25, 2026",
   author: "0xea87E45eBd0D6BcA2BFabAc3739D47aD12640023",
 };
+
+/** Real proofs of this exact text (same contract address on both networks). */
+export const SAMPLE_PROOFS = {
+  // stamp tx 0x2d9b8b746569c20be0099b659173a7a94f8c5ec9a5c29d00d590237248aa3a8d (block 28014856)
+  mainnet: { ...COMMON, network: "mainnet" as const, id: 1, date: "Oct 26, 2026" },
+  // stamp tx 0xd6480c8bdebb515f93b32d9b60f1b994e834717c60f9b288c171bbd74455b5ed
+  testnet: { ...COMMON, network: "testnet" as const, id: 2, date: "Oct 25, 2026" },
+};
+
+/** The proof for the network the app is running on. */
+export const SAMPLE_PROOF = process.env.NEXT_PUBLIC_USE_TESTNET === "1" ? SAMPLE_PROOFS.testnet : SAMPLE_PROOFS.mainnet;

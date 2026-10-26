@@ -1,7 +1,6 @@
 // Product shots built from our own UI pieces. All content is real: the sample article in sample.ts
 // is stamped on BOT Chain testnet as proof #2, and its one fact is cited to the Wikipedia page it came from.
 import Link from "next/link";
-import { CONFIG } from "@/lib/config";
 import { shortAddr } from "@/lib/format";
 import { SAMPLE_PROOF } from "./sample";
 
@@ -93,7 +92,10 @@ export function ProofReceiptMock() {
     <div className="receipt">
       <div className="receipt-head">
         <h2>Proof of authorship</h2>
-        <span className="mono muted">#{SAMPLE_PROOF.id} · testnet</span>
+        <span className="mono muted">
+          #{SAMPLE_PROOF.id}
+          {SAMPLE_PROOF.network === "testnet" ? " · testnet" : ""}
+        </span>
       </div>
       <div className="receipt-sep" style={{ marginTop: 0 }} />
       {rows.map(([k, v]) => (
@@ -107,15 +109,9 @@ export function ProofReceiptMock() {
         <span>Status</span>
         <span className="ok">✓ On-chain</span>
       </div>
-      {CONFIG.USE_TESTNET ? (
-        <Link className="btn btn-primary btn-block" href={`/verify/?proof=${SAMPLE_PROOF.id}`}>
-          Open this proof
-        </Link>
-      ) : (
-        <a className="btn btn-primary btn-block" href={`https://scan.bohr.life/address/0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a`} target="_blank" rel="noopener noreferrer">
-          View on testnet explorer ↗
-        </a>
-      )}
+      <Link className="btn btn-primary btn-block" href={`/verify/?proof=${SAMPLE_PROOF.id}`}>
+        Open this proof
+      </Link>
     </div>
   );
 }

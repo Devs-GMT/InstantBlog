@@ -3,8 +3,9 @@
 **Write a sourced blog post or article in minutes.** Pick a topic, a tone and 3–5 key points, and add your source links. The AI drafts the post with citations and helps you polish it. You can copy it or download it as PDF or Word, then stamp proof that you wrote it on **BOT Chain**.
 
 - 🌐 **Live:** https://instantblog.vercel.app  <!-- TODO: confirm Vercel domain -->
-- 📜 **Contract (BOT Chain mainnet, chain ID 677):** `0x0000000000000000000000000000000000000000` → [view on scan.botchain.ai](https://scan.botchain.ai/address/0x0000000000000000000000000000000000000000)  <!-- TODO -->
-- 🧪 **Contract (BOT Chain testnet, chain ID 968):** `0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a` → [view on scan.bohr.life](https://scan.bohr.life/address/0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a)
+- 📜 **Contract (BOT Chain mainnet, chain ID 677):** `0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a` → [view on scan.botchain.ai](https://scan.botchain.ai/address/0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a) · deployed 2026-10-26, [tx](https://scan.botchain.ai/tx/0xb64f41210f4f1e3e561a8ae238f74f3b237cfcb808bd8cd5be8d089b572744ba)
+- 🧪 **Contract (BOT Chain testnet, chain ID 968):** same address `0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a` → [view on scan.bohr.life](https://scan.bohr.life/address/0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a)
+- ✅ **Try it:** paste the sample article from the home page into `/verify` — it matches [mainnet proof #1](https://scan.botchain.ai/tx/0x2d9b8b746569c20be0099b659173a7a94f8c5ec9a5c29d00d590237248aa3a8d).
 
 ---
 

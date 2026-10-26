@@ -28,11 +28,13 @@ const TESTNET: ChainParams = {
 const ZERO = "0x0000000000000000000000000000000000000000";
 
 const CONTRACTS = {
-  mainnet: process.env.NEXT_PUBLIC_CONTRACT_MAINNET || ZERO, // set NEXT_PUBLIC_CONTRACT_MAINNET after the mainnet deploy
+  // Deployed 2026-10-26, tx 0xb64f41210f4f1e3e561a8ae238f74f3b237cfcb808bd8cd5be8d089b572744ba (block 28014809).
+  // Same address as testnet (same deployer, nonce 0 on both chains).
+  mainnet: process.env.NEXT_PUBLIC_CONTRACT_MAINNET || "0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a",
   testnet: process.env.NEXT_PUBLIC_CONTRACT_TESTNET || "0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a", // BOT Chain testnet 968
 };
 
-// Until a mainnet address exists, the app runs on the live testnet contract (instead of a zero address).
+// Mainnet by default; NEXT_PUBLIC_USE_TESTNET=1 (or clearing the mainnet address) switches to testnet 968.
 const USE_TESTNET = process.env.NEXT_PUBLIC_USE_TESTNET === "1" || CONTRACTS.mainnet.toLowerCase() === ZERO;
 
 const CHAIN = USE_TESTNET ? TESTNET : MAINNET;

@@ -283,11 +283,9 @@ export function ProofSection() {
             <Link href="/verify/" className="text-link">
               Verify an article →
             </Link>
-            {CONFIG.USE_TESTNET && (
-              <Link href={`/verify/?proof=${SAMPLE_PROOF.id}`} className="text-link muted">
-                See the sample proof →
-              </Link>
-            )}
+            <Link href={`/verify/?proof=${SAMPLE_PROOF.id}`} className="text-link muted">
+              See the sample proof →
+            </Link>
           </div>
           <p className="fine-print">A proof shows who stamped this exact text and when. It does not show that every word was written without AI.</p>
         </div>

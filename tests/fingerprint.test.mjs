@@ -45,8 +45,10 @@ test("V4 one char changes the hash", async () =>
 test("titles comment and CRLF ignored", async () =>
   assert.equal(await fingerprint(V1.replace("# Hello world\n", "# Hello world\n<!-- titles: a | b | c -->\n").replace(/\n/g, "\r\n")), H1));
 
-test("landing sample article still matches testnet proof #2", async () => {
-  const { SAMPLE_MD, SAMPLE_PROOF } = await import("../web/components/home/sample.ts");
-  assert.equal(await fingerprint(SAMPLE_MD), SAMPLE_PROOF.hash);
-  assert.equal(wordCount(SAMPLE_MD), SAMPLE_PROOF.words);
+test("landing sample article still matches its on-chain proofs (mainnet #1, testnet #2)", async () => {
+  const { SAMPLE_MD, SAMPLE_PROOFS } = await import("../web/components/home/sample.ts");
+  for (const p of Object.values(SAMPLE_PROOFS)) {
+    assert.equal(await fingerprint(SAMPLE_MD), p.hash);
+    assert.equal(wordCount(SAMPLE_MD), p.words);
+  }
 });

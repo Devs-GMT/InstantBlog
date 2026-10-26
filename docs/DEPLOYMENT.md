@@ -4,6 +4,18 @@ The order matters: **testnet contract → Vercel preview → mainnet contract �
 
 ---
 
+## 0. Current deployment
+
+| | Mainnet (677) | Testnet (968) |
+|---|---|---|
+| Contract | `0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a` | same address |
+| Deploy tx | `0xb64f41210f4f1e3e561a8ae238f74f3b237cfcb808bd8cd5be8d089b572744ba` (block 28,014,809, 643,431 gas, 0.0129 BOT) | see `contracts/broadcast/Deploy.s.sol/968/` |
+| Deployer | burner `0xea87E45eBd0D6BcA2BFabAc3739D47aD12640023` (no rights in the contract) | same |
+| Sample proof | #1 — tx `0x2d9b8b746569c20be0099b659173a7a94f8c5ec9a5c29d00d590237248aa3a8d` | #2 |
+| Source verification | submitted (Blockscout v1 + v2 API); explorer reports pending/failed. On-chain runtime bytecode is identical to `forge inspect … deployedBytecode`, metadata hash included. Manual: explorer → Verify & Publish → **Solidity (Standard JSON input)** → upload `contracts/verify/InstantBlog.standard-input.json`, compiler `v0.8.24+commit.e11b9ed9`, MIT. | explorer was returning 503 |
+
+The app uses the mainnet address by default (`web/lib/config.ts`); `NEXT_PUBLIC_USE_TESTNET=1` switches to 968.
+
 ## 1. Networks
 
 | | Testnet | Mainnet |
