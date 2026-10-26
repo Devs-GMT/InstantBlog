@@ -92,7 +92,7 @@ export function ProofReceiptMock() {
   return (
     <div className="receipt">
       <div className="receipt-head">
-        <h3>Proof of authorship</h3>
+        <h2>Proof of authorship</h2>
         <span className="mono muted">#{SAMPLE_PROOF.id} · testnet</span>
       </div>
       <div className="receipt-sep" style={{ marginTop: 0 }} />

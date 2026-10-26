@@ -66,7 +66,7 @@ Every push to `main` makes a production deployment; other branches/PRs get previ
 2. **Root Directory: `web`** (the repo also holds `contracts/`, `docs/`, `tests/`). Framework preset: Next.js (auto). Production branch: `main`.
 3. **Environment Variables** (Production, and Preview if wanted):
    - `GEMINI_API_KEY` = your AI Studio key (**server-only, never `NEXT_PUBLIC_`**)
-   - `GEMINI_MODEL` = `gemini-3.6-flash` (optional; that is the default)
+   - `GEMINI_MODEL` = `gemini-3.6-flash` (optional; that is the default) and `GEMINI_FALLBACK_MODEL` = `gemini-3.5-flash-lite` (optional default). On the free tier the main model allows only 20 requests/day; the fallback keeps the demo working after that.
    - `NEXT_PUBLIC_CONTRACT_MAINNET` = mainnet address once deployed (unset = the app runs on the testnet contract `0x4625…F72a`)
    - Optional: `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `LIMIT_DRAFT`, `LIMIT_EDIT`, `LIMIT_EXTRACT`, `NEXT_PUBLIC_SITE_URL` (defaults to the Vercel production domain)
 4. Deploy. `NEXT_PUBLIC_*` values are inlined at build time, so **redeploy after changing them**; server vars also apply from the next deployment.

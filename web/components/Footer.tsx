@@ -68,7 +68,7 @@ export function Footer() {
             <p className="built-on">built on BOT Chain</p>
           </div>
           <div>
-            <h4>Product</h4>
+            <h3>Product</h3>
             <ul>
               <li><Link href="/write/">Write</Link></li>
               <li><Link href="/verify/">Verify</Link></li>
@@ -77,7 +77,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4>Guides</h4>
+            <h3>Guides</h3>
             <ul>
               <li><Link href="/guides/#how-to">How to write a how-to</Link></li>
               <li><Link href="/guides/#citing">Citing sources</Link></li>
@@ -86,7 +86,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4>Company</h4>
+            <h3>Company</h3>
             <ul>
               <li><Link href="/about/">About</Link></li>
               <li><a href={CONFIG.GITHUB_URL} target="_blank" rel="noopener noreferrer">GitHub</a></li>

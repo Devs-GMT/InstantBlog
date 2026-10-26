@@ -235,7 +235,9 @@ function Sources({ brief, update, highlight }: { brief: Brief; update: Props["up
     const s = brief.sources[i];
     if (!url) return setSource(i, { url: "", status: "idle", title: undefined, text: undefined, error: undefined });
     if (!isUrl(url)) return setSource(i, { status: "error", error: READ_ERRORS.bad_url, showPaste: true });
-    if (s && (s.status === "ok" || s.status === "reading") && s.url.trim() === url) return;
+    // Same URL already read, being read, or already failed: don't fetch again. (Re-reading a failed URL on
+    // blur used to disable Generate exactly when the user clicked it, swallowing the click.)
+    if (s && (s.status === "ok" || s.status === "reading" || s.status === "error") && s.url.trim() === url) return;
     read(i, url);
   };
 

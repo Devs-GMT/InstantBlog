@@ -36,7 +36,7 @@ export function draftStream(req: Request, env: Env, input: DraftInput): Response
           signal: upstream.signal,
           onText: (t) => send("delta", { t }),
         });
-        send("done", { stop: done.stop, fallback: false, outputTokens: done.outputTokens });
+        send("done", { stop: done.stop, fallback: done.model !== env.MODEL, model: done.model, outputTokens: done.outputTokens });
       } catch (err) {
         if ((err as Error)?.name !== "AbortError") {
           const e = err instanceof HttpError ? err : new HttpError(500, "internal", "Something went wrong. Try again.");

@@ -21,7 +21,7 @@ export function Receipt({
   return (
     <div className={`receipt ${className}`}>
       <div className="receipt-head">
-        <h3>{title}</h3>
+        <h2>{title}</h2>
         {badge && <span className="mono muted">{badge}</span>}
       </div>
       <div className="receipt-sep" style={{ marginTop: 0 }} />

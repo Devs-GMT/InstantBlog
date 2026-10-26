@@ -47,7 +47,8 @@ Server-only env vars (read in `web/server/env.ts`; local: `web/.env.local`, prod
 | Var | Required | Default | Purpose |
 |---|---|---|---|
 | `GEMINI_API_KEY` | yes | — | Google AI Studio key (free: https://aistudio.google.com/apikey) |
-| `GEMINI_MODEL` | no | `gemini-3.6-flash` | Model id (list: `GET /v1beta/models`) |
+| `GEMINI_MODEL` | no | `gemini-3.6-flash` | Main model (list: `GET /v1beta/models`) |
+| `GEMINI_FALLBACK_MODEL` | no | `gemini-3.5-flash-lite` | Used when the main model is out of quota or overloaded; empty = no fallback |
 | `LIMIT_DRAFT` / `LIMIT_EDIT` / `LIMIT_EXTRACT` | no | 10 / 60 / 40 | Per-IP hourly limits |
 | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | no | — | Shared rate-limit store across serverless instances |
 | `MOCK_AI` | dev only | — | `1` = canned AI output, no API calls. **Never in production.** |
@@ -211,7 +212,8 @@ Provider: **Google Gemini API** (Google AI Studio key, free tier). Model from th
 | draft | `:streamGenerateContent?alt=sse` | 8,192 | 0.7 | yes |
 | edit (all actions) | `:generateContent` | 4,096 | 0.4 | no |
 
-- **Free tier:** Flash / Flash-Lite models only; Pro models are paid. Limits are per project (requests per minute and per day) and Google changes them; check the live quota in AI Studio. Our own per-IP limits (10 drafts, 60 edits per hour) sit in front of that.
+- **Free tier:** Flash / Flash-Lite models only; Pro models are paid. Limits are **per model** per project and Google changes them. Measured on 2026-10-26: `gemini-3.6-flash` ≈ 5 requests/minute and **20 requests/day**; Flash-Lite models have their own, larger quota. Our per-IP limits (10 drafts, 60 edits per hour) sit in front of that.
+- **Retries and fallback (`web/server/gemini.ts`):** before any output is sent, 429/500/503 and network errors are retried with backoff (1.5 s, 4 s). A 429 whose quota id contains `PerDay` skips the retries. When the main model still fails, the request is repeated on `GEMINI_FALLBACK_MODEL`. The draft's `done` event reports `model` and `fallback: true` when that happened. Only if every model fails does the user see "The free AI quota is used up for the moment" or "The AI is busy right now".
 - **Data use on the free tier:** Google's terms allow it to use free-tier inputs and outputs to improve its products, and human reviewers may read them. The Privacy page and FAQ say so. Don't put anything confidential in a brief while on the free tier; switching the AI Studio project to a paid plan changes this.
 - **Changing the model:** set `GEMINI_MODEL` (Vercel env var) and redeploy; no code change. List the models your key can use with `curl -H "x-goog-api-key: $KEY" https://generativelanguage.googleapis.com/v1beta/models`.
 - The prompts are static strings (`web/server/prompts.ts`) and provider-neutral.

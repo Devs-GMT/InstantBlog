@@ -564,3 +564,13 @@ button.chip { border: 0; cursor: pointer; font: inherit; font-size: 13px; font-w
 button.chip.chip-select { border: 1px solid var(--border-strong); background: var(--card); }
 button.chip.chip-select:hover { background: var(--panel); }
 button.chip.chip-select[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+.lookup { display: flex; gap: 8px; }
+.lookup .input { height: 40px; font-family: var(--font-mono); font-size: 13px; }
+
+/* a11y (Lighthouse): AA contrast for small text, tabs use aria-selected, receipt heading is an h2 */
+.receipt-head h2 { font-size: 18px; letter-spacing: -.3px; }
+.receipt-total .ok, .result-ok { color: var(--ink-green); }
+.seg button small { color: var(--muted); }
+.seg button[aria-selected="true"] { background: #fff; color: var(--text); box-shadow: var(--shadow-sm); }
+.footer-grid h3 { font-family: var(--font-body); font-size: 13px; font-weight: 600; margin-bottom: 12px; letter-spacing: 0; }

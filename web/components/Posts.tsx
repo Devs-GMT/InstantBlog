@@ -1,10 +1,13 @@
 "use client";
-// /posts — drafts in this browser + proofs stamped by the connected wallet. PRD M-2, M-3.
+// /posts — drafts in this browser + proofs stamped by the connected wallet or any pasted address. PRD M-2, M-3.
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { isAddress } from "ethers";
 import { getProof, proofsOf, type Proof } from "@/lib/chain";
 import { contractConfigured, TONES } from "@/lib/config";
-import { fmtDate, fmtNum, timeAgo } from "@/lib/format";
+import { fingerprint } from "@/lib/fingerprint";
+import { fmtDate, fmtNum, shortAddr, timeAgo } from "@/lib/format";
+import { htmlToMd } from "@/lib/markdown";
 import { duplicateDraft, store, type Draft } from "@/lib/store";
 import { useUI } from "./Providers";
 import { useWallet } from "./WalletProvider";
@@ -16,21 +19,41 @@ export function Posts() {
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [proofs, setProofs] = useState<Proof[] | null>(null);
   const [proofError, setProofError] = useState<string | null>(null);
+  const [edited, setEdited] = useState<Record<string, boolean>>({});
+  const [lookupInput, setLookupInput] = useState("");
+  const [lookup, setLookup] = useState<string | null>(null);
+  const who = lookup || wallet.address;
 
   useEffect(() => {
     setDrafts(store.drafts());
     if (!store.available) toast("Couldn't save in this browser — export to keep your work.", 4000);
   }, [toast]);
 
+  // "Edited since stamp": compare each stamped draft's current fingerprint with its last stamp.
   useEffect(() => {
-    if (tab !== "proofs" || !wallet.address || !contractConfigured()) return;
+    let cancelled = false;
+    (async () => {
+      const out: Record<string, boolean> = {};
+      for (const d of drafts) {
+        const last = d.stamps.at(-1);
+        if (last && d.html) out[d.id] = (await fingerprint(htmlToMd(d.html))) !== last.hash;
+      }
+      if (!cancelled) setEdited(out);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [drafts]);
+
+  useEffect(() => {
+    if (tab !== "proofs" || !who || !contractConfigured()) return;
     setProofs(null);
     setProofError(null);
-    proofsOf(wallet.address)
+    proofsOf(who)
       .then((ids) => Promise.all([...ids].reverse().map((id) => getProof(id))))
       .then(setProofs)
       .catch((e) => setProofError(e.message));
-  }, [tab, wallet.address]);
+  }, [tab, who]);
 
   const remove = async (d: Draft) => {
     const ok = await ask({
@@ -83,7 +106,13 @@ export function Posts() {
                   <div className="post-meta">
                     <span>{timeAgo(d.updatedAt)}</span>
                     <span>{fmtNum(d.words || 0)} words</span>
-                    {last ? <span className="chip chip-green">Stamped #{last.proofId}</span> : <span className="chip chip-panel">Draft</span>}
+                    {!last ? (
+                      <span className="chip chip-panel">Draft</span>
+                    ) : edited[d.id] ? (
+                      <span className="chip chip-amber">Edited since stamp #{last.proofId}</span>
+                    ) : (
+                      <span className="chip chip-green">Stamped #{last.proofId}</span>
+                    )}
                   </div>
                 </div>
                 <div className="post-actions">
@@ -110,7 +139,23 @@ export function Posts() {
 
       {tab === "proofs" && (
         <div className="post-list">
-          {!wallet.address && (
+          <form
+            className="lookup"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const a = lookupInput.trim();
+              if (!a) return setLookup(null);
+              if (!isAddress(a)) return toast("That doesn't look like a wallet address.");
+              setLookup(a);
+            }}
+          >
+            <input className="input" placeholder="Look up any address (0x…)" aria-label="Wallet address to look up" value={lookupInput} onChange={(e) => setLookupInput(e.target.value)} />
+            <button type="submit" className="btn btn-secondary btn-sm">
+              Look up
+            </button>
+          </form>
+          {who && <p className="muted" style={{ fontSize: 14 }}>Showing proofs stamped by <span className="mono">{shortAddr(who)}</span>{lookup && wallet.address && lookup !== wallet.address ? " (looked up)" : ""}</p>}
+          {!who && (
             <div className="card empty">
               <p>Connect your wallet to see the articles you&apos;ve stamped.</p>
               <button type="button" className="btn btn-primary" onClick={wallet.connect}>
@@ -118,10 +163,10 @@ export function Posts() {
               </button>
             </div>
           )}
-          {wallet.address && !contractConfigured() && <div className="card empty">Stamping isn&apos;t live yet.</div>}
-          {wallet.address && proofError && <div className="result result-err">{proofError}</div>}
-          {wallet.address && contractConfigured() && !proofs && !proofError && <p className="muted">Loading proofs…</p>}
-          {proofs?.length === 0 && <div className="card empty">No stamped articles for this wallet yet.</div>}
+          {who && !contractConfigured() && <div className="card empty">Stamping isn&apos;t live yet.</div>}
+          {who && proofError && <div className="result result-err">{proofError}</div>}
+          {who && contractConfigured() && !proofs && !proofError && <p className="muted">Loading proofs…</p>}
+          {proofs?.length === 0 && <div className="card empty">No stamped articles for this address yet.</div>}
           {proofs?.map((p) => (
             <div className="card post-row" key={p.id}>
               <div style={{ minWidth: 0 }}>

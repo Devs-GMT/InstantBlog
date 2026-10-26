@@ -329,7 +329,7 @@ export default function Writer() {
       <div className="mtabs">
         <div className="seg" role="tablist" aria-label="Writer sections">
           {(["brief", "draft", "export"] as Tab[]).map((t) => (
-            <button key={t} type="button" role="tab" aria-selected={tab === t} aria-pressed={tab === t} onClick={() => setTab(t)}>
+            <button key={t} type="button" role="tab" aria-selected={tab === t} onClick={() => setTab(t)}>
               {t[0].toUpperCase() + t.slice(1)}
             </button>
           ))}

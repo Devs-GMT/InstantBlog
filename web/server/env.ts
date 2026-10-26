@@ -3,6 +3,8 @@
 export interface Env {
   GEMINI_API_KEY: string;
   MODEL: string;
+  /** Used when MODEL is out of free quota or overloaded. Empty string disables. */
+  FALLBACK_MODEL: string;
   /** Optional override, e.g. a local fake Gemini server in tests. */
   GEMINI_BASE_URL?: string;
   LIMIT_DRAFT?: string;
@@ -20,6 +22,7 @@ export function getEnv(): Env {
   return {
     GEMINI_API_KEY: e.GEMINI_API_KEY || "",
     MODEL: e.GEMINI_MODEL || "gemini-3.6-flash",
+    FALLBACK_MODEL: e.GEMINI_FALLBACK_MODEL ?? "gemini-3.5-flash-lite",
     GEMINI_BASE_URL: e.GEMINI_BASE_URL,
     LIMIT_DRAFT: e.LIMIT_DRAFT,
     LIMIT_EDIT: e.LIMIT_EDIT,
