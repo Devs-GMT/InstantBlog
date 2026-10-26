@@ -74,13 +74,13 @@ export function Audience() {
   return (
     <section className="section" id="who">
       <div className="container">
-        <div className="section-head">
+        <div className="section-head" data-reveal="">
           <h2>Who is it for?</h2>
           <p>People who already have the ideas and the links, and want the first draft done.</p>
         </div>
         <div className="grid-3">
-          {AUDIENCE.map((a) => (
-            <article className="card aud-card" key={a.title}>
+          {AUDIENCE.map((a, i) => (
+            <article className="card aud-card" key={a.title} data-reveal="" style={{ "--ri": i % 3 } as React.CSSProperties}>
               <div className="icon-tile" style={{ background: `var(--tint-${a.tint})`, color: `var(--ink-${a.tint})` }}>
                 <a.icon size={20} strokeWidth={1.8} />
               </div>
@@ -103,12 +103,12 @@ export function Problem() {
   return (
     <section className="section band ruled-band">
       <div className="container">
-        <div className="problem-head">
+        <div className="problem-head" data-reveal="">
           <h2 className="h2">Blank pages are a slow way to start writing</h2>
         </div>
         <div className="grid-3">
-          {items.map(([n, t, d]) => (
-            <div className="problem-block" key={t}>
+          {items.map(([n, t, d], i) => (
+            <div className="problem-block" key={t} data-reveal="" style={{ "--ri": i } as React.CSSProperties}>
               <span className="num">{n}</span>
               <h3>{t}</h3>
               <p>{d}</p>
@@ -130,12 +130,12 @@ export function HowItWorks() {
   return (
     <section className="section" id="how">
       <div className="container">
-        <div className="section-head">
+        <div className="section-head" data-reveal="">
           <h2>From idea to finished draft in four steps</h2>
         </div>
-        <div className="grid-4 steps">
-          {steps.map(([n, t, d, tint]) => (
-            <div className="card step" key={n}>
+        <div className="grid-4 steps" data-reveal="line">
+          {steps.map(([n, t, d, tint], i) => (
+            <div className="card step" key={n} data-reveal="" style={{ "--ri": i } as React.CSSProperties}>
               <span className={`chip chip-${tint} mono`}>{n}</span>
               <h3>{t}</h3>
               <p>{d}</p>
@@ -151,12 +151,12 @@ export function Features() {
   return (
     <section className="section band" id="features">
       <div className="container">
-        <div className="section-head">
+        <div className="section-head" data-reveal="">
           <h2>Built for writing with sources</h2>
         </div>
 
         <div className="feature">
-          <div className="feature-text">
+          <div className="feature-text" data-reveal="">
             <span className="chip chip-blue">Outline</span>
             <h3>Your key points become the sections</h3>
             <p>Each point gets its own heading, in the order you set. Drag a point up or down before you generate.</p>
@@ -165,7 +165,7 @@ export function Features() {
               <li>Short, medium or long: about 500, 900 or 1,400 words</li>
             </ul>
           </div>
-          <div className="feature-visual">
+          <div className="feature-visual" data-reveal="right">
             <BriefShot />
             <div className="example-card sticky sticky--yellow" style={{ "--tilt": "-3deg", "--flex": "1" } as React.CSSProperties}>
               <span className="tape" />
@@ -178,7 +178,7 @@ export function Features() {
         </div>
 
         <div className="feature flip">
-          <div className="feature-text">
+          <div className="feature-text" data-reveal="">
             <span className="chip chip-violet">Citations</span>
             <h3>Every fact links back to a source</h3>
             <p>InstantBlog reads the pages you link and cites them inline. Hover a [1] in the editor to see which source it points to.</p>
@@ -187,7 +187,7 @@ export function Features() {
               <li>If a page won&apos;t load, paste its text instead</li>
             </ul>
           </div>
-          <div className="feature-visual">
+          <div className="feature-visual" data-reveal="left">
             <EditorShot />
             <div className="example-card sticky sticky--pink" style={{ "--tilt": "2.5deg", "--flex": "1.2" } as React.CSSProperties}>
               <span className="tape" />
@@ -201,7 +201,7 @@ export function Features() {
         </div>
 
         <div className="feature">
-          <div className="feature-text">
+          <div className="feature-text" data-reveal="">
             <span className="chip chip-pink">AI editing</span>
             <h3>Edit with AI, keep your voice</h3>
             <p>Select text and pick Rewrite, Shorten, Expand, Simplify or a new tone. Nothing changes until you press Accept.</p>
@@ -210,7 +210,7 @@ export function Features() {
               <li>Undo works on every change</li>
             </ul>
           </div>
-          <div className="feature-visual">
+          <div className="feature-visual" data-reveal="right">
             <div className="shot ruled-shot" style={{ padding: 22 }}>
               <div className="bubble bubble-static">
                 <span>Rewrite</span>
@@ -234,7 +234,7 @@ export function Features() {
         </div>
 
         <div className="feature flip">
-          <div className="feature-text">
+          <div className="feature-text" data-reveal="">
             <span className="chip chip-cyan">Export</span>
             <h3>Paste into Docs, Notion or Medium, or download PDF and Word</h3>
             <p>Rich text keeps headings, links and lists. The .docx uses real Word heading styles, so the navigation pane works.</p>
@@ -243,7 +243,7 @@ export function Features() {
               <li>A4 PDF with a byline and the sources</li>
             </ul>
           </div>
-          <div className="feature-visual">
+          <div className="feature-visual" data-reveal="left">
             <ExportShot />
             <div className="example-card sticky sticky--green" style={{ "--tilt": "3deg", "--flex": "1.1" } as React.CSSProperties}>
               <span className="tape" />
@@ -273,8 +273,8 @@ export function ProofSection() {
             InstantBlog saves your article&apos;s fingerprint on BOT Chain. Anyone can check a copy against it later without seeing your text.
           </p>
           <div className="trust">
-            {trust.map(([Ico, tint, t, d]) => (
-              <div className="trust-item" key={t}>
+            {trust.map(([Ico, tint, t, d], i) => (
+              <div className="trust-item" key={t} data-reveal="" style={{ "--ri": i } as React.CSSProperties}>
                 <div className="icon-tile" style={{ background: `var(--tint-${tint})`, color: `var(--ink-${tint})` }}>
                   <Ico size={20} strokeWidth={1.8} />
                 </div>
@@ -315,7 +315,7 @@ export function Faq() {
   return (
     <section className="section" id="faq">
       <div className="container faq-grid">
-        <div>
+        <div data-reveal="">
           <h2 className="h2">Questions, answered</h2>
           <p>
             The code is open source{" "}
@@ -325,7 +325,7 @@ export function Faq() {
             .
           </p>
         </div>
-        <div className="faq">
+        <div className="faq" data-reveal="">
           {FAQ.map(([q, a], i) => (
             <details key={q} name="faq" open={i === 0}>
               <summary>{q}</summary>
@@ -346,12 +346,14 @@ export function ClosingCta() {
   ];
   return (
     <section className="cta-band">
-      <h2>Write your first sourced article</h2>
-      <p>Bring a topic, three key points and a few links.</p>
+      <h2 data-reveal="">Write your first sourced article</h2>
+      <p data-reveal="" style={{ "--ri": 1 } as React.CSSProperties}>
+        Bring a topic, three key points and a few links.
+      </p>
       <Link href="/write/" className="btn btn-invert btn-lg">
         <NotebookPen size={18} /> Write my first post
       </Link>
-      <div className="fan" aria-hidden="true">
+      <div className="fan" aria-hidden="true" data-reveal="fan">
         {cards.map(([type, tone, title]) => (
           <div className="fan-card ruled" key={title}>
             <div className="mini-chips">

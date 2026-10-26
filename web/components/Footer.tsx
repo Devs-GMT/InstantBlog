@@ -25,6 +25,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="container">
+        <div data-reveal="print">
         <Receipt
           title="Proof of authorship"
           rows={[
@@ -61,6 +62,7 @@ export function Footer() {
             <span className="chip chip-cyan">Word</span>
           </div>
         </Receipt>
+        </div>
 
         <div className="footer-grid">
           <div>

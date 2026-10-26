@@ -89,7 +89,7 @@ export function ProofReceiptMock() {
     ["Author", shortAddr(SAMPLE_PROOF.author)],
   ];
   return (
-    <div className="receipt">
+    <div className="receipt" data-reveal="print">
       <div className="receipt-head">
         <h2>Proof of authorship</h2>
         <span className="mono muted">
