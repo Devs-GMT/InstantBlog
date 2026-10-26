@@ -1,6 +1,6 @@
 # InstantBlog — AI Prompts
 
-These prompts live in `worker/src/prompts.ts` as static strings, so they stay cacheable and easy to diff. Variables in `{{…}}` are filled in by `buildDraftUser()` / `buildEditUser()`.
+These prompts live in `web/server/prompts.ts` as static strings, so they stay cacheable and easy to diff. Variables in `{{…}}` are filled in by `buildDraftUser()` / `buildEditUser()`.
 
 Design principles:
 

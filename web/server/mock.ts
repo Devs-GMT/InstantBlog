@@ -17,23 +17,40 @@ export function mockDraftMarkdown(d: DraftInput): string {
   return `# ${d.topic}\n<!-- titles: ${d.topic}: a quick guide | What nobody tells you about ${d.topic.toLowerCase()} | ${d.points.length} ideas on ${d.topic.toLowerCase()} -->\n\n${note}This is a mock draft from the dev Worker. It follows your brief and key points in order${cite(0)}.\n\n${sections}\n\n## Conclusion\n\nThat's the short version. Pick one idea and try it this week.${sources}\n`;
 }
 
-export function mockDraftStream(d: DraftInput, cors: Record<string, string>): Response {
+export function mockDraftStream(d: DraftInput): Response {
   const md = mockDraftMarkdown(d);
   const enc = new TextEncoder();
   const chunks = md.match(/[\s\S]{1,24}/g) ?? [];
+  let cancelled = false;
   const body = new ReadableStream<Uint8Array>({
     async start(controller) {
-      const send = (e: string, data: unknown) => controller.enqueue(enc.encode(`event: ${e}\ndata: ${JSON.stringify(data)}\n\n`));
+      // enqueue() throws once the client has gone (Stop / reload); never let that become an unhandled rejection.
+      const send = (e: string, data: unknown) => {
+        if (cancelled) return;
+        try {
+          controller.enqueue(enc.encode(`event: ${e}\ndata: ${JSON.stringify(data)}\n\n`));
+        } catch {
+          cancelled = true;
+        }
+      };
       send("meta", { model: "mock", sources: d.sources.length });
       for (const t of chunks) {
+        if (cancelled) return;
         send("delta", { t });
         await new Promise((r) => setTimeout(r, 25));
       }
       send("done", { stop: "end_turn", fallback: false, outputTokens: 0 });
-      controller.close();
+      try {
+        controller.close();
+      } catch {
+        /* already closed */
+      }
+    },
+    cancel() {
+      cancelled = true;
     },
   });
-  return new Response(body, { headers: { "content-type": "text/event-stream; charset=utf-8", "cache-control": "no-cache", ...cors } });
+  return new Response(body, { headers: { "content-type": "text/event-stream; charset=utf-8", "cache-control": "no-cache" } });
 }
 
 export function mockEdit(e: EditInput) {

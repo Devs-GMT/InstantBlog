@@ -1,6 +1,6 @@
 # InstantBlog — Deployment Runbook
 
-The order matters: **testnet contract → Worker → site preview → mainnet contract → live site.**
+The order matters: **testnet contract → Vercel preview → mainnet contract → production.** The site and its API are one Next.js app on Vercel; the only other moving part is the contract.
 
 ---
 
@@ -47,39 +47,32 @@ forge script script/Deploy.s.sol --rpc-url botchain --broadcast            # the
 
 ---
 
-## 3. Worker (Cloudflare)
+## 3. API (inside the Next.js app)
 
-```bash
-cd worker
-npm ci
-npx wrangler login
-npx wrangler kv namespace create RL           # paste the id into wrangler.toml
-npx wrangler secret put GEMINI_API_KEY        # free key from https://aistudio.google.com/apikey; never commit it
-npx wrangler deploy
-npx wrangler tail                             # watch logs (should show no article text)
-```
+There is no separate backend to deploy: `/api/extract-url`, `/api/blog/draft` and `/api/blog/edit` are route handlers in `web/app/api/` and ship with every Vercel deployment.
 
-- `ALLOWED_ORIGINS` in `wrangler.toml` = the production origin(s). Default: `https://instantblog.vercel.app,https://instantblog-*.vercel.app` (the `*` entry matches one label fragment, which covers Vercel preview URLs such as `instantblog-git-main-devs-gmt.vercel.app`). Update it if the Vercel project name or a custom domain differs. Remove `http://localhost:5173` for production.
-- Local dev: copy `.dev.vars.example` to `.dev.vars`. Add `MOCK_AI=1` to test the whole UI without an API key. **`.dev.vars` is gitignored; `MOCK_AI` must never be set in production.**
-- Optional: a custom route `api.instantblog.xyz/*` → Worker (Cloudflare DNS needed).
-- Gemini free tier: no billing needed. Its quota is per Google Cloud project; if you later enable billing, set a budget alert in Google Cloud.
+- Local: `cp web/.env.example web/.env.local`, set `GEMINI_API_KEY` (free key: https://aistudio.google.com/apikey) or `MOCK_AI=1`, then `npm run dev`.
+- Production: set the same server env vars in Vercel (§4). `MOCK_AI` must stay unset.
+- Gemini free tier: no billing needed; quota is per Google Cloud project. If you enable billing later, set a budget alert in Google Cloud.
+- Optional shared rate limits: create a free Upstash Redis database (Vercel Marketplace → Upstash) and set `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN`. Without them, limits are counted per serverless instance.
 
 ---
 
-## 4. Site (Next.js → Vercel, from `origin/main`)
+## 4. Site + API (Next.js → Vercel, from `origin/main`)
 
-The web app deploys to **Vercel** from the GitHub repo `Devs-GMT/InstantBlog`, branch `main`. Every push to `main` makes a production deployment; other branches/PRs get preview URLs. `web/vercel.json` pins the framework (`nextjs`), `npm ci` and `npm run build` (which includes the `flatten-rsc` post-step for the static export).
+Every push to `main` makes a production deployment; other branches/PRs get preview URLs. `web/vercel.json` pins the framework (`nextjs`), `npm ci` and `npm run build`.
 
 1. vercel.com → **Add New… → Project → Import Git Repository** → `Devs-GMT/InstantBlog`.
-2. **Root Directory: `web`** (important — the repo is a monorepo). Framework preset: Next.js (auto). Production branch: `main`.
+2. **Root Directory: `web`** (the repo also holds `contracts/`, `docs/`, `tests/`). Framework preset: Next.js (auto). Production branch: `main`.
 3. **Environment Variables** (Production, and Preview if wanted):
-   - `NEXT_PUBLIC_WORKER_URL` = deployed Worker URL
-   - `NEXT_PUBLIC_CONTRACT_MAINNET` = mainnet address
-   - Optional: `NEXT_PUBLIC_SITE_URL` (defaults to the Vercel production domain via `NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL`), `NEXT_PUBLIC_USE_TESTNET=1` (+ `NEXT_PUBLIC_CONTRACT_TESTNET`) for a testnet preview — the testnet address `0x4625…F72a` is already the default.
-4. Deploy. `NEXT_PUBLIC_*` values are inlined at build time, so **redeploy after changing them**.
-5. Make sure the Worker's `ALLOWED_ORIGINS` contains the production domain (and the preview pattern) — see §3.
-6. Custom domain (optional): Vercel → Project → Settings → Domains → add the domain and follow the DNS instructions; then add that origin to `ALLOWED_ORIGINS`.
-7. Check that `/write/` and `/verify/?proof=1` load directly (200) and the console shows no CORS or 404 errors.
+   - `GEMINI_API_KEY` = your AI Studio key (**server-only, never `NEXT_PUBLIC_`**)
+   - `GEMINI_MODEL` = `gemini-3.6-flash` (optional; that is the default)
+   - `NEXT_PUBLIC_CONTRACT_MAINNET` = mainnet address once deployed (unset = the app runs on the testnet contract `0x4625…F72a`)
+   - Optional: `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `LIMIT_DRAFT`, `LIMIT_EDIT`, `LIMIT_EXTRACT`, `NEXT_PUBLIC_SITE_URL` (defaults to the Vercel production domain)
+4. Deploy. `NEXT_PUBLIC_*` values are inlined at build time, so **redeploy after changing them**; server vars also apply from the next deployment.
+5. Check `https://<domain>/api/health/` → `{"ok":true,"ai":"gemini"}` (`"missing-key"` means `GEMINI_API_KEY` isn't set).
+6. Check that `/write/` and `/verify/?proof=1` load and a draft streams.
+7. Vercel Hobby limits are fine for this app: drafts take about 12 s (route `maxDuration` is 60 s).
 
 CLI alternative (needs `vercel login`): `cd web && npx vercel link` (pick the project) → `npx vercel --prod`.
 
@@ -87,17 +80,17 @@ Local production preview:
 
 ```bash
 cd web
-NEXT_PUBLIC_WORKER_URL=http://127.0.0.1:8787 NEXT_PUBLIC_SITE_URL=http://localhost:5173 npm run build
-npx serve out -l 5173
+npm run build && npm start          # reads web/.env.local; http://localhost:5173 (pages + /api)
+MOCK_AI=1 npm start                 # same, with canned AI output (no Gemini calls)
 ```
 
 ---
 
 ## 5. Go-live checklist
 
-- [ ] Vercel env vars set: mainnet contract, Worker URL (`NEXT_PUBLIC_USE_TESTNET` unset in Production) — then redeploy
+- [ ] Vercel env vars set: `GEMINI_API_KEY`, mainnet contract (`NEXT_PUBLIC_USE_TESTNET` unset in Production), then redeploy
 - [ ] Footer shows the mainnet address, "✓ Verified on-chain", and the explorer link works
-- [ ] Worker `ALLOWED_ORIGINS` = the live origin(s) only; `MOCK_AI` unset
+- [ ] `/api/health/` says `"ai":"gemini"`; `MOCK_AI` unset
 - [ ] 2–3 demo articles stamped on mainnet (how-to, listicle, opinion)
 - [ ] `git grep -nI "AIza"` → nothing (Gemini keys start with AIza). `.dev.vars` not committed
 - [ ] Replace `web/public/botchain-logo.svg` (placeholder) with the official BOT Chain mark
@@ -106,5 +99,4 @@ npx serve out -l 5173
 ## 6. Rollback
 
 - **Front end:** Vercel → Deployments → pick the previous production deployment → **Promote to Production** (instant), or revert the commit on `main`.
-- **Worker:** `npx wrangler rollback`.
 - **Contract:** it's immutable. If it's broken, deploy a new one and switch the address variable (old proofs stay readable at the old address, so keep it listed in the README).

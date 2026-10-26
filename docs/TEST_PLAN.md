@@ -16,7 +16,7 @@ Browsers: Chrome desktop (primary), Safari iOS, Chrome Android, Firefox desktop 
 | A4 | Exports | Rich text → Google Docs keeps H2s, bold, links, lists. Markdown + plain text copy. PDF opens. .docx opens in Word and Google Docs with headings | ☐ |
 | A5 | Home | 8 sections present and responsive at 375 / 768 / 1280 | ☐ |
 | A6 | Mainnet | Contract verified on scan.botchain.ai. The address matches the README and footer | ☐ |
-| A7 | Live site | Custom domain over HTTPS. `/write` and `/verify` deep links load (200). The Worker answers from that origin | ☐ |
+| A7 | Live site | Custom domain over HTTPS. `/write` and `/verify` deep links load (200). The `/api` routes answer on the same domain (`/api/health/` → `ai: gemini`) | ☐ |
 | A8 | Footer | BOT Chain logo → botchain.ai (new tab). View on explorer → contract (new tab). Counter = `total()` | ☐ |
 
 ---
@@ -43,7 +43,7 @@ Browsers: Chrome desktop (primary), Safari iOS, Chrome Android, Firefox desktop 
 | T-D1 | Generate with 2 sources | Status "Reading your sources…" → text streams with a caret. H1, 3 title chips, intro, H2 per point, Conclusion, Sources list `[1]…[2]` |
 | T-D2 | Generate with 0 sources | Starts with "⚠ No sources added…". No Sources section, no percentages |
 | T-D3 | Press Stop halfway | Streaming stops. Partial text stays editable. Toast |
-| T-D4 | Worker offline (wrong URL in devtools override) | Error banner + Retry. Previous content intact |
+| T-D4 | API offline (block `/api/*` in devtools) | Error banner + Retry. Previous content intact |
 | T-D5 | 11th draft within an hour | 429 copy with the minutes remaining |
 | T-D6 | Click an alt title chip | H1 swaps. The old title becomes a chip |
 | T-D7 | Hover `[1]` | Source chip 1 and Sources line 1 highlight |
@@ -59,7 +59,7 @@ Browsers: Chrome desktop (primary), Safari iOS, Chrome Android, Firefox desktop 
 | T-E4 | If a suggestion drops `[1]` | Warning "A citation was removed…" |
 | T-E5 | Write intro / Write conclusion / Suggest titles / Add a section for "common mistakes" | Replaces or inserts in the right place. Titles refresh the chips |
 | T-E6 | Esc and Ctrl+Enter on a preview | Discard / Accept |
-| T-E7 | Worker down → toolbar H2/bold/list/link/quote | All still work |
+| T-E7 | API down → toolbar H2/bold/list/link/quote | All still work |
 
 ### Export
 
@@ -161,9 +161,9 @@ for (const [input, want] of cases) console.log((await fingerprint(input)).starts
 
 ---
 
-## 5. Worker security tests
+## 5. API security tests
 
-See [WORKER_API § 8](WORKER_API.md#8-worker-test-commands). Expected: every private/loopback/metadata URL → `422 blocked_address`; a foreign origin → `403`; a 300 KB body → `413`; the 11th draft per hour → `429`. Check `wrangler tail` while running a draft: **no article text in the logs**.
+See [API § 8](API.md#8-api-test-commands). Expected: every private/loopback/metadata URL and every hostname resolving to one (`localtest.me`, `127.0.0.1.nip.io`) → `422 blocked_address`; a foreign `Origin` → `403`; aborted draft streams don't crash the server; a 300 KB body → `413`; the 11th draft per hour → `429`. Check `wrangler tail` while running a draft: **no article text in the logs**.
 
 ---
 

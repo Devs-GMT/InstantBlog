@@ -15,7 +15,7 @@ export function POST(req: Request) {
     const env = getEnv();
     const input = parseDraft(await readJson(req));
     await checkRateLimit("draft", clientIp(req), env);
-    if (env.MOCK_AI === "1") return mockDraftStream(input, {});
+    if (env.MOCK_AI === "1") return mockDraftStream(input);
     if (!env.GEMINI_API_KEY) throw new HttpError(503, "upstream", "The AI isn't configured on this server.");
     return draftStream(req, env, input);
   });

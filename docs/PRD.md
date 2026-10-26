@@ -7,7 +7,7 @@
 | **Feasibility** | 🟡 Medium |
 | **Target build time** | ~5 hours (Build Week 2) |
 | **Chain** | BOT Chain mainnet (chain ID 677) · testnet (chain ID 968) |
-| **Related docs** | [BUILD_PLAN](BUILD_PLAN.md) · [ARCHITECTURE](ARCHITECTURE.md) · [CONTRACT_SPEC](CONTRACT_SPEC.md) · [WORKER_API](WORKER_API.md) · [AI_PROMPTS](AI_PROMPTS.md) · [DESIGN_SYSTEM](DESIGN_SYSTEM.md) · [CONTENT_COPY](CONTENT_COPY.md) · [TEST_PLAN](TEST_PLAN.md) · [DEPLOYMENT](DEPLOYMENT.md) · [SUBMISSION](SUBMISSION.md) |
+| **Related docs** | [BUILD_PLAN](BUILD_PLAN.md) · [ARCHITECTURE](ARCHITECTURE.md) · [CONTRACT_SPEC](CONTRACT_SPEC.md) · [API](API.md) · [AI_PROMPTS](AI_PROMPTS.md) · [DESIGN_SYSTEM](DESIGN_SYSTEM.md) · [CONTENT_COPY](CONTENT_COPY.md) · [TEST_PLAN](TEST_PLAN.md) · [DEPLOYMENT](DEPLOYMENT.md) · [SUBMISSION](SUBMISSION.md) |
 
 ---
 
@@ -34,7 +34,7 @@ Brief  →  AI reads sources  →  Streamed draft with [n] citations  →  Edit 
 ### 1.2 Solution
 
 - A **short brief** (topic, type, tone, length, 3–5 key points, 0–5 sources). Each key point becomes one section.
-- **Grounded drafting:** the Worker reads each source URL. The model may use only those sources for facts, statistics and quotes, and must cite them as `[n]`.
+- **Grounded drafting:** the server reads each source URL. The model may use only those sources for facts, statistics and quotes, and must cite them as `[n]`.
 - **AI editing on selected text**, previewed with Accept / Discard, so the user stays in control of their voice.
 - **Exports that work in the browser:** rich-text copy for Docs, Notion or Medium, plus Markdown, plain text, PDF and .docx.
 - **Proof of authorship:** a SHA-256 fingerprint of the article plus a few small numbers are stored on BOT Chain with a timestamp. The text itself never goes on-chain.
@@ -78,7 +78,7 @@ See [§ 12 Out of scope](#12-out-of-scope-mvp).
 - [ ] **Exports:** Copy (rich text, Markdown, plain text), Download PDF, Download .docx.
 - [ ] **Home page with 8 sections** (§ 8).
 - [ ] **Mainnet deployment.** Contract is on BOT Chain mainnet, its address is in the README and the footer, and it shows on scan.botchain.ai.
-- [ ] **Live website.** Public URL (Vercel, deployed from `main`) and a live Worker. Works on mobile and desktop.
+- [ ] **Live website.** Public URL (Vercel, deployed from `main`); the API ships in the same app. Works on mobile and desktop.
 - [ ] **BOT Chain footer.** Clickable BOT Chain logo → botchain.ai, and **View on explorer** → the mainnet contract (§ 11).
 
 ---
@@ -141,7 +141,7 @@ IDs are referenced from [BUILD_PLAN](BUILD_PLAN.md) and [TEST_PLAN](TEST_PLAN.md
 
 | ID | Requirement |
 |---|---|
-| D-1 | `POST /blog/draft` with the brief and source texts. The response is an SSE stream of text deltas ([WORKER_API § 4](WORKER_API.md#4-post-blogdraft-streamed)). |
+| D-1 | `POST /blog/draft` with the brief and source texts. The response is an SSE stream of text deltas ([API § 4](API.md)). |
 | D-2 | Markdown streams into the editor live. A blinking caret marks the insertion point and **[Stop]** replaces Generate while streaming. |
 | D-3 | Output structure: `# Title`, an `<!-- titles: A | B | C -->` line (parsed into 3 alternative title chips above the editor and removed from the body), intro, one `## H2` per key point in order, `## Conclusion`, `## Sources` as a numbered list `[n] Title — URL`. |
 | D-4 | Citations: `[n]` markers in the body render as small pill links. Hovering or focusing one highlights the matching source chip in the brief and the matching line in the Sources list. |
@@ -156,12 +156,12 @@ IDs are referenced from [BUILD_PLAN](BUILD_PLAN.md) and [TEST_PLAN](TEST_PLAN.md
 |---|---|
 | E-1 | Selecting ≥ 3 words shows a **floating toolbar**: Rewrite · Shorten · Expand · Change tone ⌄ (the 6 tones) · Simplify · Fix grammar. |
 | E-2 | **Panel actions** (under the brief, in an "AI helpers" card): Write intro · Write conclusion · Suggest titles · Add a section for… (opens an inline input: "a section about…"). |
-| E-3 | Each call sends the selected text + surrounding paragraph + brief + action to `POST /blog/edit` ([WORKER_API § 5](WORKER_API.md#5-post-blogedit)). |
+| E-3 | Each call sends the selected text + surrounding paragraph + brief + action to `POST /blog/edit` ([API § 5](API.md)). |
 | E-4 | **Preview:** the suggestion appears as an inline diff card under the selection (old text struck through in muted colour, new text highlighted in a cyan tint) with **[Accept]** / **[Discard]**. Esc = Discard, ⌘/Ctrl+Enter = Accept. |
 | E-5 | Accept replaces the range as **one undo step**. ⌘/Ctrl+Z always works. |
 | E-6 | Citations stay intact: the client checks that every `[n]` in the selection is still in the suggestion. If one is missing, the preview shows the warning "A citation was removed — check before accepting". |
 | E-7 | Write intro / conclusion replaces the existing intro / conclusion if there is one, otherwise inserts it. Add a section inserts an H2 section before the Conclusion. Suggest titles refreshes the 3 title chips. |
-| E-8 | Normal typing and a simple formatting toolbar (H2, H3, Bold, Italic, Bullet list, Link, Quote, Undo, Redo) always work, even when the Worker is down. |
+| E-8 | Normal typing and a simple formatting toolbar (H2, H3, Bold, Italic, Bullet list, Link, Quote, Undo, Redo) always work, even when the API is down. |
 
 ### 5.5 Exports (X)
 
@@ -214,7 +214,7 @@ All exports run in the browser.
 
 ### 6.1 Reading sources
 
-- The Worker fetches the URL and extracts the main article text, readability-style (`@mozilla/readability` + `linkedom`). It returns `{title, text, words, siteName}`, with the text trimmed to **~3,000 words per source**. Reuse Inkprint's `/extract-url` if it is already built and meets these rules.
+- The server fetches the URL and extracts the main article text, readability-style (`@mozilla/readability` + `linkedom`). It returns `{title, text, words, siteName}`, with the text trimmed to **~3,000 words per source**. Reuse Inkprint's `/extract-url` if it is already built and meets these rules.
 - **Safety (SSRF guard):** http/https only, ports 80/443 only; block localhost, `*.local`, `*.internal`, `0.0.0.0/8`, `127/8`, `10/8`, `172.16/12`, `192.168/16`, `169.254/16`, `100.64/10`, IPv6 `::1`, `fc00::/7` and `fe80::/10`; follow redirects manually (max 3) and re-check every hop; 5 s timeout; 2 MB body cap (streamed read); no cookies or credentials sent; accept `text/html` and `text/plain` only.
 - If a page can't be read (paywall, blocked, timeout, non-HTML), the chip shows ✗ and the user can paste the text instead.
 
@@ -347,9 +347,10 @@ Publishing directly to WordPress or Medium, image generation, SEO scoring, plagi
 | 1 | **What gets hashed** | The brief says "SHA-256 of normalised Markdown". We hash the **canonical text**: Markdown → rendered → visible text, with list/heading markers and the AI footer line stripped, NFC-normalised and whitespace collapsed ([ARCHITECTURE § 5](ARCHITECTURE.md#5-fingerprint-canonicalisation)). | `/verify` promises "paste *any* copy". A rich-text copy pasted back as plain text has no `##` or `**`, so a raw-Markdown hash would never match it. The canonical text matches Markdown and plain-text copies of the same article. |
 | 2 | **Proof ids** | 1-based (`#1` is the first stamp). The `proofs` array is private. Use `getProof(id)`. | "Stamped #0" reads badly, and a public 0-indexed getter next to 1-based ids invites off-by-one bugs. |
 | 3 | **Editor** | Tiptap v2 (ESM via esm.sh, pinned) + BubbleMenu. Quill 2 is the fallback if the time box is blown. | Tiptap gives the selection bubble, transactions (one-step undo) and decorations for citation hover. |
-| 4 | **Front end & hosting** | Next.js 16 static export (`trailingSlash`), deployed on Vercel from `origin/main` (Root Directory `web`). | Every route is a real `index.html`, so deep links return 200; preview URLs per branch. (Changed from the brief's single `index.html` on GitHub Pages.) |
-| 5 | **LLM** | Google Gemini API (free tier, `gemini-3.6-flash` by default) called with `fetch` from the Worker. | Free to run for an MVP; one model keeps prompts simple. Trade-off: free-tier data may be used by Google, which the Privacy page states. Details in [WORKER_API § 7](WORKER_API.md#7-llm-configuration). |
-| 6 | **Rate limiting** | KV counter per IP per hour bucket (`rl:<ip>:<yyyymmddhh>`, TTL 3,700 s). | The Workers Rate Limiting binding only supports 10 s / 60 s windows, and an approximate count is fine for an MVP. |
+| 4 | **Front end & hosting** | Next.js 16 (`trailingSlash`), pages + API routes, deployed on Vercel from `origin/main` (Root Directory `web`). | Every route is a real `index.html`, so deep links return 200; preview URLs per branch. (Changed from the brief's single `index.html` on GitHub Pages.) |
+| 5 | **LLM** | Google Gemini API (free tier, `gemini-3.6-flash` by default) called with `fetch` from the app's API routes. | Free to run for an MVP; one model keeps prompts simple. Trade-off: free-tier data may be used by Google, which the Privacy page states. Details in [WORKER_API § 7](WORKER_API.md#7-llm-configuration). |
+| 6 | **Rate limiting** | Per-IP hourly counter (`rl:<route>:<ip>:<yyyymmddhh>`) in Upstash Redis when configured, else in memory. | Free, works on Vercel serverless; approximate counts are fine for an MVP. |
+| 8 | **Monolith** | Pages and API in one Next.js app on Vercel (changed from the brief's separate Cloudflare Worker). | One repo, one deploy, one place for the Gemini key, no CORS. |
 | 7 | **Native currency** | `BOT`, 18 decimals | Unconfirmed in official docs. Verify on botchain.ai / chainlist before mainnet (see [DEPLOYMENT](DEPLOYMENT.md)). |
 
 ### 13.1 Open questions

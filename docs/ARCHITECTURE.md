@@ -7,28 +7,26 @@ Covers the system overview, repo layout, front-end modules, data model, fingerpr
 ## 1. System overview
 
 ```
-              ┌──────────────── Browser — Next.js static export on Vercel ─────────────────────┐
-              │  /  (home)   /write/   /verify/   /posts/   /about/ /guides/ /privacy/ /terms/   │
-              │                                                                                 │
-              │  Tiptap v3 editor · brief · exports (Clipboard / html2pdf / docx) · SHA-256      │
-              │  localStorage drafts · ethers v6 (BrowserProvider + JsonRpcProvider)             │
-              └───────┬───────────────────────────────┬───────────────────────────────┬─────────┘
-                      │ HTTPS (CORS locked)           │ MetaMask (writes)             │ JSON-RPC (reads)
-                      ▼                               ▼                               ▼
-   ┌────────────── Cloudflare Worker ─────────┐   ┌─────────────────────────────────────────────┐
-   │ POST /extract-url  → fetch + Readability │   │ BOT Chain mainnet (677)  rpc.botchain.ai     │
-   │ POST /blog/draft   → Gemini (SSE stream) │   │   InstantBlog.sol  stamp / getProof / ...    │
-   │ POST /blog/edit    → Gemini (JSON)       │   │ Explorer: scan.botchain.ai                   │
-   │ KV: rate limits · Secret: GEMINI_API_KEY │   └─────────────────────────────────────────────┘
-   └───────────────┬──────────────────────────┘
-                   ▼
-         Google Gemini API (gemini-3.6-flash, free tier)
+   ┌──────────────── Vercel — one Next.js app (Root Directory: web/) ─────────────────┐
+   │ Browser pages: /  /write/  /verify/  /posts/  /about/ /guides/ /privacy/ /terms/  │
+   │   Tiptap editor · brief · exports (Clipboard / html2pdf / docx) · SHA-256         │
+   │   localStorage drafts · ethers v6 (BrowserProvider + JsonRpcProvider)             │
+   │                                                                                  │
+   │ API route handlers (Node runtime, same origin):                                  │
+   │   POST /api/extract-url  → safeFetch (IP-checked) + Readability                  │
+   │   POST /api/blog/draft   → Gemini (SSE stream)                                   │
+   │   POST /api/blog/edit    → Gemini (JSON)                                         │
+   │   env: GEMINI_API_KEY · rate limits: Upstash Redis or in-memory                  │
+   └───────────┬──────────────────────────────────────────┬──────────────┬──────────┘
+               ▼                                          ▼ MetaMask     ▼ JSON-RPC
+     Google Gemini API (gemini-3.6-flash, free tier)    BOT Chain mainnet 677 / testnet 968
+                                                        InstantBlog.sol · scan.botchain.ai
 ```
 
 **Trust boundaries**
 
-- The **browser** holds the article text. It only leaves the browser for the Worker (drafting and edits), and the Worker doesn't log it.
-- The **Worker** holds the API key and enforces CORS, rate limits, input caps and the SSRF guard.
+- The **browser** holds the article text. It only leaves the browser for the app's own `/api` routes (drafting and edits), which don't log it.
+- The **server side** (`web/server/`) holds the Gemini key and enforces the same-origin check, rate limits, input caps and the SSRF guard.
 - The **chain** holds only `bytes32` hash, title, words, tone, sources count, author and timestamp.
 
 ---
@@ -41,26 +39,13 @@ InstantBlog/
 ├─ contracts/                           # Foundry: src/InstantBlog.sol · test/ · script/Deploy.s.sol (CONTRACT_SPEC.md)
 ├─ docs/                                # this documentation set
 ├─ tests/fingerprint.test.mjs           # locks fingerprint v1 (runs against web/lib/fingerprint.ts)
-├─ worker/                              # Cloudflare Worker (WORKER_API.md)
-│  ├─ wrangler.toml · .dev.vars.example
-│  └─ src/
-│     ├─ index.ts      router, CORS, error envelope, logging (no bodies)
-│     ├─ http.ts       Env type, CORS + JSON helpers
-│     ├─ ssrf.ts       URL guard (every hop)
-│     ├─ extract.ts    /extract-url (Readability + linkedom, 2 MB / 5 s caps)
-│     ├─ draft.ts      /blog/draft (SSE: meta/delta/ping/done/error)
-│     ├─ edit.ts       /blog/edit (10 actions, missingCitations)
-│     ├─ gemini.ts     Gemini REST client (SSE parse, finish reasons, error mapping)
-│     ├─ prompts.ts    system prompts (AI_PROMPTS.md)
-│     ├─ limits.ts     validation, source budget, token cap
-│     ├─ ratelimit.ts  KV hourly counters
-│     └─ mock.ts       dev-only canned AI (MOCK_AI=1)
-└─ web/                                 # Next.js 16 App Router, output: "export"
+└─ web/                                 # Next.js 16 App Router on Vercel (pages + API)
    ├─ next.config.ts · package.json · tsconfig.json
-   ├─ scripts/flatten-rsc.mjs           # post-export: RSC payload aliases for static hosting
+   ├─ .env.example                      # server env template (copy to .env.local, gitignored)
    ├─ vercel.json                        # framework nextjs, npm ci, npm run build
    ├─ public/  favicon.svg · logo-mark.svg · botchain-logo.svg
    ├─ app/
+   │  ├─ api/  extract-url/ · blog/draft/ · blog/edit/ · health/   # route.ts handlers
    │  ├─ layout.tsx                     # fonts (next/font), metadata, <Providers>
    │  ├─ page.tsx                       # home: 8 sections + footer
    │  ├─ write/  verify/  posts/        # app routes (client components inside)
@@ -79,11 +64,15 @@ InstantBlog/
    │     ├─ useAiTools.tsx              # selection toolbar, preview card, panel helpers
    │     ├─ useStamp.tsx                # stamp flow + proof card state
    │     └─ Exports.tsx                 # Copy ⌄ / PDF / .docx + mobile Export tab
-   └─ lib/                              # framework-free logic
-      ├─ config.ts      ALL constants (contract, chain, Worker URL) — NEXT_PUBLIC_* overrides
+   ├─ server/                           # server-only API logic
+   │  ├─ env.ts · http.ts (errors, same-origin, IP) · ratelimit.ts (Upstash or memory)
+   │  ├─ ssrf.ts · safeFetch.ts (undici, IP check at connect) · extract.ts (Readability)
+   │  ├─ gemini.ts · draft.ts (SSE) · edit.ts · prompts.ts · limits.ts · mock.ts
+   └─ lib/                              # client-side, framework-free logic
+      ├─ config.ts      ALL client constants (contract, chain, API base) — NEXT_PUBLIC_* overrides
       ├─ fingerprint.ts canonicalText() + sha256 + wordCount() — FROZEN v1
       ├─ chain.ts       ABI, reads (public RPC), stamp(), error mapping
-      ├─ api.ts         Worker client (SSE parser over fetch)
+      ├─ api.ts         API client for /api/* (SSE parser over fetch)
       ├─ store.ts       localStorage drafts/prefs (try/catch + memory fallback)
       ├─ brief.ts       validation, usable sources, payload
       ├─ markdown.ts    marked/DOMPurify/Turndown round-trip, titles comment parser
@@ -98,7 +87,7 @@ InstantBlog/
 
 | Purpose | Library | Notes |
 |---|---|---|
-| Framework | next **16.4.3**, react / react-dom **19.3.1** | Static export, Turbopack build |
+| Framework | next **16.4.3**, react / react-dom **19.3.1** | Vercel (pages + API routes), Turbopack build |
 | Wallet / contract | ethers **6.17.0** | `BrowserProvider` for writes, `JsonRpcProvider` (static network) for reads |
 | Editor | @tiptap/react · starter-kit · extensions · pm **3.32.0** | StarterKit includes Link; Placeholder from `@tiptap/extensions` |
 | Markdown → HTML | marked **15.0.4** (exact) | **Frozen with the fingerprint** — a parser change would change hashes |
@@ -106,6 +95,9 @@ InstantBlog/
 | Sanitise | dompurify **3.4.17** | All model HTML is sanitised before it reaches the DOM |
 | PDF | html2pdf.js **0.14.0** | `import()` on first click; fallback `window.print()` + print.css |
 | Word | docx **9.14.0** | `import()` on first click; fallback `.md` download |
+| Icons | lucide-react **1.61.0** | ISC licence; notebook/writing icons |
+| Server: extraction | @mozilla/readability **0.6.0** + linkedom **0.18.14** | Main-text extraction in `/api/extract-url` |
+| Server: safe fetch | undici **8.12.3** | `Agent` with a `connect.lookup` that rejects private/internal IPs |
 | Fonts | Nunito, Inter, Newsreader, JetBrains Mono | `next/font/google` (self-hosted at build) |
 
 ---
@@ -173,7 +165,7 @@ All constants live here. Build-time overrides (`NEXT_PUBLIC_*`, inlined by Next)
 | `NEXT_PUBLIC_CONTRACT_MAINNET` | zero address | Mainnet contract after deploy |
 | `NEXT_PUBLIC_CONTRACT_TESTNET` | zero address | Testnet contract |
 | `NEXT_PUBLIC_USE_TESTNET` | unset | `1` → chain 968 + testnet contract |
-| `NEXT_PUBLIC_WORKER_URL` | `https://instantblog-api.YOUR-ACCOUNT.workers.dev` | Worker base URL (dev default `http://127.0.0.1:8787`) |
+| `NEXT_PUBLIC_API_BASE` | empty (same origin) | Only to point a build at another deployment's API |
 | `NEXT_PUBLIC_SITE_URL` | Vercel production domain (`NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL`), else `https://instantblog.vercel.app` | Used for proof links |
 
 **Testnet fallback:** while `NEXT_PUBLIC_CONTRACT_MAINNET` is unset, the app runs on the live testnet contract `0x4625aF5b93bB0C53Af096E34005b9E32Cb61F72a` (chain 968): footer, stamping, verify and /posts all use it. Setting the mainnet address switches everything to chain 677 at the next build.
@@ -184,10 +176,9 @@ Chain params for `wallet_addEthereumChain`: mainnet `0x2a5` (677), RPC `https://
 
 ## 7. Routing (static hosting)
 
-- `next.config.ts`: `output: "export"`, `trailingSlash: true`, `images.unoptimized` → every route is `<route>/index.html`, so deep links return 200 on any static host (Vercel serves the export). Internal links use trailing slashes (`/write/`).
-- `scripts/flatten-rsc.mjs` runs after `next build`: Next 16 writes RSC payloads as `<route>/__next.<seg>/__PAGE__.txt` while client navigation requests `<route>/__next.<seg>.__PAGE__.txt`; the script writes the dot-joined aliases so client-side navigation doesn't 404.
+- `next.config.ts`: `trailingSlash: true` (internal links and API paths end with `/`), `serverExternalPackages` for linkedom/Readability/undici. Pages are prerendered (○); `/api/*` routes are dynamic (ƒ).
 - Query strings: `/verify/?proof=12` (proof card), `/write/?new=1` (fresh draft), `/write/?id=<draftId>` (open a draft).
-- No API routes, middleware, server actions or image optimisation — static export only.
+- One deployment: pages and API ship together on Vercel.
 
 ---
 
@@ -231,9 +222,9 @@ paste → fingerprint → proofsForHash(hash) → ids[] → getProof(min id) →
 
 ## 9. Security and privacy checklist
 
-- API key only in Worker secrets (`wrangler secret put GEMINI_API_KEY`). Never in the repo or the front end.
-- CORS: exact allow-list from `ALLOWED_ORIGINS` (production domain; `http://localhost:5173` only in `.dev.vars`).
-- The Worker never logs request bodies. Logs carry route, status, error code and timing only.
+- Gemini key only in server env (`web/.env.local`, Vercel env vars), never `NEXT_PUBLIC_*`, never in the repo; `web/server/*` is never imported by client components.
+- Same origin: the API rejects requests whose `Origin` doesn't match the host; no CORS headers are sent.
+- The API never logs request bodies. Logs carry route, status and timing only.
 - All model HTML goes through DOMPurify before it reaches the DOM. Links get `rel="noopener noreferrer"` and `target="_blank"`.
-- SSRF guard: [WORKER_API § 3](WORKER_API.md#3-post-extract-url). `MOCK_AI` is dev-only.
+- SSRF guard: [API § 3](API.md#3-post-apiextract-url) — URL check plus resolved-IP check at connect time (required on Vercel, where the cloud metadata IP could be reachable). `MOCK_AI` is dev-only.
 - On-chain the title is public forever; the stamp confirm dialog says so.

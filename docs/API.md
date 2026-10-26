@@ -1,23 +1,25 @@
-# InstantBlog — Worker API Spec
+# InstantBlog — API Spec
 
-Shared Cloudflare Worker (from Week 1) with three routes. TypeScript, deployed with Wrangler.
+Route handlers inside the Next.js app (`web/app/api/*/route.ts`, logic in `web/server/`), deployed with the site on Vercel. Node runtime, same origin as the pages.
 
 | Route | Method | Body | Response | Rate limit / IP / hour |
 |---|---|---|---|---|
-| `/extract-url` | POST | `{url}` | JSON | 40 |
-| `/blog/draft` | POST | brief + sources | **SSE stream** | 10 |
-| `/blog/edit` | POST | action + selection | JSON | 60 |
-| `/health` | GET | — | `{ok:true}` | — |
+| `/api/extract-url/` | POST | `{url}` | JSON | 40 |
+| `/api/blog/draft/` | POST | brief + sources | **SSE stream** | 10 |
+| `/api/blog/edit/` | POST | action + selection | JSON | 60 |
+| `/api/health/` | GET | — | `{ok, model, ai: "gemini" \| "mock" \| "missing-key"}` | — |
+
+Paths end with `/` because the app uses `trailingSlash: true` (without it the request gets a 308 redirect first).
 
 ---
 
 ## 1. Common rules
 
-- **CORS:** `Access-Control-Allow-Origin: <ALLOWED_ORIGIN>` (exact match, from `env.ALLOWED_ORIGINS`, comma-separated). `OPTIONS` preflight → 204 with `Allow-Methods: POST, GET, OPTIONS` and `Allow-Headers: content-type`. Any other origin gets **403**.
+- **Same origin only:** no CORS headers. If an `Origin` header is present it must match the request host, else **403** (`assertSameOrigin` in `web/server/http.ts`). Browsers always send `Origin` on cross-site POSTs; non-browser clients are covered by the rate limit.
 - **Body:** `Content-Type: application/json`, max **200 KB** (else 413).
 - **No logging of article text, selections or source text.** Log only `{route, status, code, ms}`.
 - **Input cap:** about **12k tokens** in total (estimated as `chars / 4`). Draft sources are trimmed to fit (§ 4.2).
-- **Rate limit:** KV key `rl:<route>:<ip>:<yyyymmddhh>` with TTL 3,700 s. The IP comes from `CF-Connecting-IP`. When over the limit, return 429 with a `Retry-After` header (seconds to the next hour).
+- **Rate limit:** key `rl:<route>:<ip>:<yyyymmddhh>`, TTL 3,700 s. Stored in **Upstash Redis** (REST `INCR` + `EXPIRE`) when `UPSTASH_REDIS_REST_URL`/`_TOKEN` are set, otherwise in memory per server instance (best effort on serverless). IP from `x-real-ip` / `x-forwarded-for` (set by Vercel). Over the limit → 429 with `Retry-After` (seconds to the next hour).
 
 ### Error envelope (all non-2xx JSON)
 
@@ -28,7 +30,7 @@ Shared Cloudflare Worker (from Week 1) with three routes. TypeScript, deployed w
 | HTTP | `code` | When |
 |---|---|---|
 | 400 | `bad_request` | Validation failed (field named in `message`) |
-| 403 | `forbidden_origin` | CORS origin not allowed |
+| 403 | `forbidden_origin` | `Origin` doesn't match the host |
 | 413 | `too_large` | Body > 200 KB or input over cap after trimming |
 | 422 | `unreadable` | `/extract-url` couldn't read the page (with `reason`) |
 | 429 | `rate_limited` | Hourly limit hit |
@@ -40,23 +42,18 @@ Shared Cloudflare Worker (from Week 1) with three routes. TypeScript, deployed w
 
 ## 2. Environment
 
-```toml
-# worker/wrangler.toml
-name = "instantblog-api"
-main = "src/index.ts"
-compatibility_date = "2026-10-01"
-compatibility_flags = ["nodejs_compat"]
+Server-only env vars (read in `web/server/env.ts`; local: `web/.env.local`, production: Vercel → Settings → Environment Variables):
 
-[vars]
-ALLOWED_ORIGINS = "https://instantblog.vercel.app,https://instantblog-*.vercel.app"   # "*" = one label fragment (Vercel previews)
-MODEL = "gemini-3.6-flash"
+| Var | Required | Default | Purpose |
+|---|---|---|---|
+| `GEMINI_API_KEY` | yes | — | Google AI Studio key (free: https://aistudio.google.com/apikey) |
+| `GEMINI_MODEL` | no | `gemini-3.6-flash` | Model id (list: `GET /v1beta/models`) |
+| `LIMIT_DRAFT` / `LIMIT_EDIT` / `LIMIT_EXTRACT` | no | 10 / 60 / 40 | Per-IP hourly limits |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | no | — | Shared rate-limit store across serverless instances |
+| `MOCK_AI` | dev only | — | `1` = canned AI output, no API calls. **Never in production.** |
+| `GEMINI_BASE_URL` | tests only | Google's endpoint | Point at a fake Gemini server |
 
-[[kv_namespaces]]
-binding = "RL"
-id = "<kv-id>"
-
-# secret (never commit): wrangler secret put GEMINI_API_KEY   (free key: https://aistudio.google.com/apikey)
-```
+Route config: `runtime = "nodejs"`, `dynamic = "force-dynamic"`, `maxDuration` 60 s (draft) / 30 s (edit, extract).
 
 ---
 
@@ -74,18 +71,18 @@ id = "<kv-id>"
 
 **Response 422** `{ "error": { "code": "unreadable", "reason": "blocked_address" | "timeout" | "too_large" | "not_html" | "http_error" | "empty", "message": "…" } }`
 
-### SSRF guard (must pass before every fetch, including every redirect hop)
+### SSRF guard (URL check + resolved-IP check on every hop)
 
 1. `new URL(url)`. Protocol must be `http:` or `https:`. Port must be empty, `80` or `443`. No `user:pass@`.
 2. Hostname is not `localhost`, does not end with `.localhost`, `.local`, `.internal`, `.lan` or `.home.arpa`, and is not a bare single-label name.
 3. If the hostname is an IP literal (v4, v6 or `[…]`), reject `0.0.0.0/8`, `10/8`, `100.64/10`, `127/8`, `169.254/16`, `172.16/12`, `192.0.0/24`, `192.168/16`, `198.18/15`, `224/4` and up, `::`, `::1`, `fc00::/7`, `fe80::/10` and `::ffff:<blocked v4>`. Also reject decimal, hex and octal IPv4 forms (e.g. `2130706433`, `0x7f.1`). Normalise with `new URL` first, then test.
-4. `fetch(url, { redirect: "manual", signal: AbortSignal.timeout(5000), headers: { "user-agent": "InstantBlogBot/1.0 (+https://instantblog.vercel.app)", accept: "text/html,text/plain" } })`. Never forward client cookies or headers.
+4. `safeFetch(url, { redirect: "manual", signal: AbortSignal.timeout(5000), … })` (`web/server/safeFetch.ts`): an undici `Agent` whose `connect.lookup` resolves the hostname and **refuses to connect if any resolved address is blocked** (same ranges as step 3). This covers hostnames that point inward (`localtest.me`, `127.0.0.1.nip.io`) and DNS rebinding. Never forward client cookies or headers.
 5. On 3xx, read `Location`, resolve it against the current URL, and go back to step 1. Max **3 hops**.
 6. `content-type` must start with `text/html` or `text/plain`.
 7. Read the body through a reader and abort after **2 MB**.
 8. HTML: `parseHTML(html)` (linkedom) → `new Readability(document).parse()`. Use `article.textContent`, collapse whitespace and trim to 3,000 words (`truncated: true` if cut). If there are fewer than 80 words → `unreadable/empty`.
 
-> Cloudflare's network won't route Worker `fetch` to RFC 1918 space anyway, but the explicit guard gives clear error messages and defends against odd encodings.
+> On Vercel (AWS) internal addresses such as the cloud metadata IP `169.254.169.254` could be reachable from a function, so the connect-time IP check is required, not optional.
 
 ---
 
@@ -140,9 +137,9 @@ data: {"stop":"end_turn","fallback":false,"outputTokens":1650}
 
 Headers: `content-type: text/event-stream; charset=utf-8`, `cache-control: no-cache`, plus the CORS headers.
 
-**Client:** `fetch` + `res.body.getReader()` + a small SSE line parser (EventSource can't POST). `AbortController` powers **[Stop]**. The Worker passes the abort upstream (`request.signal` → `stream.abort()`).
+**Client:** `fetch` + `res.body.getReader()` + a small SSE line parser (EventSource can't POST). `AbortController` powers **[Stop]**. The server passes the abort upstream to Gemini.
 
-### 4.4 Implementation (`worker/src/draft.ts` + `worker/src/gemini.ts`)
+### 4.4 Implementation (`web/server/draft.ts` + `web/server/gemini.ts`)
 
 Gemini REST, no SDK: `POST {GEMINI_BASE_URL}/models/{MODEL}:streamGenerateContent?alt=sse` with header `x-goog-api-key` and body
 
@@ -154,14 +151,14 @@ Gemini REST, no SDK: `POST {GEMINI_BASE_URL}/models/{MODEL}:streamGenerateConten
 }
 ```
 
-Gemini answers with SSE lines `data: {"candidates":[{"content":{"parts":[{"text":"…"}]},"finishReason":"STOP"}],"usageMetadata":{…}}`. The Worker re-emits each text part as our own `delta` event, so the client protocol above doesn't depend on the provider.
+Gemini answers with SSE lines `data: {"candidates":[{"content":{"parts":[{"text":"…"}]},"finishReason":"STOP"}],"usageMetadata":{…}}`. The route re-emits each text part as our own `delta` event, so the client protocol above doesn't depend on the provider.
 
 Notes:
 
 - **Thought parts are dropped.** Parts with `"thought": true` (model reasoning, if ever returned) never reach the article.
 - **Finish reasons:** `STOP` → `end_turn`; `MAX_TOKENS` → `max_tokens`; `SAFETY`, `RECITATION`, `BLOCKLIST`, `PROHIBITED_CONTENT`, `SPII` → `refusal`; `promptFeedback.blockReason` → `refusal`. The UI shows the "AI couldn't write this one" state for `refusal`.
 - **`maxOutputTokens` includes thinking tokens** on Gemini 2.5+ models, so it's set well above the ~2k-token article (8,192).
-- **Abort:** `request.signal` and a failed write to the client both abort the upstream fetch.
+- **Abort:** `request.signal`, stream `cancel()` and a failed `enqueue()` all abort the upstream fetch. `enqueue()` errors are swallowed: an unhandled rejection after a client disconnect would crash the Node server.
 - **Upstream errors:** 429 (free quota) → `overloaded` "The free AI quota is used up for the moment…"; 500/503 → `overloaded`; others → `upstream`. No request text in errors or logs.
 - **Local testing without a key:** set `GEMINI_BASE_URL` to a fake server that speaks the same wire format (used in development), or `MOCK_AI=1` for canned output.
 
@@ -195,35 +192,13 @@ Notes:
 
 Implementation: non-streaming `POST …/models/{MODEL}:generateContent` with `maxOutputTokens: 4096`, temperature 0.4. Text parts only (thought parts dropped). For `titles`, split the output into lines, strip numbering and quotes, and take 3.
 
-Post-check (Worker): for actions with a selection, compute which `[n]` markers are in the selection but missing from the output and return them as `"missingCitations": [2]`. The UI warns with that list (PRD E-6).
+Post-check (server): for actions with a selection, compute which `[n]` markers are in the selection but missing from the output and return them as `"missingCitations": [2]`. The UI warns with that list (PRD E-6).
 
 ---
 
-## 6. Client wrapper (`web/js/api.js`)
+## 6. Client wrapper (`web/lib/api.ts`)
 
-```js
-export async function streamDraft(payload, { onMeta, onDelta, onDone, onError, signal }) {
-  const res = await fetch(`${CONFIG.WORKER_URL}/blog/draft`, {
-    method: "POST", headers: { "content-type": "application/json" },
-    body: JSON.stringify(payload), signal,
-  });
-  if (!res.ok) return onError(await res.json().catch(() => ({ error: { code: "internal" } })));
-  const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
-  let buf = "";
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buf += value;
-    let i;
-    while ((i = buf.indexOf("\n\n")) >= 0) {
-      const raw = buf.slice(0, i); buf = buf.slice(i + 2);
-      const ev = /^event: (.+)$/m.exec(raw)?.[1];
-      const data = JSON.parse(/^data: (.*)$/m.exec(raw)?.[1] ?? "{}");
-      ({ meta: onMeta, delta: d => onDelta(d.t), done: onDone, error: onError })[ev]?.(data);
-    }
-  }
-}
-```
+`streamDraft()` uses `fetch` + `res.body.getReader()` + a small SSE line parser (EventSource can't POST); `extractUrl()` and `editText()` are plain JSON POSTs. Base URL is `CONFIG.API_BASE` (empty = same origin).
 
 ---
 
@@ -238,23 +213,26 @@ Provider: **Google Gemini API** (Google AI Studio key, free tier). Model from th
 
 - **Free tier:** Flash / Flash-Lite models only; Pro models are paid. Limits are per project (requests per minute and per day) and Google changes them; check the live quota in AI Studio. Our own per-IP limits (10 drafts, 60 edits per hour) sit in front of that.
 - **Data use on the free tier:** Google's terms allow it to use free-tier inputs and outputs to improve its products, and human reviewers may read them. The Privacy page and FAQ say so. Don't put anything confidential in a brief while on the free tier; switching the AI Studio project to a paid plan changes this.
-- **Changing the model:** `MODEL` is a plain var in `wrangler.toml`, so a newer Flash model is a config change. List the models your key can use with `curl -H "x-goog-api-key: $KEY" https://generativelanguage.googleapis.com/v1beta/models`.
-- The prompts are static strings (`worker/src/prompts.ts`) and provider-neutral.
+- **Changing the model:** set `GEMINI_MODEL` (Vercel env var) and redeploy; no code change. List the models your key can use with `curl -H "x-goog-api-key: $KEY" https://generativelanguage.googleapis.com/v1beta/models`.
+- The prompts are static strings (`web/server/prompts.ts`) and provider-neutral.
 
 ---
 
-## 8. Worker test commands
+## 8. API test commands
+
+Run against `npm start` (production server on :5173). `MOCK_AI=1 npm start` for deterministic drafts.
 
 ```bash
-# health
-curl -s $W/health
-# extract
-curl -s -X POST $W/extract-url -H 'content-type: application/json' -H "origin: $SITE" -d '{"url":"https://en.wikipedia.org/wiki/Hackathon"}' | jq .title,.words
-# SSRF must fail with 422 blocked_address
-for u in http://localhost http://127.0.0.1 http://2130706433 http://[::1] http://169.254.169.254/latest/meta-data http://10.0.0.1 http://foo.internal; do
-  curl -s -X POST $W/extract-url -H 'content-type: application/json' -H "origin: $SITE" -d "{\"url\":\"$u\"}" | jq -c .error.reason; done
+B=http://localhost:5173; H="content-type: application/json"
+curl -s $B/api/health/
+curl -s -X POST $B/api/extract-url/ -H "$H" -d '{"url":"https://en.wikipedia.org/wiki/Hackathon"}' | jq .title,.words
+# SSRF must fail with 422 blocked_address (literal IPs, inward hostnames)
+for u in http://localhost http://127.0.0.1 http://2130706433 http://[::1] http://169.254.169.254/latest/meta-data http://10.0.0.1 http://foo.internal http://localtest.me http://127.0.0.1.nip.io; do
+  curl -s -X POST $B/api/extract-url/ -H "$H" -d "{\"url\":\"$u\"}" | jq -c .error.reason; done
 # draft stream
-curl -N -X POST $W/blog/draft -H 'content-type: application/json' -H "origin: $SITE" -d @fixtures/draft.json
-# CORS reject
-curl -s -o /dev/null -w '%{http_code}\n' -X POST $W/blog/edit -H 'origin: https://evil.example' -d '{}'
+curl -N -X POST $B/api/blog/draft/ -H "$H" -d @fixtures/draft.json
+# cross-origin reject → 403
+curl -s -o /dev/null -w '%{http_code}\n' -X POST $B/api/blog/edit/ -H "$H" -H 'origin: https://evil.example' -d '{}'
+# aborted streams must not crash the server
+for i in 1 2 3; do curl -s -N -m 0.3 -X POST $B/api/blog/draft/ -H "$H" -d @fixtures/draft.json -o /dev/null; done; curl -s $B/api/health/
 ```

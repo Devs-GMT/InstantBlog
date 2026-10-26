@@ -24,34 +24,30 @@
 | Path | What |
 |---|---|
 | `contracts/` | Foundry project: `src/InstantBlog.sol` (no tokens, no payments, no admin), tests and deploy script |
-| `web/` | The website — Next.js (static export) deployed on Vercel from `main`: home, writer, verify, my posts |
-| `worker/` | Cloudflare Worker: reads source links and talks to the AI. The API key is a Worker secret, **never in this repo**. |
+| `web/` | The whole app — Next.js on Vercel from `main`: pages (home, writer, verify, my posts) and the API (`/api/*`: reads source links, talks to Gemini). The Gemini key is a server env var, **never in this repo**. |
 | `tests/` | Fingerprint test vectors (the hash must never change after launch) |
 | `docs/` | Product and build documentation ([start here](docs/README.md)) |
 
 ## Tech
 
-Next.js 16 (static export) · React 19 · Tiptap editor · marked · html2pdf.js · docx · ethers.js v6 · Cloudflare Workers · Google Gemini API (free tier) · Solidity 0.8.24 on BOT Chain
+Next.js 16 on Vercel (pages + API routes) · React 19 · Tiptap editor · marked · html2pdf.js · docx · ethers.js v6 · Google Gemini API (free tier) · Solidity 0.8.24 on BOT Chain
 
 ## Run it yourself
 
 ```bash
-# 1. Worker (local, no API key needed with the mock AI)
-cd worker && npm ci && cp .dev.vars.example .dev.vars   # free Gemini key from aistudio.google.com/apikey, or MOCK_AI=1
-npx wrangler dev --port 8787
+# 1. App (pages + API)
+cd web && npm ci && cp .env.example .env.local   # free Gemini key from aistudio.google.com/apikey, or MOCK_AI=1
+npm run dev                                        # http://localhost:5173
 
-# 2. Website
-cd web && npm ci && npm run dev                         # http://localhost:5173
-
-# 3. Tests
+# 2. Tests
 cd tests && npm ci && node --test
 ```
 
-To go live: deploy the contract with Foundry (`forge script script/Deploy.s.sol --broadcast`, see DEPLOYMENT), deploy the Worker with `npx wrangler deploy`, import the repo in Vercel with Root Directory `web`, set the contract address and Worker URL as env vars, and push to `main`. Full steps: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+To go live: deploy the contract with Foundry (`forge script script/Deploy.s.sol --broadcast`, see DEPLOYMENT), import the repo in Vercel with Root Directory `web`, set `GEMINI_API_KEY` (and later the mainnet contract address) as env vars, and push to `main`. One deploy covers the site and the API. Full steps: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Privacy
 
-Drafts are saved only in your browser. Text you send to draft or edit goes through our Worker to Google's Gemini API. We don't store or log it, but on Gemini's free tier Google may use it to improve its products, so don't paste anything confidential. Stamping makes the fingerprint, the title, the numbers shown and your wallet address public on BOT Chain, permanently.
+Drafts are saved only in your browser. Text you send to draft or edit goes through our server to Google's Gemini API. We don't store or log it, but on Gemini's free tier Google may use it to improve its products, so don't paste anything confidential. Stamping makes the fingerprint, the title, the numbers shown and your wallet address public on BOT Chain, permanently.
 
 ## Licence
 

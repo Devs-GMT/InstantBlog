@@ -2,7 +2,7 @@
 
 A time-boxed plan, with each task tied to its PRD requirement IDs. Every phase ends with a **checkpoint** that must pass before moving on. If a phase overruns by more than 15 min, apply its **cut line**.
 
-**Critical path:** Contract (testnet) → Worker draft stream → Writer streaming into the editor → Stamp + Verify → Mainnet → Live site. The home page polish and the extra AI actions are what you cut first.
+**Critical path:** Contract (testnet) → API draft stream → Writer streaming into the editor → Stamp + Verify → Mainnet → Live site. The home page polish and the extra AI actions are what you cut first.
 
 ---
 
@@ -12,7 +12,7 @@ A time-boxed plan, with each task tied to its PRD requirement IDs. Every phase e
 |---|---|---|
 | 0.0 | Create the repo and the folders from [ARCHITECTURE § 2](ARCHITECTURE.md#2-repository-layout). Smoke-test the CDN URLs in [ARCHITECTURE § 3](ARCHITECTURE.md#3-front-end-libraries-cdn-pinned) | All libs load in a blank page with no console errors |
 | 0.1 | MetaMask: add BOT Chain testnet (968) and mainnet (677). Get testnet BOT from the faucet and a little mainnet BOT | Balances on both |
-| 0.2 | Cloudflare: `wrangler login`, create the KV namespace, `wrangler secret put GEMINI_API_KEY` (free key from Google AI Studio) | `wrangler whoami` OK |
+| 0.2 | Free Gemini key from Google AI Studio into `web/.env.local` | `/api/health/` → `ai: gemini` |
 | 0.3 | Create the Vercel project from the GitHub repo (Root Directory `web`) | Preview URL builds |
 
 ---
@@ -29,17 +29,17 @@ A time-boxed plan, with each task tied to its PRD requirement IDs. Every phase e
 
 ---
 
-## Phase 2 · Worker (0:30–1:15)
+## Phase 2 · API routes (0:30–1:15)
 
 | # | Task | Req | Done when |
 |---|---|---|---|
-| 2.1 | `index.ts`: router, CORS allow-list, JSON error envelope, body size cap, `/health` | WORKER § 1 | `curl /health` → `{ok:true}`. A bad origin gets 403 |
-| 2.2a | `/extract-url` with the SSRF guard + Readability (or reuse Inkprint's after checking that its guard covers [WORKER § 3](WORKER_API.md#3-post-extract-url)) | B-6, § 6.1 | Wikipedia URL → title + text. All the SSRF test URLs → 422 `blocked_address` |
+| 2.1 | `web/server/http.ts`: same-origin check, JSON error envelope, body size cap; `/api/health` | API § 1 | `/api/health/` → `{ok:true}`. A foreign Origin gets 403 |
+| 2.2a | `/extract-url` with the SSRF guard + Readability (or reuse Inkprint's after checking that its guard covers [API § 3](API.md)) | B-6, § 6.1 | Wikipedia URL → title + text. All the SSRF test URLs → 422 `blocked_address` |
 | 2.3 | `prompts.ts` from [AI_PROMPTS](AI_PROMPTS.md) | D-3 | — |
 | 2.4 | `/blog/draft`: validation, source budget, SSE `meta/delta/done/error`, abort pass-through | D-1 | `curl -N` with the fixture streams Markdown with an H1, a titles comment, H2s and Sources |
 | 2.5 | `/blog/edit`: all 10 actions, `missingCitations` | E-3, E-6 | Shorten fixture returns shorter text that keeps `[1]` |
-| 2.6 | `ratelimit.ts` (KV hourly) on all three routes | WORKER § 1 | The 11th draft in an hour → 429 + `Retry-After` |
-| 2.7 | `wrangler deploy`. Put the URL into `config.js` | — | Live URL responds |
+| 2.6 | `ratelimit.ts` (Upstash Redis or in-memory) on all three routes | API § 1 | The 11th draft in an hour → 429 + `Retry-After` |
+| 2.7 | Deploy to Vercel (preview) | — | Preview URL streams a draft |
 
 **Checkpoint 2:** a streamed draft arrives in the terminal in under 45 s.
 **Cut line:** if the draft is late, ship `/blog/edit` with only rewrite / shorten / expand / tone, and add the rest later.
@@ -110,7 +110,7 @@ A time-boxed plan, with each task tied to its PRD requirement IDs. Every phase e
 |---|---|---|
 | 7.1 | Deploy `InstantBlog.sol` to **mainnet 677** with the same settings. Verify the source on scan.botchain.ai | The contract page shows verified code |
 | 7.2 | `config.js` → `CONTRACT_ADDRESS`, `DEPLOY_BLOCK`, `USE_TESTNET=false`. Update the README | One constant changed |
-| 7.3 | Set Vercel env vars → push to `main` → production deploy. Worker `ALLOWED_ORIGINS` includes the Vercel domain | Live URL loads `/write/` directly (200) |
+| 7.3 | Set Vercel env vars → push to `main` → production deploy | Live URL loads `/write/` directly (200) |
 | 7.4 | Stamp **2–3 demo articles** on mainnet (how-to, listicle, opinion) | The footer counter shows ≥ 3 |
 
 ---
@@ -131,7 +131,7 @@ A time-boxed plan, with each task tied to its PRD requirement IDs. Every phase e
 | Risk | Likelihood | Mitigation |
 |---|---|---|
 | Tiptap ESM via esm.sh is slow or breaks | Med | Pin versions and test in phase 0. Fallback: Quill 2 (UMD on jsDelivr) with a custom selection toolbar |
-| Many sites block the Worker fetch (403 / Cloudflare challenge) | High | The paste-text fallback is first-class. Test the demo with Wikipedia, MDN and GitHub blog sources |
+| Many sites block server-side fetches (403 / bot challenges) | High | The paste-text fallback is first-class. Test the demo with Wikipedia, MDN and GitHub blog sources |
 | `PUSH0` unsupported on BOT Chain | Low–Med | Compile with EVM `paris` |
 | Clipboard rich-text blocked (Firefox / http) | Med | HTTPS only. `execCommand` fallback. Manual-copy modal |
 | html2pdf breaks long pages / CORS images | Med | No external images in the article. `pagebreak: {mode: ['css','legacy']}`. Fall back to print |
