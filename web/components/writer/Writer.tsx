@@ -3,6 +3,7 @@
 import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { ArrowRight, Sparkles, Square, Stamp as StampIcon } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { streamDraft, type ApiError } from "@/lib/api";
@@ -45,6 +46,7 @@ export default function Writer() {
   const [hl, setHl] = useState<number | null>(null);
   const [tab, setTab] = useState<Tab>("brief");
   const [sectionTopic, setSectionTopic] = useState<string | null>(null);
+  const [helpersOpen, setHelpersOpen] = useState(false);
 
   const draftRef = useRef<Draft | null>(null);
   draftRef.current = draft;
@@ -118,7 +120,7 @@ export default function Writer() {
     setDraft(d);
     store.setCurrent(d.id);
     setDocHtml(editor, d.html, { history: false, emit: false });
-    if (d.html) setTab("draft");
+    if (d.words > 0 || /[\p{L}\p{N}]/u.test(d.html.replace(/<[^>]*>/g, ""))) setTab("draft");
     recount();
   }, [editor, recount]);
 
@@ -140,6 +142,13 @@ export default function Writer() {
     window.addEventListener("pagehide", flush);
     return () => window.removeEventListener("pagehide", flush);
   }, [saveNow]);
+
+  useEffect(() => {
+    if (!helpersOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setHelpersOpen(false);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [helpersOpen]);
 
   const updateBrief = useCallback((fn: (b: Brief) => Brief) => setDraft((d) => (d ? { ...d, brief: fn(d.brief) } : d)), []);
 
@@ -284,6 +293,53 @@ export default function Writer() {
     </div>
   );
 
+
+  const runHelper = (a: "intro" | "conclusion" | "titles" | "section", topic?: string) => {
+    setHelpersOpen(false);
+    setTab("draft");
+    ai.runHelper(a, topic);
+  };
+
+  const helpersPanel = (
+    <div className="helpers">
+      <h3>
+        <Sparkles size={16} strokeWidth={2} /> AI helpers
+      </h3>
+      <div className="chips-wrap">
+        {(
+          [
+            ["intro", "Write intro"],
+            ["conclusion", "Write conclusion"],
+            ["titles", "Suggest titles"],
+          ] as const
+        ).map(([a, l]) => (
+          <button key={a} type="button" className="btn btn-secondary" disabled={streaming || empty || !!ai.busyHelper || ai.suggestionOpen} onClick={() => runHelper(a)}>
+            {ai.busyHelper === a && <span className="spinner" />} {l}
+          </button>
+        ))}
+        <button type="button" className="btn btn-secondary" disabled={streaming || empty || ai.suggestionOpen} onClick={() => setSectionTopic((t) => (t === null ? "" : null))}>
+          Add a section for…
+        </button>
+      </div>
+      {sectionTopic !== null && (
+        <form
+          className="section-input"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (sectionTopic.trim().length < 2) return;
+            runHelper("section", sectionTopic.trim());
+            setSectionTopic(null);
+          }}
+        >
+          <input className="input" autoFocus maxLength={160} placeholder="Add a section about…" value={sectionTopic} onChange={(e) => setSectionTopic(e.target.value)} aria-label="Section topic" />
+          <button type="submit" className="btn btn-primary btn-sm">
+            Write it
+          </button>
+        </form>
+      )}
+    </div>
+  );
+
   /* ---------- citation hover ---------- */
   const onPaperOver = (e: React.MouseEvent) => {
     const el = (e.target as HTMLElement).closest?.(".cite-mark") as HTMLElement | null;
@@ -311,12 +367,14 @@ export default function Writer() {
           <LogoMark />
           <span>InstantBlog</span>
         </Link>
-        <span className="doc-title" title={draft.title || draft.brief.topic}>
-          {(editor && docTitle(editor)) || draft.brief.topic || "Untitled draft"}
-        </span>
-        <span className="counters" aria-live="polite">
-          {fmtNum(words)} words · {readingTime(words, CONFIG.READING_WPM)} min read
-        </span>
+        <div className="doc-meta">
+          <span className="doc-title" title={draft.title || draft.brief.topic}>
+            {(editor && docTitle(editor)) || draft.brief.topic || "Untitled draft"}
+          </span>
+          <span className="counters" aria-live="polite">
+            {fmtNum(words)} words · {readingTime(words, CONFIG.READING_WPM)} min read
+          </span>
+        </div>
         <div className="topbar-actions">
           <ExportButtons ex={ex} prefs={prefs} setPrefs={setPrefs} />
           {stampControl}
@@ -324,6 +382,9 @@ export default function Writer() {
             <WalletButton />
           </span>
         </div>
+        <button type="button" className="icon-btn topbar-stamp-sm" aria-label="Export and stamp" title="Export and stamp" disabled={empty || streaming} onClick={() => setTab("export")}>
+          <StampIcon size={18} strokeWidth={2} />
+        </button>
       </header>
 
       <div className="mtabs">
@@ -363,42 +424,7 @@ export default function Writer() {
                   </p>
                 )}
               </div>
-              <div className="helpers">
-                <h3>✦ AI helpers</h3>
-                <div className="chips-wrap">
-                  {(
-                    [
-                      ["intro", "Write intro"],
-                      ["conclusion", "Write conclusion"],
-                      ["titles", "Suggest titles"],
-                    ] as const
-                  ).map(([a, l]) => (
-                    <button key={a} type="button" className="btn btn-secondary" disabled={streaming || empty || !!ai.busyHelper || ai.suggestionOpen} onClick={() => ai.runHelper(a)}>
-                      {ai.busyHelper === a && <span className="spinner" />} {l}
-                    </button>
-                  ))}
-                  <button type="button" className="btn btn-secondary" disabled={streaming || empty || ai.suggestionOpen} onClick={() => setSectionTopic((s) => (s === null ? "" : null))}>
-                    Add a section for…
-                  </button>
-                </div>
-                {sectionTopic !== null && (
-                  <form
-                    className="section-input"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      if (sectionTopic.trim().length < 2) return;
-                      ai.runHelper("section", sectionTopic.trim());
-                      setSectionTopic(null);
-                      setTab("draft");
-                    }}
-                  >
-                    <input className="input" autoFocus maxLength={160} placeholder="Add a section about…" value={sectionTopic} onChange={(e) => setSectionTopic(e.target.value)} aria-label="Section topic" />
-                    <button type="submit" className="btn btn-primary btn-sm">
-                      Write it
-                    </button>
-                  </form>
-                )}
-              </div>
+              <div className="helpers-desktop">{helpersPanel}</div>
             </>
           }
         />
@@ -453,8 +479,59 @@ export default function Writer() {
           </div>
         </section>
 
-        <ExportPanel ex={ex} prefs={prefs} setPrefs={setPrefs} stamp={stampControl} />
+        <ExportPanel
+          ex={ex}
+          prefs={prefs}
+          setPrefs={setPrefs}
+          stamp={
+            <div className="export-wallet">
+              <span className="label">Wallet</span>
+              <WalletButton />
+            </div>
+          }
+        />
       </main>
+
+      <div className="mbar" data-tab={tab}>
+        {tab === "brief" &&
+          (streaming ? (
+            <button type="button" className="btn btn-secondary btn-block" onClick={stop}>
+              <Square size={15} strokeWidth={2.4} /> Stop
+            </button>
+          ) : (
+            <>
+              {(v.hint || skipped > 0) && <p className="mbar-hint">{v.hint || `${skipped} source${skipped > 1 ? "s" : ""} will be skipped`}</p>}
+              <button type="button" className="btn btn-primary btn-block" disabled={!v.ok} onClick={generate}>
+                Generate draft <ArrowRight size={17} strokeWidth={2.2} />
+              </button>
+            </>
+          ))}
+        {tab === "draft" &&
+          (streaming ? (
+            <button type="button" className="btn btn-secondary btn-block" onClick={stop}>
+              <Square size={15} strokeWidth={2.4} /> Stop
+            </button>
+          ) : (
+            <div className="mbar-row">
+              <button type="button" className="btn btn-secondary" disabled={empty} onClick={() => setHelpersOpen(true)}>
+                <Sparkles size={16} strokeWidth={2} /> AI helpers
+              </button>
+              <button type="button" className="btn btn-primary" disabled={empty} onClick={() => setTab("export")}>
+                Export <ArrowRight size={17} strokeWidth={2.2} />
+              </button>
+            </div>
+          ))}
+        {tab === "export" && <div className="mbar-stamp">{stampControl}</div>}
+      </div>
+
+      {helpersOpen && (
+        <div className="msheet-backdrop" onClick={() => setHelpersOpen(false)}>
+          <div className="msheet" role="dialog" aria-modal="true" aria-label="AI helpers" onClick={(e) => e.stopPropagation()}>
+            <span className="msheet-grip" aria-hidden="true" />
+            {helpersPanel}
+          </div>
+        </div>
+      )}
 
       {ai.bubbleEl}
       {st.card && (

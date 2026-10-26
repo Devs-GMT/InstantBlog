@@ -145,7 +145,7 @@ function KeyPoints({ points, onChange }: { points: string[]; onChange: (p: strin
               type="text"
               maxLength={200}
               aria-label={`Key point ${i + 1}`}
-              placeholder={i === 0 ? 'Point 1 — e.g. "Small scope is a feature"' : `Point ${i + 1}`}
+              placeholder={i === 0 ? 'e.g. "Small scope is a feature"' : `Point ${i + 1}`}
               value={p}
               onChange={(e) => onChange(points.map((x, j) => (j === i ? e.target.value : x)))}
               onKeyDown={(e) => {

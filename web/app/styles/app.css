@@ -795,3 +795,89 @@ button.chip.chip-select[aria-pressed="true"] { background: var(--primary); borde
 .navtab-wrap[data-floating="true"] .navtab { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .1); }
 .copyable svg, .text-link svg, .btn svg { display: inline-block; vertical-align: -2px; }
 .copyable { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ======================================================================
+   Writer — shared bits + mobile layout
+   ====================================================================== */
+.export-btns { display: flex; gap: 8px; }
+.doc-meta { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.serif-toggle { width: auto; padding: 0 10px; gap: 6px; display: inline-flex; align-items: center; font-size: 13px; }
+.topbar-stamp-sm, .mbar, .msheet-backdrop { display: none; }
+.helpers h3 svg { color: var(--ink-violet); }
+.export-wallet { display: grid; gap: 8px; margin-top: 20px; }
+.export-wallet .label { font-size: 13px; font-weight: 600; }
+.export-wallet .wallet, .export-wallet .wallet-btn { width: 100%; }
+.btn svg { flex: none; }
+
+@media (max-width: 767px) {
+  /* top bar: logo · title + counters · stamp shortcut */
+  .topbar { height: 60px; gap: 10px; padding: 0 8px 0 12px; }
+  .topbar-actions { display: none; }
+  .topbar .brand-mark { width: 28px; height: 28px; }
+  .doc-meta { flex-direction: column; align-items: flex-start; gap: 0; flex: 1; }
+  .doc-meta .doc-title { display: block; max-width: 100%; padding: 0; border: 0; font-size: 14.5px; line-height: 1.3; }
+  .doc-meta .counters { font-size: 12px; line-height: 1.3; }
+  .topbar-stamp-sm { display: inline-grid; width: 40px; height: 40px; border-radius: 12px; background: var(--primary); color: #fff; flex: none; }
+  .topbar-stamp-sm:hover { background: var(--primary-hover); }
+  .topbar-stamp-sm[disabled] { background: var(--panel); color: var(--faint); opacity: 1; }
+
+  /* tabs */
+  .mtabs { top: 60px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .mtabs .seg button { height: 36px; font-size: 14px; }
+
+  /* formatting toolbar: real touch targets, fades where it scrolls */
+  .toolbar { top: 113px; padding: 4px 8px; gap: 0; -webkit-mask: linear-gradient(90deg, #000 85%, transparent); mask: linear-gradient(90deg, #000 85%, transparent); }
+  .toolbar .icon-btn { width: 40px; height: 40px; }
+  .toolbar .serif-toggle { width: auto; }
+  .paper { padding: 20px 18px 28px; min-height: 60vh; }
+
+  /* the primary action for each tab sits at the bottom, within thumb reach */
+  .writer { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+  .gen-wrap .btn, .gen-wrap .gen-hint, .helpers-desktop { display: none; }
+  .mbar {
+    display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(247, 250, 252, .92);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px); backdrop-filter: saturate(1.4) blur(12px);
+    border-top: 1px solid var(--border);
+  }
+  .mbar .btn { height: 48px; font-size: 15px; }
+  .mbar-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mbar-hint { margin: 0 0 8px; font-size: 12.5px; color: var(--muted); text-align: center; }
+  .mbar-stamp .stamp-wrap { width: 100%; }
+  .mbar-stamp .stamp-wrap > .btn { flex: 1; height: 48px; font-size: 15px; }
+  .mbar-stamp .stamp-label-long { display: inline; }
+  .mbar-stamp .stamp-label-short { display: none; }
+
+  /* AI selection toolbar floats above the action bar */
+  .bubble { bottom: calc(82px + env(safe-area-inset-bottom)); }
+  .suggest { margin-bottom: 88px; }
+
+  /* AI helpers bottom sheet */
+  .msheet-backdrop { display: block; position: fixed; inset: 0; z-index: 85; background: rgba(13, 17, 27, .4); animation: fade .2s ease; }
+  .msheet {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    background: #fff; border-radius: 20px 20px 0 0;
+    padding: 10px 16px calc(20px + env(safe-area-inset-bottom));
+    box-shadow: 0 -10px 30px rgba(13, 17, 27, .16);
+    animation: sheet-up .3s var(--ease-out) both;
+  }
+  @keyframes sheet-up { from { transform: translateY(100%); } }
+  .msheet-grip { display: block; width: 40px; height: 4px; border-radius: 4px; background: var(--border-strong); margin: 0 auto 12px; }
+  .msheet .helpers { background: none; border: 0; padding: 0; margin: 0; }
+  .msheet .helpers h3 { font-size: 17px; margin-bottom: 12px; }
+  .msheet .chips-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .msheet .chips-wrap .btn { height: 46px; font-size: 14px; }
+  .msheet .section-input .input { height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .msheet, .msheet-backdrop { animation: none; }
+}
+
+@media (max-width: 767px) {
+  /* HTML5 drag-and-drop does not work on touch; the up/down buttons do the reordering */
+  .point { grid-template-columns: auto 1fr auto; }
+  .point .handle { display: none; }
+  .point-tools .icon-btn { width: 32px; height: 40px; }
+}

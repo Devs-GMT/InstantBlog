@@ -115,7 +115,7 @@ Example cards (taped notes) all use the real sample article: its outline, its ci
 | Tone label | Voice tone |
 | Length | Short ~500 · Medium ~900 · Long ~1,400 |
 | Key points label / helper | Key points (3–5) / Each point becomes a section. Drag to reorder. |
-| Point placeholder | Point 1 — e.g. "Small scope is a feature" |
+| Point placeholder | e.g. "Small scope is a feature" (point 1; the number badge says which point) |
 | Add | + Add point |
 | Sources label / helper | Sources (up to 5) / Facts in your draft will come from these links. |
 | Source placeholder | https://… |

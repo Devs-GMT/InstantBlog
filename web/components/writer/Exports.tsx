@@ -85,7 +85,7 @@ export function ExportButtons({ ex, prefs, setPrefs }: { ex: Ex; prefs: Prefs; s
     fn();
   };
   return (
-    <div className="export-btns" style={{ display: "flex", gap: 8 }}>
+    <div className="export-btns">
       <div className="drop" ref={ref}>
         <button type="button" className="btn btn-secondary btn-sm" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
           Copy <ChevronDown size={15} />
