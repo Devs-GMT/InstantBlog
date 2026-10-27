@@ -1,0 +1,15 @@
+
+/* ---------- video overrides ---------- */
+:root { --ff-nunito: "Nunito"; --ff-inter: "Inter"; --ff-mono: "JetBrains Mono"; --ff-hand: "Caveat"; --ff-newsreader: "EB Garamond"; }
+*, *::before, *::after { animation: none !important; transition: none !important; }
+html, body { width: 1920px; height: 1080px; margin: 0; overflow: hidden; background: var(--bg); }
+.stage { position: absolute; inset: 0; background: var(--bg); overflow: hidden; }
+.dots { background-image: radial-gradient(rgba(0, 0, 0, .075) 1.6px, transparent 1.6px); background-size: 32px 32px; }
+.cap { position: absolute; }
+.cap .chip { height: 50px; padding: 0 24px; font-size: 23px; font-family: var(--font-mono); font-weight: 500; }
+.cap h2 { font-family: var(--font-display); font-weight: 700; font-size: 80px; letter-spacing: -2.6px; line-height: 1.04; margin-top: 30px; color: var(--text); }
+.cap p { font-size: 33px; line-height: 1.4; color: var(--muted); margin-top: 28px; }
+.cap .w { display: inline-block; }
+.cursor { position: absolute; left: 0; top: 0; width: 52px; height: 52px; z-index: 60; }
+.cursor svg { width: 52px; height: 52px; filter: drop-shadow(0 4px 8px rgba(13, 17, 27, .25)); }
+.c { display: none; }

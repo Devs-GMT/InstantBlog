@@ -1,0 +1,2266 @@
+{
+  "ok": true,
+  "strict": false,
+  "browserSkipped": false,
+  "lint": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "filesScanned": 10
+  },
+  "runtime": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 11,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"hit1\" is 0.18s but its slot (data-duration) is 0.50s — the slot is shortened to the media length when rendered. Set data-duration to ~0.18s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      },
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"hit2\" is 0.15s but its slot (data-duration) is 0.50s — the slot is shortened to the media length when rendered. Set data-duration to ~0.15s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      },
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"hit3\" is 0.18s but its slot (data-duration) is 0.50s — the slot is shortened to the media length when rendered. Set data-duration to ~0.18s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      },
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"reveal1\" is 0.54s but its slot (data-duration) is 1.20s — the slot is shortened to the media length when rendered. Set data-duration to ~0.54s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      },
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"click1\" is 0.06s but its slot (data-duration) is 0.50s — the slot is shortened to the media length when rendered. Set data-duration to ~0.06s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      },
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"click2\" is 0.06s but its slot (data-duration) is 0.50s — the slot is shortened to the media length when rendered. Set data-duration to ~0.06s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      },
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"click3\" is 0.06s but its slot (data-duration) is 0.50s — the slot is shortened to the media length when rendered. Set data-duration to ~0.06s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      },
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"click4\" is 0.06s but its slot (data-duration) is 0.50s — the slot is shortened to the media length when rendered. Set data-duration to ~0.06s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      },
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"click5\" is 0.06s but its slot (data-duration) is 0.50s — the slot is shortened to the media length when rendered. Set data-duration to ~0.06s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      },
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"click6\" is 0.06s but its slot (data-duration) is 0.50s — the slot is shortened to the media length when rendered. Set data-duration to ~0.06s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      },
+      {
+        "code": "clip_media_fit",
+        "severity": "warning",
+        "message": "Audio \"reveal2\" is 0.54s but its slot (data-duration) is 1.20s — the slot is shortened to the media length when rendered. Set data-duration to ~0.54s if that isn't intended.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {
+          "data-composition-id": "main",
+          "data-start": "0",
+          "data-duration": "43.93",
+          "data-width": "1920",
+          "data-height": "1080"
+        },
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "time": 0
+      }
+    ]
+  },
+  "layout": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 1,
+    "infoCount": 1,
+    "findings": [
+      {
+        "code": "content_overlap",
+        "severity": "warning",
+        "time": 17.179,
+        "selector": "#s4-gen-btn",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 1246.77,
+          "top": 877.92,
+          "right": 1436.73,
+          "bottom": 905.92,
+          "width": 189.96,
+          "height": 28
+        },
+        "containerSelector": "#s4-gen-busy",
+        "text": "Generate draft →",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s4-brief.html",
+        "bbox": {
+          "x": 1246.77,
+          "y": 877.92,
+          "width": 189.96,
+          "height": 28
+        },
+        "firstSeen": 17.179,
+        "lastSeen": 17.67,
+        "occurrences": 3,
+        "heldMs": 491.0000000000032,
+        "times": [
+          17.179,
+          17.425,
+          17.67
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "info",
+        "time": 39.512,
+        "selector": "#s9-k1 > div:nth-of-type(1) > h4:nth-of-type(1)",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 667.35,
+          "top": 1053.09,
+          "right": 934.29,
+          "bottom": 1080,
+          "width": 266.94,
+          "height": 26.91
+        },
+        "containerSelector": "#s9-k2 > div:nth-of-type(1) > h4:nth-of-type(1)",
+        "text": "How to deploy your first contract",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s9-outro.html",
+        "bbox": {
+          "x": 667.35,
+          "y": 1053.09,
+          "width": 266.94,
+          "height": 26.91
+        },
+        "firstSeen": 39.512,
+        "lastSeen": 39.512,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          39.512
+        ]
+      }
+    ],
+    "duration": 43.93,
+    "samples": [
+      2.441,
+      7.322,
+      12.203,
+      17.084,
+      21.965,
+      26.846,
+      31.727,
+      36.608,
+      41.489
+    ],
+    "transitionSamples": [],
+    "transitionSamplesDropped": 0,
+    "tolerance": 2,
+    "totalIssueCount": 2,
+    "truncated": false
+  },
+  "motion": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": false,
+    "samples": 0
+  },
+  "contrast": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "samples": [
+      2.441,
+      12.203,
+      21.965,
+      31.727,
+      41.489
+    ],
+    "checked": 184,
+    "passed": 184
+  },
+  "craft": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 17,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "first_frame_empty",
+        "severity": "warning",
+        "message": "Frame 0 shows only the background, and the first frame is the thumbnail on social players: have the title or key image already on screen at 0 s instead of entering from nothing; see references/review.md.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"B l a n k p a g e s a r e a s l o w w a y t o s t a r t w...\" (35 words) is on screen 3.64 s (±0.01 s), under its 8.25 s floor: hold it about 0.5 s + 0.3 s a word (11.00 s here) before it leaves or changes; see references/motion.md.",
+        "text": "B l a n k p a g e s a r e a s l o w w a y t o s t a r t w r i t i n g .",
+        "selector": "#s1-text",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s1-hook.html",
+        "bbox": {
+          "x": 310,
+          "y": 360,
+          "width": 158.26999999999998,
+          "height": 147
+        },
+        "time": 0.304,
+        "words": 35,
+        "seconds": 3.635,
+        "floorSeconds": 8.25
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 3 text elements stay under it for 0.5 s or more, the smallest \"01\" at 26 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "01",
+        "selector": "#s2-c1 > span:nth-of-type(2)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s2-problem.html",
+        "bbox": {
+          "x": 160,
+          "y": 369,
+          "width": 31.2,
+          "height": 35
+        },
+        "time": 4.243,
+        "times": [
+          4.243,
+          5.117,
+          6.115
+        ],
+        "fontPx": 26,
+        "floorPx": 28,
+        "seconds": 3.744,
+        "elements": [
+          {
+            "selector": "#s2-c1 > span:nth-of-type(2)",
+            "text": "01",
+            "fontPx": 26,
+            "time": 4.243,
+            "seconds": 3.744
+          },
+          {
+            "selector": "#s2-c2 > span:nth-of-type(2)",
+            "text": "02",
+            "fontPx": 26,
+            "time": 5.117,
+            "seconds": 2.87
+          },
+          {
+            "selector": "#s2-c3 > span:nth-of-type(2)",
+            "text": "03",
+            "fontPx": 26,
+            "time": 6.115,
+            "seconds": 1.872
+          }
+        ]
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"Most AI text reads the same whatever topic you give it.\" (11 words) is on screen 2.60 s (±0.01 s), under its 2.85 s floor: hold it about 0.5 s + 0.3 s a word (3.80 s here) before it leaves or changes; see references/motion.md.",
+        "text": "Most AI text reads the same whatever topic you give it.",
+        "selector": "#s2-c2 > p:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s2-problem.html",
+        "bbox": {
+          "x": 698.77,
+          "y": 559.78,
+          "width": 395.9200000000001,
+          "height": 78
+        },
+        "time": 5.304,
+        "words": 11,
+        "seconds": 2.597,
+        "floorSeconds": 2.85
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"A number with no link is hard to check and risky to publish.\" (13 words) is on screen 1.60 s (±0.01 s), under its 3.30 s floor: hold it about 0.5 s + 0.3 s a word (4.40 s here) before it leaves or changes; see references/motion.md.",
+        "text": "A number with no link is hard to check and risky to publish.",
+        "selector": "#s2-c3 > p:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s2-problem.html",
+        "bbox": {
+          "x": 1237.55,
+          "y": 559.78,
+          "width": 446.8299999999999,
+          "height": 78
+        },
+        "time": 6.303,
+        "words": 13,
+        "seconds": 1.599,
+        "floorSeconds": 3.3
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 49 text elements stay under it for 0.5 s or more, the smallest \"1\" at 12 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "1",
+        "selector": "div.points > div:nth-of-type(1) > span:nth-of-type(2)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s4-brief.html",
+        "bbox": {
+          "x": 1101.28,
+          "y": 461.73,
+          "width": 7.06,
+          "height": 20
+        },
+        "time": 14.352,
+        "times": [
+          12.106,
+          12.106,
+          12.106,
+          12.106,
+          12.106,
+          12.106,
+          12.106,
+          12.106,
+          12.106,
+          12.106,
+          12.106,
+          12.231,
+          12.605,
+          12.73,
+          12.73,
+          12.73,
+          12.855,
+          12.855,
+          12.855,
+          12.855,
+          12.979,
+          12.979,
+          12.979,
+          13.104,
+          13.104,
+          13.104,
+          13.104,
+          13.229,
+          13.229,
+          13.354,
+          13.354,
+          13.354,
+          13.354,
+          13.354,
+          13.479,
+          13.479,
+          13.479,
+          13.479,
+          14.352,
+          14.352,
+          14.602,
+          14.602,
+          14.851,
+          14.851,
+          15.101,
+          15.101,
+          15.226,
+          16.099,
+          17.223
+        ],
+        "fontPx": 11.5,
+        "floorPx": 28,
+        "seconds": 3.62,
+        "elements": [
+          {
+            "selector": "div.points > div:nth-of-type(1) > span:nth-of-type(2)",
+            "text": "1",
+            "fontPx": 11.5,
+            "time": 14.352,
+            "seconds": 3.62
+          },
+          {
+            "selector": "div.points > div:nth-of-type(2) > span:nth-of-type(2)",
+            "text": "2",
+            "fontPx": 11.5,
+            "time": 14.602,
+            "seconds": 3.37
+          },
+          {
+            "selector": "div.points > div:nth-of-type(3) > span:nth-of-type(2)",
+            "text": "3",
+            "fontPx": 11.5,
+            "time": 14.851,
+            "seconds": 3.121
+          },
+          {
+            "selector": "div.source-line.s4-src > span:nth-of-type(1)",
+            "text": "1",
+            "fontPx": 11.5,
+            "time": 15.101,
+            "seconds": 2.871
+          },
+          {
+            "selector": "#s4-card > div:nth-of-type(3) > span:nth-of-type(1) > span:nth-of-type(1)",
+            "text": "Each becomes a section",
+            "fontPx": 12.5,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "#s4-card > div:nth-of-type(4) > span:nth-of-type(1) > span:nth-of-type(1)",
+            "text": "Facts come from these",
+            "fontPx": 12.5,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "#s4-read",
+            "text": "✓ Read · Hackathon (Wikipedia)",
+            "fontPx": 12.88,
+            "time": 16.099,
+            "seconds": 1.873
+          },
+          {
+            "selector": "#s4-card > div:nth-of-type(1) > span:nth-of-type(1)",
+            "text": "What's it about?",
+            "fontPx": 13,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "#s4-card > div:nth-of-type(2) > span:nth-of-type(1)",
+            "text": "Voice tone",
+            "fontPx": 13,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "#s4-card > div:nth-of-type(3) > span:nth-of-type(1)",
+            "text": "Key points (3–5)",
+            "fontPx": 13,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "#s4-card > div:nth-of-type(4) > span:nth-of-type(1)",
+            "text": "Sources (up to 5)",
+            "fontPx": 13,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "#s4-reading",
+            "text": "Reading…",
+            "fontPx": 13,
+            "time": 15.226,
+            "seconds": 0.874
+          },
+          {
+            "selector": "#s4-friendly",
+            "text": "Friendly",
+            "fontPx": 14,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "div.chips-wrap > span:nth-of-type(2)",
+            "text": "Professional",
+            "fontPx": 14,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "div.chips-wrap > span:nth-of-type(3)",
+            "text": "Witty",
+            "fontPx": 14,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(1)",
+            "text": "W",
+            "fontPx": 15,
+            "time": 12.605,
+            "seconds": 5.367
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(2)",
+            "text": "h",
+            "fontPx": 15,
+            "time": 12.73,
+            "seconds": 5.242
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(3)",
+            "text": "y",
+            "fontPx": 15,
+            "time": 12.73,
+            "seconds": 5.242
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(5)",
+            "text": "s",
+            "fontPx": 15,
+            "time": 12.73,
+            "seconds": 5.242
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(6)",
+            "text": "m",
+            "fontPx": 15,
+            "time": 12.855,
+            "seconds": 5.117
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(7)",
+            "text": "a",
+            "fontPx": 15,
+            "time": 12.855,
+            "seconds": 5.117
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(8)",
+            "text": "l",
+            "fontPx": 15,
+            "time": 12.855,
+            "seconds": 5.117
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(9)",
+            "text": "l",
+            "fontPx": 15,
+            "time": 12.855,
+            "seconds": 5.117
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(11)",
+            "text": "d",
+            "fontPx": 15,
+            "time": 12.979,
+            "seconds": 4.993
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(12)",
+            "text": "A",
+            "fontPx": 15,
+            "time": 12.979,
+            "seconds": 4.993
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(13)",
+            "text": "p",
+            "fontPx": 15,
+            "time": 12.979,
+            "seconds": 4.993
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(14)",
+            "text": "p",
+            "fontPx": 15,
+            "time": 13.104,
+            "seconds": 4.868
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(15)",
+            "text": "s",
+            "fontPx": 15,
+            "time": 13.104,
+            "seconds": 4.868
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(17)",
+            "text": "w",
+            "fontPx": 15,
+            "time": 13.104,
+            "seconds": 4.868
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(18)",
+            "text": "i",
+            "fontPx": 15,
+            "time": 13.104,
+            "seconds": 4.868
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(19)",
+            "text": "n",
+            "fontPx": 15,
+            "time": 13.229,
+            "seconds": 4.743
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(21)",
+            "text": "h",
+            "fontPx": 15,
+            "time": 13.229,
+            "seconds": 4.743
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(22)",
+            "text": "a",
+            "fontPx": 15,
+            "time": 13.354,
+            "seconds": 4.618
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(23)",
+            "text": "c",
+            "fontPx": 15,
+            "time": 13.354,
+            "seconds": 4.618
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(24)",
+            "text": "k",
+            "fontPx": 15,
+            "time": 13.354,
+            "seconds": 4.618
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(25)",
+            "text": "a",
+            "fontPx": 15,
+            "time": 13.354,
+            "seconds": 4.618
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(26)",
+            "text": "t",
+            "fontPx": 15,
+            "time": 13.354,
+            "seconds": 4.618
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(27)",
+            "text": "h",
+            "fontPx": 15,
+            "time": 13.479,
+            "seconds": 4.493
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(28)",
+            "text": "o",
+            "fontPx": 15,
+            "time": 13.479,
+            "seconds": 4.493
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(29)",
+            "text": "n",
+            "fontPx": 15,
+            "time": 13.479,
+            "seconds": 4.493
+          },
+          {
+            "selector": "#s4-topic-text > span:nth-of-type(30)",
+            "text": "s",
+            "fontPx": 15,
+            "time": 13.479,
+            "seconds": 4.493
+          },
+          {
+            "selector": "div.points > div:nth-of-type(1) > div:nth-of-type(1)",
+            "text": "Scope is a feature",
+            "fontPx": 15,
+            "time": 14.352,
+            "seconds": 3.62
+          },
+          {
+            "selector": "div.points > div:nth-of-type(2) > div:nth-of-type(1)",
+            "text": "Demo beats docs",
+            "fontPx": 15,
+            "time": 14.602,
+            "seconds": 3.37
+          },
+          {
+            "selector": "div.points > div:nth-of-type(3) > div:nth-of-type(1)",
+            "text": "Judges remember stories",
+            "fontPx": 15,
+            "time": 14.851,
+            "seconds": 3.121
+          },
+          {
+            "selector": "#s4-url",
+            "text": "en.wikipedia.org/wiki/Hackathon",
+            "fontPx": 15,
+            "time": 15.101,
+            "seconds": 2.871
+          },
+          {
+            "selector": "#s4-gen-btn",
+            "text": "Generate draft →",
+            "fontPx": 15.58,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "#s4-gen-busy",
+            "text": "Writing your draft…",
+            "fontPx": 16,
+            "time": 17.223,
+            "seconds": 0.749
+          },
+          {
+            "selector": "#s4-card > h2:nth-of-type(1)",
+            "text": "Your brief",
+            "fontPx": 20,
+            "time": 12.106,
+            "seconds": 5.866
+          },
+          {
+            "selector": "#s4-chip",
+            "text": "01 · Brief",
+            "fontPx": 23,
+            "time": 12.231,
+            "seconds": 5.616
+          }
+        ]
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"A hackathon goes by many names: hack day, hackfest, codef...\" (24 words) is on screen 5.27 s (±0.01 s), under its 5.77 s floor: hold it about 0.5 s + 0.3 s a word (7.70 s here) before it leaves or changes; see references/motion.md.",
+        "text": "A hackathon goes by many names: hack day, hackfest, codefest [1] . Whatever you call it, you get one weekend to show something that works.",
+        "selector": "#s5-doc > p:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s5-draft.html",
+        "bbox": {
+          "x": 211.59,
+          "y": 223.3,
+          "width": 277.81999999999994,
+          "height": 34
+        },
+        "time": 18.603,
+        "words": 24,
+        "seconds": 5.265,
+        "floorSeconds": 5.775
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 78 text elements stay under it for 0.5 s or more, the smallest \"[1]\" at 13 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "[1]",
+        "selector": "#s5-cite",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s5-draft.html",
+        "bbox": {
+          "x": 338.84,
+          "y": 273.16,
+          "width": 27.26,
+          "height": 27.86
+        },
+        "time": 19.095,
+        "times": [
+          18.221,
+          18.72,
+          18.72,
+          18.72,
+          18.72,
+          18.845,
+          18.845,
+          18.845,
+          18.97,
+          18.97,
+          18.97,
+          19.095,
+          19.095,
+          19.219,
+          19.219,
+          19.219,
+          19.344,
+          19.344,
+          19.344,
+          19.344,
+          19.469,
+          19.469,
+          19.469,
+          19.594,
+          19.594,
+          19.719,
+          19.719,
+          19.719,
+          19.719,
+          19.843,
+          19.843,
+          19.843,
+          19.968,
+          19.968,
+          19.968,
+          20.093,
+          20.093,
+          20.093,
+          20.218,
+          20.218,
+          20.218,
+          20.343,
+          20.343,
+          20.343,
+          20.343,
+          20.467,
+          20.467,
+          20.467,
+          20.592,
+          20.592,
+          20.717,
+          20.717,
+          20.717,
+          20.717,
+          20.842,
+          20.842,
+          20.842,
+          20.967,
+          20.967,
+          20.967,
+          21.091,
+          21.091,
+          21.091,
+          21.216,
+          21.216,
+          21.216,
+          21.341,
+          21.341,
+          21.341,
+          21.341,
+          21.466,
+          21.466,
+          21.591,
+          21.591,
+          21.591,
+          21.715,
+          21.715,
+          21.715
+        ],
+        "fontPx": 12.76,
+        "floorPx": 28,
+        "seconds": 4.867,
+        "elements": [
+          {
+            "selector": "#s5-cite",
+            "text": "[1]",
+            "fontPx": 12.76,
+            "time": 19.095,
+            "seconds": 4.867
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(1)",
+            "text": "A",
+            "fontPx": 18,
+            "time": 18.72,
+            "seconds": 5.242
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(2)",
+            "text": "hackathon",
+            "fontPx": 18,
+            "time": 18.72,
+            "seconds": 5.242
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(3)",
+            "text": "goes",
+            "fontPx": 18,
+            "time": 18.72,
+            "seconds": 5.242
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(4)",
+            "text": "by",
+            "fontPx": 18,
+            "time": 18.72,
+            "seconds": 5.242
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(5)",
+            "text": "many",
+            "fontPx": 18,
+            "time": 18.845,
+            "seconds": 5.117
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(6)",
+            "text": "names:",
+            "fontPx": 18,
+            "time": 18.845,
+            "seconds": 5.117
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(7)",
+            "text": "hack",
+            "fontPx": 18,
+            "time": 18.845,
+            "seconds": 5.117
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(8)",
+            "text": "day,",
+            "fontPx": 18,
+            "time": 18.97,
+            "seconds": 4.992
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(9)",
+            "text": "hackfest,",
+            "fontPx": 18,
+            "time": 18.97,
+            "seconds": 4.992
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(10)",
+            "text": "codefest",
+            "fontPx": 18,
+            "time": 18.97,
+            "seconds": 4.992
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(13)",
+            "text": "Whatever",
+            "fontPx": 18,
+            "time": 19.095,
+            "seconds": 4.867
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(14)",
+            "text": "you",
+            "fontPx": 18,
+            "time": 19.219,
+            "seconds": 4.743
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(15)",
+            "text": "call",
+            "fontPx": 18,
+            "time": 19.219,
+            "seconds": 4.743
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(16)",
+            "text": "it,",
+            "fontPx": 18,
+            "time": 19.219,
+            "seconds": 4.743
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(17)",
+            "text": "you",
+            "fontPx": 18,
+            "time": 19.344,
+            "seconds": 4.618
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(18)",
+            "text": "get",
+            "fontPx": 18,
+            "time": 19.344,
+            "seconds": 4.618
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(19)",
+            "text": "one",
+            "fontPx": 18,
+            "time": 19.344,
+            "seconds": 4.618
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(20)",
+            "text": "weekend",
+            "fontPx": 18,
+            "time": 19.344,
+            "seconds": 4.618
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(21)",
+            "text": "to",
+            "fontPx": 18,
+            "time": 19.469,
+            "seconds": 4.493
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(22)",
+            "text": "show",
+            "fontPx": 18,
+            "time": 19.469,
+            "seconds": 4.493
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(23)",
+            "text": "something",
+            "fontPx": 18,
+            "time": 19.469,
+            "seconds": 4.493
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(24)",
+            "text": "that",
+            "fontPx": 18,
+            "time": 19.594,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(1) > span:nth-of-type(25)",
+            "text": "works.",
+            "fontPx": 18,
+            "time": 19.594,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(1)",
+            "text": "Pick",
+            "fontPx": 18,
+            "time": 19.843,
+            "seconds": 4.119
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(2)",
+            "text": "the",
+            "fontPx": 18,
+            "time": 19.843,
+            "seconds": 4.119
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(3)",
+            "text": "one",
+            "fontPx": 18,
+            "time": 19.843,
+            "seconds": 4.119
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(4)",
+            "text": "flow",
+            "fontPx": 18,
+            "time": 19.968,
+            "seconds": 3.994
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(5)",
+            "text": "you",
+            "fontPx": 18,
+            "time": 19.968,
+            "seconds": 3.994
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(6)",
+            "text": "can",
+            "fontPx": 18,
+            "time": 19.968,
+            "seconds": 3.994
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(7)",
+            "text": "demo",
+            "fontPx": 18,
+            "time": 20.093,
+            "seconds": 3.869
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(8)",
+            "text": "in",
+            "fontPx": 18,
+            "time": 20.093,
+            "seconds": 3.869
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(9)",
+            "text": "under",
+            "fontPx": 18,
+            "time": 20.093,
+            "seconds": 3.869
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(10)",
+            "text": "a",
+            "fontPx": 18,
+            "time": 20.218,
+            "seconds": 3.744
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(11)",
+            "text": "minute",
+            "fontPx": 18,
+            "time": 20.218,
+            "seconds": 3.744
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(12)",
+            "text": "and",
+            "fontPx": 18,
+            "time": 20.218,
+            "seconds": 3.744
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(13)",
+            "text": "build",
+            "fontPx": 18,
+            "time": 20.343,
+            "seconds": 3.619
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(14)",
+            "text": "only",
+            "fontPx": 18,
+            "time": 20.343,
+            "seconds": 3.619
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(15)",
+            "text": "that.",
+            "fontPx": 18,
+            "time": 20.343,
+            "seconds": 3.619
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(16)",
+            "text": "Everything",
+            "fontPx": 18,
+            "time": 20.343,
+            "seconds": 3.619
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(17)",
+            "text": "else",
+            "fontPx": 18,
+            "time": 20.467,
+            "seconds": 3.495
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(18)",
+            "text": "can",
+            "fontPx": 18,
+            "time": 20.467,
+            "seconds": 3.495
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(19)",
+            "text": "wait",
+            "fontPx": 18,
+            "time": 20.467,
+            "seconds": 3.495
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(20)",
+            "text": "for",
+            "fontPx": 18,
+            "time": 20.592,
+            "seconds": 3.37
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(21)",
+            "text": "version",
+            "fontPx": 18,
+            "time": 20.592,
+            "seconds": 3.37
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(2) > span:nth-of-type(22)",
+            "text": "two.",
+            "fontPx": 18,
+            "time": 20.717,
+            "seconds": 3.245
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(1)",
+            "text": "Show",
+            "fontPx": 18,
+            "time": 20.842,
+            "seconds": 3.12
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(2)",
+            "text": "the",
+            "fontPx": 18,
+            "time": 20.842,
+            "seconds": 3.12
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(3)",
+            "text": "result",
+            "fontPx": 18,
+            "time": 20.842,
+            "seconds": 3.12
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(4)",
+            "text": "first,",
+            "fontPx": 18,
+            "time": 20.967,
+            "seconds": 2.995
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(5)",
+            "text": "then",
+            "fontPx": 18,
+            "time": 20.967,
+            "seconds": 2.995
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(6)",
+            "text": "explain",
+            "fontPx": 18,
+            "time": 20.967,
+            "seconds": 2.995
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(7)",
+            "text": "how",
+            "fontPx": 18,
+            "time": 21.091,
+            "seconds": 2.871
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(8)",
+            "text": "it",
+            "fontPx": 18,
+            "time": 21.091,
+            "seconds": 2.871
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(9)",
+            "text": "works.",
+            "fontPx": 18,
+            "time": 21.091,
+            "seconds": 2.871
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(10)",
+            "text": "A",
+            "fontPx": 18,
+            "time": 21.216,
+            "seconds": 2.746
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(11)",
+            "text": "short",
+            "fontPx": 18,
+            "time": 21.216,
+            "seconds": 2.746
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(12)",
+            "text": "live",
+            "fontPx": 18,
+            "time": 21.216,
+            "seconds": 2.746
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(13)",
+            "text": "demo",
+            "fontPx": 18,
+            "time": 21.341,
+            "seconds": 2.621
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(14)",
+            "text": "answers",
+            "fontPx": 18,
+            "time": 21.341,
+            "seconds": 2.621
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(15)",
+            "text": "most",
+            "fontPx": 18,
+            "time": 21.341,
+            "seconds": 2.621
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(16)",
+            "text": "questions",
+            "fontPx": 18,
+            "time": 21.341,
+            "seconds": 2.621
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(17)",
+            "text": "before",
+            "fontPx": 18,
+            "time": 21.466,
+            "seconds": 2.496
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(18)",
+            "text": "anyone",
+            "fontPx": 18,
+            "time": 21.466,
+            "seconds": 2.496
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(19)",
+            "text": "asks",
+            "fontPx": 18,
+            "time": 21.591,
+            "seconds": 2.371
+          },
+          {
+            "selector": "#s5-doc > p:nth-of-type(3) > span:nth-of-type(20)",
+            "text": "them.",
+            "fontPx": 18,
+            "time": 21.591,
+            "seconds": 2.371
+          },
+          {
+            "selector": "#s5-src > span:nth-of-type(1)",
+            "text": "[1]",
+            "fontPx": 18,
+            "time": 21.715,
+            "seconds": 2.247
+          },
+          {
+            "selector": "#s5-src > span:nth-of-type(2)",
+            "text": "Hackathon",
+            "fontPx": 18,
+            "time": 21.715,
+            "seconds": 2.247
+          },
+          {
+            "selector": "a.c",
+            "text": "https://en.wikipedia.org/wiki/Hackathon",
+            "fontPx": 18,
+            "time": 21.715,
+            "seconds": 2.247
+          },
+          {
+            "selector": "#s5-chip",
+            "text": "02 · Draft",
+            "fontPx": 23,
+            "time": 18.221,
+            "seconds": 5.616
+          },
+          {
+            "selector": "#s5-doc > h2:nth-of-type(1) > span:nth-of-type(1)",
+            "text": "Scope",
+            "fontPx": 26,
+            "time": 19.719,
+            "seconds": 4.243
+          },
+          {
+            "selector": "#s5-doc > h2:nth-of-type(1) > span:nth-of-type(2)",
+            "text": "is",
+            "fontPx": 26,
+            "time": 19.719,
+            "seconds": 4.243
+          },
+          {
+            "selector": "#s5-doc > h2:nth-of-type(1) > span:nth-of-type(3)",
+            "text": "a",
+            "fontPx": 26,
+            "time": 19.719,
+            "seconds": 4.243
+          },
+          {
+            "selector": "#s5-doc > h2:nth-of-type(1) > span:nth-of-type(4)",
+            "text": "feature",
+            "fontPx": 26,
+            "time": 19.719,
+            "seconds": 4.243
+          },
+          {
+            "selector": "#s5-doc > h2:nth-of-type(2) > span:nth-of-type(1)",
+            "text": "Demo",
+            "fontPx": 26,
+            "time": 20.717,
+            "seconds": 3.245
+          },
+          {
+            "selector": "#s5-doc > h2:nth-of-type(2) > span:nth-of-type(2)",
+            "text": "beats",
+            "fontPx": 26,
+            "time": 20.717,
+            "seconds": 3.245
+          },
+          {
+            "selector": "#s5-doc > h2:nth-of-type(2) > span:nth-of-type(3)",
+            "text": "docs",
+            "fontPx": 26,
+            "time": 20.717,
+            "seconds": 3.245
+          },
+          {
+            "selector": "#s5-doc > h2:nth-of-type(3) > span:nth-of-type(1)",
+            "text": "Sources",
+            "fontPx": 26,
+            "time": 21.591,
+            "seconds": 2.371
+          }
+        ]
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"Pick the one flow you can demo in under a minute and buil...\" (22 words) is on screen 4.13 s (±0.01 s), under its 5.32 s floor: hold it about 0.5 s + 0.3 s a word (7.10 s here) before it leaves or changes; see references/motion.md.",
+        "text": "Pick the one flow you can demo in under a minute and build only that. Everything else can wait for version two.",
+        "selector": "#s5-doc > p:nth-of-type(2)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s5-draft.html",
+        "bbox": {
+          "x": 211.59,
+          "y": 469.89,
+          "width": 162.94000000000003,
+          "height": 34
+        },
+        "time": 19.735,
+        "words": 22,
+        "seconds": 4.134,
+        "floorSeconds": 5.325
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"Show the result first, then explain how it works. A short...\" (20 words) is on screen 3.13 s (±0.01 s), under its 4.88 s floor: hold it about 0.5 s + 0.3 s a word (6.50 s here) before it leaves or changes; see references/motion.md.",
+        "text": "Show the result first, then explain how it works. A short live demo answers most questions before anyone asks them.",
+        "selector": "#s5-doc > p:nth-of-type(3)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s5-draft.html",
+        "bbox": {
+          "x": 211.59,
+          "y": 669.05,
+          "width": 204.92999999999998,
+          "height": 34
+        },
+        "time": 20.74,
+        "words": 20,
+        "seconds": 3.128,
+        "floorSeconds": 4.875
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"Pick the one flow you can demo in under a minute and buil...\" (15 words) is on screen 1.47 s (±0.01 s), under its 3.75 s floor: hold it about 0.5 s + 0.3 s a word (5.00 s here) before it leaves or changes; see references/motion.md.",
+        "text": "Pick the one flow you can demo in under a minute and build only that.",
+        "selector": "div.suggest-old",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s6-polish.html",
+        "bbox": {
+          "x": 962.8,
+          "y": 641.29,
+          "width": 699.73,
+          "height": 69.66999999999996
+        },
+        "time": 26.271,
+        "words": 15,
+        "seconds": 1.467,
+        "floorSeconds": 3.75
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 15 text elements stay under it for 0.5 s or more, the smallest \"Esc to discard · Ctrl/⌘ + Enter to ac...\" at 12 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "Esc to discard · Ctrl/⌘ + Enter to accept",
+        "selector": "span.kbd",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s6-polish.html",
+        "bbox": {
+          "x": 962.8,
+          "y": 837.69,
+          "width": 350.98,
+          "height": 22
+        },
+        "time": 26.333,
+        "times": [
+          24.087,
+          24.087,
+          24.087,
+          24.211,
+          25.584,
+          25.584,
+          25.584,
+          25.584,
+          26.333,
+          26.333,
+          26.333,
+          26.333,
+          26.333,
+          26.832,
+          27.706
+        ],
+        "fontPx": 11.5,
+        "floorPx": 28,
+        "seconds": 1.498,
+        "elements": [
+          {
+            "selector": "span.kbd",
+            "text": "Esc to discard · Ctrl/⌘ + Enter to accept",
+            "fontPx": 11.5,
+            "time": 26.333,
+            "seconds": 1.498
+          },
+          {
+            "selector": "div.suggest-head > span:nth-of-type(1)",
+            "text": "Suggestion · Shorten",
+            "fontPx": 12.5,
+            "time": 26.333,
+            "seconds": 1.498
+          },
+          {
+            "selector": "#s6-bubble > button:nth-of-type(1)",
+            "text": "Rewrite",
+            "fontPx": 12.97,
+            "time": 25.584,
+            "seconds": 2.247
+          },
+          {
+            "selector": "#s6-shorten",
+            "text": "Shorten",
+            "fontPx": 12.97,
+            "time": 25.584,
+            "seconds": 2.247
+          },
+          {
+            "selector": "#s6-bubble > button:nth-of-type(3)",
+            "text": "Expand",
+            "fontPx": 12.97,
+            "time": 25.584,
+            "seconds": 2.247
+          },
+          {
+            "selector": "#s6-bubble > button:nth-of-type(4)",
+            "text": "Change tone ⌄",
+            "fontPx": 12.97,
+            "time": 25.584,
+            "seconds": 2.247
+          },
+          {
+            "selector": "span.btn.btn-ghost",
+            "text": "Discard",
+            "fontPx": 13,
+            "time": 26.333,
+            "seconds": 1.498
+          },
+          {
+            "selector": "#s6-accept",
+            "text": "Accept",
+            "fontPx": 13,
+            "time": 26.333,
+            "seconds": 1.498
+          },
+          {
+            "selector": "div.suggest-old",
+            "text": "Pick the one flow you can demo in under a minute and build only that.",
+            "fontPx": 15.5,
+            "time": 26.333,
+            "seconds": 1.498
+          },
+          {
+            "selector": "#s6-newbox",
+            "text": "Build only the one flow you can demo in a minute.",
+            "fontPx": 15.5,
+            "time": 26.832,
+            "seconds": 0.999
+          },
+          {
+            "selector": "#s6-text",
+            "text": "Everything else can wait for version two.",
+            "fontPx": 18,
+            "time": 24.087,
+            "seconds": 5.865
+          },
+          {
+            "selector": "#s6-sel",
+            "text": "Pick the one flow you can demo in under a minute and build only that.",
+            "fontPx": 18,
+            "time": 24.087,
+            "seconds": 3.619
+          },
+          {
+            "selector": "#s6-new",
+            "text": "Build only the one flow you can demo in a minute.",
+            "fontPx": 18,
+            "time": 27.706,
+            "seconds": 2.246
+          },
+          {
+            "selector": "#s6-chip",
+            "text": "03 · Polish",
+            "fontPx": 23,
+            "time": 24.211,
+            "seconds": 5.741
+          },
+          {
+            "selector": "#s6-card > h2:nth-of-type(1)",
+            "text": "Scope is a feature",
+            "fontPx": 26,
+            "time": 24.087,
+            "seconds": 5.865
+          }
+        ]
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"Build only the one flow you can demo in a minute.\" (11 words) is on screen 0.97 s (±0.01 s), under its 2.85 s floor: hold it about 0.5 s + 0.3 s a word (3.80 s here) before it leaves or changes; see references/motion.md.",
+        "text": "Build only the one flow you can demo in a minute.",
+        "selector": "#s6-newbox",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s6-polish.html",
+        "bbox": {
+          "x": 981.98,
+          "y": 750.13,
+          "width": 581.8800000000001,
+          "height": 30
+        },
+        "time": 26.77,
+        "words": 11,
+        "seconds": 0.968,
+        "floorSeconds": 2.85
+      },
+      {
+        "code": "line_unread",
+        "severity": "warning",
+        "message": "\"why-small-dapps-win-hackathons.docx\" (6 words) is on screen 1.60 s (±0.01 s), under its 1.72 s floor: hold it about 0.5 s + 0.3 s a word (2.30 s here) before it leaves or changes; see references/motion.md.",
+        "text": "why-small-dapps-win-hackathons.docx",
+        "selector": "div.example-card.sticky",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s7-export.html",
+        "bbox": {
+          "x": 623.81,
+          "y": 740.85,
+          "width": 412.8600000000001,
+          "height": 38.49000000000001
+        },
+        "time": 32.269,
+        "words": 6,
+        "seconds": 1.599,
+        "floorSeconds": 1.725
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 11 text elements stay under it for 0.5 s or more, the smallest \"Downloaded\" at 11 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "Downloaded",
+        "selector": "span.tag",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s7-export.html",
+        "bbox": {
+          "x": 625.15,
+          "y": 698.57,
+          "width": 148.15,
+          "height": 28.46
+        },
+        "time": 32.323,
+        "times": [
+          30.077,
+          30.077,
+          30.077,
+          30.077,
+          30.077,
+          30.077,
+          30.077,
+          30.077,
+          31.075,
+          32.323,
+          32.323
+        ],
+        "fontPx": 11,
+        "floorPx": 28,
+        "seconds": 1.623,
+        "elements": [
+          {
+            "selector": "span.tag",
+            "text": "Downloaded",
+            "fontPx": 11,
+            "time": 32.323,
+            "seconds": 1.623
+          },
+          {
+            "selector": "div.mini-menu-foot > span:nth-of-type(1)",
+            "text": "Stamp on BOT Chain",
+            "fontPx": 11.39,
+            "time": 30.077,
+            "seconds": 3.869
+          },
+          {
+            "selector": "div.shot-bar > span:nth-of-type(1)",
+            "text": "Export",
+            "fontPx": 11.88,
+            "time": 30.077,
+            "seconds": 3.869
+          },
+          {
+            "selector": "div.shot-body.mini-menu > div:nth-of-type(1)",
+            "text": "Rich text",
+            "fontPx": 12.38,
+            "time": 30.077,
+            "seconds": 3.869
+          },
+          {
+            "selector": "div.shot-body.mini-menu > div:nth-of-type(2)",
+            "text": "Markdown",
+            "fontPx": 12.38,
+            "time": 30.077,
+            "seconds": 3.869
+          },
+          {
+            "selector": "div.shot-body.mini-menu > div:nth-of-type(3)",
+            "text": "Plain text",
+            "fontPx": 12.38,
+            "time": 30.077,
+            "seconds": 3.869
+          },
+          {
+            "selector": "div.shot-body.mini-menu > div:nth-of-type(4)",
+            "text": "Download PDF",
+            "fontPx": 12.38,
+            "time": 30.077,
+            "seconds": 3.869
+          },
+          {
+            "selector": "#s7-docx",
+            "text": "Download .docx",
+            "fontPx": 12.38,
+            "time": 30.077,
+            "seconds": 3.869
+          },
+          {
+            "selector": "#s7-ok",
+            "text": "Copied ✓",
+            "fontPx": 12.5,
+            "time": 31.075,
+            "seconds": 2.871
+          },
+          {
+            "selector": "div.example-card.sticky",
+            "text": "why-small-dapps-win-hackathons.docx",
+            "fontPx": 12.5,
+            "time": 32.323,
+            "seconds": 1.623
+          },
+          {
+            "selector": "#s7-chip",
+            "text": "04 · Export",
+            "fontPx": 23,
+            "time": 30.077,
+            "seconds": 3.869
+          }
+        ]
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 19 text elements stay under it for 0.5 s or more, the smallest \"#1\" at 13 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "#1",
+        "selector": "span.mono.muted",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s8-stamp.html",
+        "bbox": {
+          "x": 828.96,
+          "y": 204.84,
+          "width": 29.78,
+          "height": 32.82
+        },
+        "time": 34.071,
+        "times": [
+          34.071,
+          34.071,
+          34.196,
+          34.196,
+          34.196,
+          34.196,
+          34.196,
+          34.32,
+          34.32,
+          34.32,
+          34.32,
+          34.32,
+          34.32,
+          34.445,
+          34.445,
+          34.57,
+          34.695,
+          36.068,
+          36.192
+        ],
+        "fontPx": 13,
+        "floorPx": 28,
+        "seconds": 3.869,
+        "elements": [
+          {
+            "selector": "span.mono.muted",
+            "text": "#1",
+            "fontPx": 13,
+            "time": 34.071,
+            "seconds": 3.869
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(8) > span:nth-of-type(2)",
+            "text": "0xea87…0023",
+            "fontPx": 13,
+            "time": 34.445,
+            "seconds": 3.495
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(3) > span:nth-of-type(1)",
+            "text": "Title",
+            "fontPx": 14,
+            "time": 34.196,
+            "seconds": 3.744
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(3) > span:nth-of-type(2)",
+            "text": "Why small dApps win hackathons",
+            "fontPx": 14,
+            "time": 34.196,
+            "seconds": 3.744
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(4) > span:nth-of-type(1)",
+            "text": "Words",
+            "fontPx": 14,
+            "time": 34.196,
+            "seconds": 3.744
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(4) > span:nth-of-type(2)",
+            "text": "77",
+            "fontPx": 14,
+            "time": 34.196,
+            "seconds": 3.744
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(5) > span:nth-of-type(1)",
+            "text": "Tone",
+            "fontPx": 14,
+            "time": 34.32,
+            "seconds": 3.62
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(5) > span:nth-of-type(2)",
+            "text": "Friendly",
+            "fontPx": 14,
+            "time": 34.32,
+            "seconds": 3.62
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(6) > span:nth-of-type(1)",
+            "text": "Sources",
+            "fontPx": 14,
+            "time": 34.32,
+            "seconds": 3.62
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(6) > span:nth-of-type(2)",
+            "text": "1",
+            "fontPx": 14,
+            "time": 34.32,
+            "seconds": 3.62
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(7) > span:nth-of-type(1)",
+            "text": "Date",
+            "fontPx": 14,
+            "time": 34.32,
+            "seconds": 3.62
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(7) > span:nth-of-type(2)",
+            "text": "Oct 26, 2026",
+            "fontPx": 14,
+            "time": 34.32,
+            "seconds": 3.62
+          },
+          {
+            "selector": "#s8-receipt > div:nth-of-type(8) > span:nth-of-type(1)",
+            "text": "Author",
+            "fontPx": 14,
+            "time": 34.445,
+            "seconds": 3.495
+          },
+          {
+            "selector": "#s8-receipt > span:nth-of-type(1)",
+            "text": "Open this proof",
+            "fontPx": 15,
+            "time": 34.695,
+            "seconds": 3.245
+          },
+          {
+            "selector": "#s8-ok",
+            "text": "✓ On-chain",
+            "fontPx": 15.25,
+            "time": 36.068,
+            "seconds": 1.872
+          },
+          {
+            "selector": "div.receipt-row.receipt-total > span:nth-of-type(1)",
+            "text": "Status",
+            "fontPx": 16,
+            "time": 34.57,
+            "seconds": 3.37
+          },
+          {
+            "selector": "div.receipt-head > h2:nth-of-type(1)",
+            "text": "Proof of authorship",
+            "fontPx": 18,
+            "time": 34.071,
+            "seconds": 3.869
+          },
+          {
+            "selector": "#s8-chip",
+            "text": "Proof on BOT Chain",
+            "fontPx": 23,
+            "time": 34.196,
+            "seconds": 3.744
+          },
+          {
+            "selector": "#s8-hash > span:nth-of-type(1)",
+            "text": "0x9a28482d…ca6f8c19",
+            "fontPx": 26,
+            "time": 36.192,
+            "seconds": 1.748
+          }
+        ]
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 15 text elements stay under it for 0.5 s or more, the smallest \"How-to\" at 11 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "How-to",
+        "selector": "#s9-k1 > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/s9-outro.html",
+        "bbox": {
+          "x": 624.71,
+          "y": 991.54,
+          "width": 56.05,
+          "height": 23
+        },
+        "time": 39.562,
+        "times": [
+          39.562,
+          39.562,
+          39.562,
+          39.562,
+          39.562,
+          39.562,
+          39.562,
+          39.562,
+          39.562,
+          39.562,
+          39.562,
+          39.562,
+          40.061,
+          40.81,
+          40.81
+        ],
+        "fontPx": 11,
+        "floorPx": 28,
+        "seconds": 4.368,
+        "elements": [
+          {
+            "selector": "#s9-k1 > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(1)",
+            "text": "How-to",
+            "fontPx": 11,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-k1 > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(2)",
+            "text": "Friendly",
+            "fontPx": 11,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-k1 > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(3)",
+            "text": "3 sources",
+            "fontPx": 11,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-k2 > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(1)",
+            "text": "Listicle",
+            "fontPx": 11,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-k2 > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(2)",
+            "text": "Witty",
+            "fontPx": 11,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-k2 > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(3)",
+            "text": "3 sources",
+            "fontPx": 11,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-k3 > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(1)",
+            "text": "Opinion",
+            "fontPx": 11,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-k3 > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(2)",
+            "text": "Inspiring",
+            "fontPx": 11,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-k3 > div:nth-of-type(1) > div:nth-of-type(1) > span:nth-of-type(3)",
+            "text": "3 sources",
+            "fontPx": 11,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-credit",
+            "text": "Music: Sascha Ende, ende.app (CC BY 4.0)",
+            "fontPx": 15,
+            "time": 40.81,
+            "seconds": 3.12
+          },
+          {
+            "selector": "#s9-btn",
+            "text": "Write my first post",
+            "fontPx": 15.59,
+            "time": 40.061,
+            "seconds": 3.869
+          },
+          {
+            "selector": "#s9-k1 > div:nth-of-type(1) > h4:nth-of-type(1)",
+            "text": "How to deploy your first contract",
+            "fontPx": 18,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-k2 > div:nth-of-type(1) > h4:nth-of-type(1)",
+            "text": "7 tools every hackathon team needs",
+            "fontPx": 18,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-k3 > div:nth-of-type(1) > h4:nth-of-type(1)",
+            "text": "Small dApps win hackathons",
+            "fontPx": 18,
+            "time": 39.562,
+            "seconds": 4.368
+          },
+          {
+            "selector": "#s9-fine",
+            "text": "Free. No sign-up.",
+            "fontPx": 26,
+            "time": 40.81,
+            "seconds": 3.12
+          }
+        ]
+      }
+    ],
+    "enabled": true,
+    "step": 0.125,
+    "samples": 352
+  },
+  "audio": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "hdr": {
+    "autoPromotion": null,
+    "inspection": "available"
+  },
+  "snapshots": {
+    "enabled": false,
+    "files": [],
+    "times": [],
+    "findingFiles": []
+  }
+}

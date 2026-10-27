@@ -1,0 +1,57 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s8-rc { position: absolute; left: 210px; top: 150px; }
+    #s8-rc .receipt { zoom: 1.85; width: 380px; }
+    #s8-cap { left: 1090px; top: 300px; width: 700px; }
+    #s8-hash { display: flex; align-items: center; gap: 14px; margin-top: 40px; font-family: var(--font-mono); font-size: 26px; color: var(--ink-blue); }
+    #s8-hash svg { width: 40px; height: 40px; flex: none; }
+  </style>
+  <div id="root" data-composition-id="s8" data-width="1920" data-height="1080">
+    <div class="stage dots"></div>
+
+    <div id="s8-rc">
+      <div class="receipt" id="s8-receipt">
+        <div class="receipt-head"><h2>Proof of authorship</h2><span class="mono muted">#1</span></div>
+        <div class="receipt-sep" style="margin-top: 0"></div>
+        <div class="receipt-row"><span>Title</span><span>Why small dApps win hackathons</span></div>
+        <div class="receipt-row"><span>Words</span><span>77</span></div>
+        <div class="receipt-row"><span>Tone</span><span>Friendly</span></div>
+        <div class="receipt-row"><span>Sources</span><span>1</span></div>
+        <div class="receipt-row"><span>Date</span><span>Oct 26, 2026</span></div>
+        <div class="receipt-row"><span>Author</span><span class="mono">0xea87…0023</span></div>
+        <div class="receipt-sep"></div>
+        <div class="receipt-row receipt-total"><span>Status</span><span class="ok" id="s8-ok">✓ On-chain</span></div>
+        <span class="btn btn-primary btn-block">Open this proof</span>
+      </div>
+    </div>
+
+    <div class="cap" id="s8-cap">
+      <span class="chip chip-green" id="s8-chip">Proof on BOT Chain</span>
+      <h2 id="s8-h"><span class="w">Stamp</span> <span class="w">it</span> <span class="w">before</span> <span class="w">you</span> <span class="w">publish.</span></h2>
+      <p id="s8-p">Only the fingerprint goes on-chain. Anyone can verify a copy.</p>
+      <div id="s8-hash">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4" /><path d="M14 13.12c0 2.38 0 6.38-1 8.88" /><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02" /><path d="M2 12a10 10 0 0 1 18-6" /><path d="M2 16h.01" /><path d="M21.8 16c.2-2 .131-5.354 0-6" /><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2" /><path d="M8.65 22c.21-.66.45-1.32.57-2" /><path d="M9 6.8a6 6 0 0 1 9 5.2v2" /></svg>
+        <span>0x9a28482d…ca6f8c19</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var B = 0.49917;
+      var tl = gsap.timeline({ paused: true });
+      // the receipt prints top-down like a till roll, tilted as on the landing page
+      tl.fromTo("#s8-rc", { rotation: 0, y: -30, opacity: 0 }, { rotation: -2, y: 0, opacity: 1, duration: 0.5, ease: "expo.out" }, 0);
+      tl.fromTo("#s8-receipt", { clipPath: "inset(0% 0% 100% 0% round 20px)" }, { clipPath: "inset(0% 0% 0% 0% round 20px)", duration: 1.3, ease: "power2.out" }, 0.05);
+      tl.fromTo("#s8-ok", { opacity: 0, scale: 1.4 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", transformOrigin: "100% 50%" }, 4 * B);
+
+      tl.fromTo("#s8-chip", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, 0.1);
+      tl.fromTo("#s8-h .w", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16, stagger: 0.067 }, 0.2);
+      tl.fromTo("#s8-p", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3 }, 0.6);
+      tl.fromTo("#s8-hash", { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, 4 * B + 0.1);
+
+      tl.to("#s8-cap, #s8-rc", { opacity: 0, filter: "blur(10px)", duration: 0.25, ease: "power3.in" }, 3.72);
+      window.__timelines["s8"] = tl;
+    })();
+  </script>
+</template>

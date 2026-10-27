@@ -1,0 +1,576 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #d-ground { position: absolute; inset: 0; }
+
+    /* ---------- camera + browser window ---------- */
+    #d-cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    #d-win { position: absolute; left: 160px; top: 62px; width: 1600px; height: 956px; border-radius: 18px; overflow: hidden; background: #fff; box-shadow: 0 40px 90px rgba(16, 24, 40, .16), 0 8px 24px rgba(16, 24, 40, .08); border: 1px solid var(--border-strong); }
+    #d-chrome { position: relative; height: 56px; background: #F1F3F6; border-bottom: 1px solid var(--border-strong); display: flex; align-items: center; padding: 0 20px; }
+    #d-chrome .dots { display: flex; gap: 9px; }
+    #d-chrome .dots i { width: 13px; height: 13px; border-radius: 50%; background: #DADDE3; display: block; }
+    #d-url { position: absolute; left: 50%; top: 11px; width: 640px; margin-left: -320px; height: 34px; border-radius: 100px; background: #fff; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; color: var(--muted); }
+    #d-url b { color: var(--text); font-weight: 500; }
+    #d-url svg { width: 14px; height: 14px; }
+    .d-urlv { display: none; }
+    #d-dl { position: absolute; right: 18px; top: 11px; height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-radius: 100px; background: #fff; border: 1px solid var(--border); font-size: 14px; color: var(--text); }
+    #d-dl .ok { color: var(--ink-green); font-weight: 600; }
+    #d-vpwrap { position: relative; width: 1600px; height: 900px; overflow: hidden; }
+    #d-vp { position: relative; zoom: 1.11111; width: 1440px; height: 810px; overflow: hidden; background: var(--bg); }
+    .d-page { position: absolute; inset: 0; overflow: hidden; background: var(--bg); }
+
+    /* landing */
+    #pg-home .navtab-wrap, #pg-verify .navtab-wrap { position: absolute; top: 0; left: 0; right: 0; }
+    #pg-home .hero { padding-top: 140px; }
+    #pg-home .hl { background-size: 100% 100%; }
+    #pg-home .shot-stack { margin-top: 48px; }
+    .wallet-btn .dot { display: inline-block; }
+
+    /* writer */
+    #pg-write .topbar { position: absolute; left: 0; right: 0; top: 0; }
+    #pg-write .writer { position: absolute; left: 0; right: 0; top: 64px; }
+    #d-brief { position: relative; top: auto; height: 682px; max-height: 682px; overflow: hidden; padding: 0; }
+    #d-bf { padding: 24px; }
+    .d-fake { display: flex; align-items: center; font-size: 15px; color: var(--text); }
+    .d-ph { color: var(--faint); }
+    .d-caret { display: inline-block; width: 2px; height: 20px; background: var(--accent); margin-left: 1px; }
+    #d-status-slot { position: relative; height: 28px; }
+    #d-status-slot > * { position: absolute; left: 0; top: 0; }
+    #d-statusline { display: none; }
+    #d-titles { display: none; }
+    #d-paper { padding: 56px 64px; min-height: 640px; }
+    #d-doc .blk { display: none; }
+    #d-doc .c, #d-doc .cite-mark { display: none; }
+    #d-doc .d-scaret { display: none; width: 2px; height: 1.05em; background: var(--accent); margin-left: 3px; vertical-align: -.18em; }
+    #d-placeholder { color: var(--faint); font-size: 18px; line-height: 1.7; }
+    #d-new { display: none; border-radius: 4px; }
+    #d-sel { background-image: linear-gradient(rgba(0, 152, 242, .24), rgba(0, 152, 242, .24)); background-repeat: no-repeat; background-size: 0% 100%; }
+    #d-bubble { position: absolute; left: 640px; top: 406px; z-index: 70; }
+    #d-bubble .bubble { position: static; transform: none; }
+    #d-bubble .on { background: rgba(255, 255, 255, .18); }
+    #d-suggest { top: 372px; }
+    #d-shimmer i { display: block; height: 10px; border-radius: 6px; margin: 10px 0; background: #EEF0F3; }
+    #d-shimmer i:nth-child(2) { width: 70%; }
+    #d-sbody { position: relative; min-height: 46px; }
+    #d-snew { position: absolute; left: 0; right: 0; top: 0; }
+    .d-dis { opacity: .45; }
+    #d-menu { display: none; }
+    #d-stamp .lbl { display: none; }
+    #d-stamp .lbl.first { display: inline-flex; align-items: center; gap: 8px; }
+    #d-viewtx { display: none; }
+    #d-toast { position: absolute; left: 0; right: 0; bottom: 120px; display: flex; justify-content: center; z-index: 100; }
+    #d-toast .toast { position: static; transform: none; opacity: 1; }
+    #d-pop { position: absolute; top: 80px; right: 20px; width: 360px; z-index: 80; }
+    #d-pop .receipt { max-width: none; }
+
+    /* verify */
+    #pg-verify .page { padding-top: 112px; }
+    #d-vtext { min-height: 200px; height: 200px; font-size: 14px; white-space: pre-wrap; overflow: hidden; }
+    #d-vtext .d-ph { font-size: 15px; }
+    #d-vres { display: none; }
+
+    /* cursor (inside the viewport, so it moves with the camera) */
+    #d-cursor { position: absolute; left: 0; top: 0; width: 26px; height: 26px; z-index: 300; }
+    #d-cursor svg { width: 26px; height: 26px; filter: drop-shadow(0 2px 4px rgba(13, 17, 27, .3)); }
+
+    /* step lower-thirds */
+    .d-step { position: absolute; left: 0; right: 0; bottom: 34px; display: flex; justify-content: center; z-index: 500; }
+    .d-step > div { display: flex; align-items: center; gap: 18px; padding: 14px 30px 14px 16px; border-radius: 100px; background: rgba(13, 17, 27, .92); color: #fff; box-shadow: 0 16px 40px rgba(13, 17, 27, .25); }
+    .d-step .n { font-family: var(--font-mono); font-size: 24px; font-weight: 500; background: var(--accent); color: var(--primary); border-radius: 100px; padding: 6px 14px; }
+    .d-step .t { font-family: var(--font-display); font-weight: 700; font-size: 34px; letter-spacing: -.6px; }
+    .d-step .s { font-size: 28px; color: rgba(255, 255, 255, .72); }
+  </style>
+
+  <div id="root" data-composition-id="demo" data-width="1920" data-height="1080">
+    <div id="d-ground" class="stage dots"></div>
+
+    <div id="d-cam" data-layout-allow-overflow>
+      <div id="d-win">
+        <div id="d-chrome">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div id="d-url">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+            <span class="d-urlv" id="d-u1" style="display: inline"><b>instantblog.my.id</b></span>
+            <span class="d-urlv" id="d-u2"><b>instantblog.my.id</b>/write/</span>
+            <span class="d-urlv" id="d-u3"><b>instantblog.my.id</b>/verify/</span>
+          </div>
+          <div id="d-dl"><span>why-small-dapps-win-hackathons.docx</span><span class="ok">✓</span></div>
+        </div>
+
+        <div id="d-vpwrap">
+          <div id="d-vp">
+            <!-- ================= landing ================= -->
+            <div class="d-page" id="pg-home">
+              <header class="navtab-wrap" data-floating="false">
+                <div class="navtab">
+                  <span class="navtab-ear navtab-ear--left"></span><span class="navtab-ear navtab-ear--right"></span>
+                  <span class="brand brand-light"><svg class="brand-mark" viewBox="0 0 32 32" fill="none"><rect x="7" y="3" width="21" height="26" rx="5" fill="#FFFFFF" /><path d="M12 11.5h10M12 16h10M12 20.5h6" stroke="#0D111B" stroke-width="1.8" stroke-linecap="round" opacity=".9" /><path d="M4 8.5h5M4 14h5M4 19.5h5M4 25h5" stroke="#1AB4D7" stroke-width="2.4" stroke-linecap="round" /><path d="m20.5 24.2 4.6-4.6 1.6 1.6-4.6 4.6-2.2.6.6-2.2Z" fill="#1AB4D7" /></svg><span>InstantBlog</span></span>
+                  <nav class="navtab-links"><a>How it works</a><a>Features</a><a>Verify</a><a>FAQ</a></nav>
+                  <div class="navtab-wallet"><span class="btn btn-secondary wallet-btn">Connect wallet</span></div>
+                  <span class="navtab-cta">Start writing</span>
+                </div>
+              </header>
+              <section class="hero">
+                <div class="container">
+                  <span class="banner-chip"><b>New</b> Export to Word &amp; PDF</span>
+                  <h1>Write it once.<br /><span class="hl">Publish anywhere.</span></h1>
+                  <p class="hero-sub">Pick a topic, a tone and your key points. InstantBlog drafts a sourced article in under a minute. Copy it, or download it as PDF or Word.</p>
+                  <div class="hero-cta">
+                    <span class="btn btn-primary btn-lg" id="d-cta">Write my first post</span>
+                    <span class="fine">Free. No sign-up. You only need a wallet to stamp.</span>
+                  </div>
+                  <div class="callouts">
+                    <span class="chip chip-blue">Blog post</span><span class="chip chip-violet">Article</span><span class="chip chip-pink">How-to</span><span class="chip chip-cyan">Listicle</span><span class="chip chip-amber">Opinion</span>
+                  </div>
+                  <p class="lengths mono">~500 · ~900 · ~1,400 words</p>
+                  <div class="shot-stack">
+                    <div class="shot spiral shot-brief"><div class="shot-bar"><i></i> <i></i> <i></i> <span style="margin-left: 6px">Your brief</span></div><div class="shot-body"><div class="mini-label">What's it about?</div><div class="mini-input">Why small dApps win hackathons</div></div></div>
+                    <div class="shot shot-editor"><div class="shot-bar"><i></i> <i></i> <i></i> <span style="margin-left: 6px">Draft</span></div><div class="shot-body mini-paper ruled"><h4>Why small dApps win hackathons</h4><p>A hackathon goes by many names: hack day, hackfest, codefest <span class="cite">1</span>.</p></div></div>
+                    <div class="shot shot-export"><div class="shot-bar"><i></i> <i></i> <i></i> <span style="margin-left: 6px">Export</span></div><div class="shot-body mini-menu"><div>Rich text <span class="ok">Copied ✓</span></div><div>Markdown</div></div></div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <!-- ================= writer ================= -->
+            <div class="d-page" id="pg-write">
+              <header class="topbar">
+                <span class="brand"><svg class="brand-mark" viewBox="0 0 32 32" fill="none"><rect x="7" y="3" width="21" height="26" rx="5" fill="#0D111B" /><path d="M12 11.5h10M12 16h10M12 20.5h6" stroke="#fff" stroke-width="1.8" stroke-linecap="round" opacity=".9" /><path d="M4 8.5h5M4 14h5M4 19.5h5M4 25h5" stroke="#1AB4D7" stroke-width="2.4" stroke-linecap="round" /><path d="m20.5 24.2 4.6-4.6 1.6 1.6-4.6 4.6-2.2.6.6-2.2Z" fill="#1AB4D7" /></svg><span>InstantBlog</span></span>
+                <div class="doc-meta">
+                  <span class="doc-title"><span id="d-title0">Untitled draft</span><span id="d-title1" style="display: none">Why small dApps win hackathons</span></span>
+                  <span class="counters" id="d-count"><span>0 words · 0 min read</span><span style="display: none">131 words · 1 min read</span><span style="display: none">364 words · 2 min read</span><span style="display: none">618 words · 3 min read</span><span style="display: none">912 words · 4 min read</span><span style="display: none">908 words · 4 min read</span></span>
+                </div>
+                <div class="topbar-actions">
+                  <div class="export-btns d-dis" id="d-exports">
+                    <div class="drop">
+                      <span class="btn btn-secondary btn-sm" id="d-copy">Copy <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6" /></svg></span>
+                      <div data-layout-allow-occlusion data-layout-allow-overlap class="menu" id="d-menu" style="left: 0; right: auto; min-width: 260px">
+                        <button type="button" id="d-rich"><span>Rich text <span class="muted">— for Docs, Notion, Medium</span></span></button>
+                        <button type="button">Markdown</button>
+                        <button type="button">Plain text</button>
+                        <div class="menu-sep"></div>
+                        <label><input type="checkbox" /> Add "Written with AI assistance"</label>
+                      </div>
+                    </div>
+                    <span class="btn btn-secondary btn-sm">PDF</span>
+                    <span class="btn btn-secondary btn-sm" id="d-docx"><span class="spinner" id="d-docx-spin" style="display: none"></span> .docx</span>
+                  </div>
+                  <div class="stamp-wrap">
+                    <span class="helper" id="d-viewtx">view tx ↗</span>
+                    <span class="btn btn-sm btn-primary d-dis" id="d-stamp">
+                      <span class="lbl first" id="d-st0">Stamp on BOT Chain</span>
+                      <span class="lbl" id="d-st1"><span class="spinner d-spin"></span> Confirm in MetaMask…</span>
+                      <span class="lbl" id="d-st2"><span class="spinner d-spin"></span> Stamping…</span>
+                      <span class="lbl" id="d-st3">✓ Stamped #3</span>
+                    </span>
+                  </div>
+                  <span class="btn btn-secondary btn-sm wallet-btn"><span class="dot"></span> <span class="mono" style="font-size: 13px">0xea87…0023</span></span>
+                </div>
+              </header>
+
+              <main class="writer">
+                <aside class="card brief" id="d-brief">
+                  <div id="d-bf">
+                    <h2>Your brief</h2>
+                    <div class="field">
+                      <span class="label">What's it about?</span>
+                      <div class="input d-fake" id="d-topic"><span data-layout-ignore class="d-ph" id="d-topic-ph">Why small dApps win hackathons</span><span class="d-type" data-text="Why small dApps win hackathons"></span><span class="d-caret" id="d-topic-caret" style="display: none"></span></div>
+                    </div>
+                    <div class="field">
+                      <span class="label">Type</span>
+                      <div class="chips-wrap">
+                        <span class="chip chip-select" id="d-blog" style="background: var(--primary); border-color: var(--primary); color: #fff">Blog post</span>
+                        <span class="chip chip-select">Article</span>
+                        <span class="chip chip-select">How-to guide</span>
+                        <span class="chip chip-select">Listicle</span>
+                        <span class="chip chip-select" id="d-opinion">Opinion</span>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <span class="label">Voice tone</span>
+                      <div class="chips-wrap">
+                        <span class="chip chip-select" style="background: var(--primary); border-color: var(--primary); color: #fff">Friendly</span>
+                        <span class="chip chip-select">Professional</span>
+                        <span class="chip chip-select">Witty</span>
+                        <span class="chip chip-select">Inspiring</span>
+                        <span class="chip chip-select">Academic</span>
+                        <span class="chip chip-select">Casual</span>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <span class="label">Length</span>
+                      <div class="seg"><button type="button">Short <small>~500</small></button><button type="button" aria-pressed="true">Medium <small>~900</small></button><button type="button">Long <small>~1,400</small></button></div>
+                    </div>
+                    <div class="field">
+                      <span class="label">Key points (3–5) <span class="helper">Each becomes a section</span></span>
+                      <div class="points">
+                        <div class="point"><span class="handle" data-layout-ignore>⋮⋮</span><span class="num-badge">1</span><div class="input d-fake"><span class="d-type" data-text="Scope is a feature"></span></div><span></span></div>
+                        <div class="point"><span class="handle" data-layout-ignore>⋮⋮</span><span class="num-badge">2</span><div class="input d-fake"><span class="d-type" data-text="Demo beats docs"></span></div><span></span></div>
+                        <div class="point"><span class="handle" data-layout-ignore>⋮⋮</span><span class="num-badge">3</span><div class="input d-fake"><span class="d-type" data-text="Judges remember stories"></span></div><span></span></div>
+                      </div>
+                      <span class="add-point">+ Add a point</span>
+                    </div>
+                    <div class="field">
+                      <span class="label">Sources (up to 5) <span class="helper">Facts come from these</span></span>
+                      <div class="sources">
+                        <div class="source-row" id="d-srcrow">
+                          <div class="source-line"><span class="num-badge">1</span><div class="input d-fake" style="font-size: 14px"><span data-layout-ignore class="d-ph" id="d-url-ph">https://…</span><span id="d-url-v" style="display: none">https://en.wikipedia.org/wiki/Hackathon</span></div><span></span></div>
+                          <div class="source-status" style="position: relative; height: 28px">
+                            <span class="chip chip-panel" id="d-reading" style="position: absolute; left: 0; top: 0; opacity: 0">Reading…</span>
+                            <span class="chip chip-green" id="d-read" style="position: absolute; left: 0; top: 0; opacity: 0">✓ Read · Hackathon (Wikipedia)</span>
+                          </div>
+                        </div>
+                      </div>
+                      <span class="add-point">+ Add a source</span>
+                    </div>
+                    <div class="field">
+                      <span class="label">Audience <span class="helper">optional</span></span>
+                      <div class="input d-fake"><span data-layout-ignore class="d-ph">beginner developers</span></div>
+                    </div>
+                    <div class="gen-wrap">
+                      <div style="position: relative; height: 52px">
+                        <span class="btn btn-primary btn-lg btn-block" id="d-gen" style="position: absolute; inset: 0">Generate draft →</span>
+                        <span class="btn btn-secondary btn-lg btn-block" id="d-stop" style="position: absolute; inset: 0; display: none">Stop</span>
+                      </div>
+                      <p class="gen-hint" id="d-hint"><span></span><span style="display: none">Reading your sources…</span><span style="display: none">Writing section 1 of 4…</span><span style="display: none">Writing section 2 of 4…</span><span style="display: none">Writing section 3 of 4…</span><span style="display: none">Writing section 4 of 4…</span></p>
+                    </div>
+                  </div>
+                </aside>
+
+                <section class="editor-col">
+                  <div id="d-status-slot">
+                    <div class="status-line" id="d-statusline"><span class="spinner d-spin"></span> <span id="d-stat"><span>Reading your sources…</span><span style="display: none">Writing section 1 of 4…</span><span style="display: none">Writing section 2 of 4…</span><span style="display: none">Writing section 3 of 4…</span><span style="display: none">Writing section 4 of 4…</span></span> <span class="btn btn-ghost btn-xs">Stop</span></div>
+                    <div class="title-chips" id="d-titles"><span class="label-sm">Title ideas:</span><span class="chip chip-violet">Ship one flow, win the weekend</span><span class="chip chip-violet">The one-feature hackathon</span><span class="chip chip-violet">Small scope, big demo</span></div>
+                  </div>
+                  <div class="toolbar">
+                    <span class="icon-btn"><b>H2</b></span><span class="icon-btn"><b>H3</b></span><span class="sep"></span><span class="icon-btn"><b>B</b></span><span class="icon-btn"><i>I</i></span><span class="icon-btn">•≡</span><span class="icon-btn">1≡</span><span class="icon-btn">🔗</span><span class="icon-btn">❝</span><span class="sep"></span><span class="icon-btn">↶</span><span class="icon-btn">↷</span><span class="spacer"></span><span class="icon-btn serif-toggle">Aa <span>Serif</span></span>
+                  </div>
+                  <div class="paper" id="d-paper">
+                    <div class="ProseMirror" id="d-doc">
+                      <p id="d-placeholder">Your draft will appear here. Fill in the brief and hit Generate — or just start typing.</p>
+                    </div>
+                    <div data-layout-allow-occlusion data-layout-allow-overlap class="suggest" id="d-suggest">
+                      <div class="suggest-head"><span>Suggestion · Shorten</span><span>×</span></div>
+                      <div class="suggest-old">Pick the one flow you can demo in under a minute and build only that.</div>
+                      <div id="d-sbody"><div id="d-shimmer"><i></i><i></i></div><div class="suggest-new" id="d-snew">Build only the one flow you can demo in a minute.</div></div>
+                      <div class="suggest-foot"><span class="kbd">Esc to discard · Ctrl/⌘ + Enter to accept</span><span class="btn btn-ghost btn-xs">Discard</span><span class="btn btn-primary btn-xs">Accept</span></div>
+                    </div>
+                  </div>
+                </section>
+              </main>
+
+              <div data-layout-allow-occlusion id="d-bubble"><div class="bubble"><button type="button">Rewrite</button><button type="button" id="d-shorten">Shorten</button><button type="button">Expand</button><span class="sep"></span><button type="button">Change tone ⌄</button></div></div>
+
+              <div data-layout-allow-occlusion id="d-pop">
+                <div class="receipt">
+                  <div class="receipt-head"><h2>Stamped #3</h2></div>
+                  <div class="receipt-sep" style="margin-top: 0"></div>
+                  <div class="receipt-row"><span>Title</span><span>Why small dApps win hackathons</span></div>
+                  <div class="receipt-row"><span>Words</span><span>908</span></div>
+                  <div class="receipt-row"><span>Tone</span><span>Friendly</span></div>
+                  <div class="receipt-row"><span>Sources</span><span>1</span></div>
+                  <div class="receipt-row"><span>Date</span><span>Oct 27, 2026</span></div>
+                  <div class="receipt-row"><span>Author</span><span class="mono">0xea87…0023</span></div>
+                  <div class="receipt-row"><span>Fingerprint</span><span class="mono">0x5c1e93ab…7d04f2</span></div>
+                  <div class="receipt-sep"></div>
+                  <div class="receipt-row receipt-total"><span>Status</span><span class="ok">✓ Verified on-chain</span></div>
+                  <span class="btn btn-secondary btn-block">Copy proof link</span>
+                  <span class="btn btn-primary btn-block" style="margin-top: 8px">View on explorer ↗</span>
+                </div>
+              </div>
+
+              <div data-layout-allow-occlusion id="d-toast"><div class="toast">Copied — paste into Docs, Notion or Medium</div></div>
+            </div>
+
+            <!-- ================= verify ================= -->
+            <div class="d-page" id="pg-verify">
+              <header class="navtab-wrap" data-floating="false">
+                <div class="navtab">
+                  <span class="navtab-ear navtab-ear--left"></span><span class="navtab-ear navtab-ear--right"></span>
+                  <span class="brand brand-light"><svg class="brand-mark" viewBox="0 0 32 32" fill="none"><rect x="7" y="3" width="21" height="26" rx="5" fill="#FFFFFF" /><path d="M12 11.5h10M12 16h10M12 20.5h6" stroke="#0D111B" stroke-width="1.8" stroke-linecap="round" opacity=".9" /><path d="M4 8.5h5M4 14h5M4 19.5h5M4 25h5" stroke="#1AB4D7" stroke-width="2.4" stroke-linecap="round" /><path d="m20.5 24.2 4.6-4.6 1.6 1.6-4.6 4.6-2.2.6.6-2.2Z" fill="#1AB4D7" /></svg><span>InstantBlog</span></span>
+                  <nav class="navtab-links"><a>How it works</a><a>Features</a><a>Verify</a><a>FAQ</a></nav>
+                  <div class="navtab-wallet"><span class="btn btn-secondary wallet-btn"><span class="dot"></span> 0xea87…0023</span></div>
+                  <span class="navtab-cta">Start writing</span>
+                </div>
+              </header>
+              <main class="page">
+                <h1>Verify an article</h1>
+                <p class="lead">Paste any copy of an article. We'll check its fingerprint against proofs on BOT Chain — nothing you paste leaves your browser.</p>
+                <div class="card verify-box">
+                  <span class="label">Article text <span class="helper">Markdown or plain text</span></span>
+                  <div class="textarea" id="d-vtext"><span data-layout-ignore class="d-ph" id="d-vph">Paste the article text (Markdown or plain text)</span><span id="d-vpaste" style="display: none"># Why small dApps win hackathons
+
+A hackathon goes by many names: hack day, hackfest, codefest [1]. Whatever you call it, you get one weekend to show something that works.
+
+## Scope is a feature
+
+Build only the one flow you can demo in a minute. Everything else can wait for version two.</span></div>
+                  <span class="btn btn-primary btn-lg" id="d-verify">Verify</span>
+                  <div class="result result-ok" id="d-vres">
+                    <strong>✓ Matches proof #3 by 0xea87…0023, stamped Oct 27, 2026</strong>
+                    <span class="text-link">Open proof card →</span>
+                  </div>
+                </div>
+              </main>
+            </div>
+
+            <div id="d-cursor"><svg viewBox="0 0 24 24"><path d="M5 2.5 19 11l-6.3 1.6L9.6 19z" fill="#0D111B" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" /></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-step" data-layout-allow-occlusion data-layout-allow-overlap id="ls1"><div><span class="n">01</span><span class="t">Open instantblog.my.id</span><span class="s">Free. No sign-up.</span></div></div>
+    <div class="d-step" data-layout-allow-occlusion data-layout-allow-overlap id="ls2"><div><span class="n">02</span><span class="t">Fill in the brief</span><span class="s">Topic, tone, key points, sources.</span></div></div>
+    <div class="d-step" data-layout-allow-occlusion data-layout-allow-overlap id="ls3"><div><span class="n">03</span><span class="t">Generate a cited draft</span><span class="s">Facts come from your sources.</span></div></div>
+    <div class="d-step" data-layout-allow-occlusion data-layout-allow-overlap id="ls4"><div><span class="n">04</span><span class="t">Polish with AI</span><span class="s">Nothing changes until you Accept.</span></div></div>
+    <div class="d-step" data-layout-allow-occlusion data-layout-allow-overlap id="ls5"><div><span class="n">05</span><span class="t">Copy or download</span><span class="s">Rich text, PDF or Word.</span></div></div>
+    <div class="d-step" data-layout-allow-occlusion data-layout-allow-overlap id="ls6"><div><span class="n">06</span><span class="t">Stamp it on BOT Chain</span><span class="s">Only the fingerprint goes on-chain.</span></div></div>
+    <div class="d-step" data-layout-allow-occlusion data-layout-allow-overlap id="ls7"><div><span class="n">07</span><span class="t">Anyone can verify a copy</span><span class="s">One changed character, no match.</span></div></div>
+  </div>
+
+  <script>
+    (function () {
+      var B = 0.52633, BAR = 4 * B;
+      var tl = gsap.timeline({ paused: true });
+      var $ = function (s) { return document.querySelector(s); };
+
+      /* ---------- helpers ---------- */
+      // camera: centre native viewport point (nx, ny) on the canvas at scale s
+      var VX = 160, VY = 118, VS = 1600 / 1440;
+      function cam(nx, ny, s, t, d, ease) {
+        var px = VX + nx * VS, py = VY + ny * VS;
+        tl.to("#d-cam", { x: 960 - px * s, y: 540 - py * s, scale: s, duration: d || 0.7, ease: ease || "power2.inOut" }, t);
+      }
+      function wide(t, d) { tl.to("#d-cam", { x: 0, y: 0, scale: 1, duration: d || 0.7, ease: "power2.inOut" }, t); }
+      function move(x, y, t, d) { tl.to("#d-cursor", { x: x, y: y, duration: d || 0.45, ease: "power3.inOut" }, t); }
+      function click(t) { tl.to("#d-cursor", { scale: 0.82, duration: 0.07, yoyo: true, repeat: 1, transformOrigin: "20% 10%" }, t); }
+      function typeIn(el, t0, dt) {
+        var text = el.dataset.text; el.textContent = "";
+        Array.from(text).forEach(function (ch, i) {
+          var s = document.createElement("span"); s.className = "c"; s.textContent = ch; s.style.display = "none";
+          el.appendChild(s); tl.set(s, { display: "inline" }, t0 + i * dt);
+        });
+        return t0 + text.length * dt;
+      }
+      // show child i of el (all others hidden) at time t
+      function swap(sel, i, t) {
+        Array.from(document.querySelectorAll(sel + " > span")).forEach(function (c, j) { tl.set(c, { display: j === i ? "inline" : "none" }, t); });
+      }
+      function step(id, t, prev) {
+        if (prev) tl.to(prev, { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in" }, t - 0.18);
+        tl.fromTo(id, { opacity: 0, y: 16, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, t);
+      }
+
+      gsap.set(".d-step, #d-bubble, #d-suggest, #d-snew, #d-toast, #d-pop, #d-dl, #pg-write, #pg-verify", { opacity: 0 });
+      gsap.set("#d-cursor", { x: 980, y: 700 });
+      gsap.set("#d-cam", { transformOrigin: "0 0", x: 0, y: 0, scale: 1 });
+
+      /* ---------- 01 landing (0 – 2 bars) ---------- */
+      tl.fromTo("#d-win", { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, 0);
+      step("#ls1", 0.35);
+      move(722, 452, 3 * B, 0.9);
+      click(6 * B);
+      tl.to("#d-cta", { backgroundColor: "#222838", duration: 0.08 }, 6 * B);
+      // navigate to /write/
+      var NAV = 6 * B + 0.2;
+      tl.to("#pg-home", { opacity: 0, duration: 0.18 }, NAV);
+      tl.set("#d-u1", { display: "none" }, NAV); tl.set("#d-u2", { display: "inline" }, NAV);
+      tl.to("#pg-write", { opacity: 1, duration: 0.25 }, NAV + 0.12);
+
+      /* ---------- 02 brief (2 – 7 bars) ---------- */
+      var S2 = 2 * BAR;
+      step("#ls2", S2, "#ls1");
+      cam(480, 300, 1.75, S2 - 0.1, 0.8);
+      move(150, 216, S2 + 0.3, 0.6);
+      click(S2 + 2 * B);
+      tl.set("#d-topic-ph", { display: "none" }, S2 + 2 * B + 0.05);
+      tl.set("#d-topic-caret", { display: "inline-block" }, S2 + 2 * B + 0.05);
+      var tEnd = typeIn(document.querySelector("#d-topic .d-type"), S2 + 2 * B + 0.1, 0.03);
+      tl.set("#d-topic-caret", { display: "none" }, tEnd + 0.1);
+      tl.set("#d-title0", { display: "none" }, tEnd); tl.set("#d-title1", { display: "inline" }, tEnd);
+      // type: Opinion
+      move(224, 350, S2 + 4 * B - 0.4, 0.38);
+      click(S2 + 4 * B);
+      tl.to("#d-blog", { backgroundColor: "#FFFFFF", borderColor: "rgba(0,0,0,.12)", color: "#1E1E1E", duration: 0.1 }, S2 + 4 * B + 0.03);
+      tl.to("#d-opinion", { backgroundColor: "#0D111B", borderColor: "#0D111B", color: "#FFFFFF", duration: 0.1 }, S2 + 4 * B + 0.03);
+      // scroll to key points, type them
+      tl.to("#d-bf", { y: -230, duration: 0.6, ease: "power2.inOut" }, S2 + 5 * B);
+      cam(480, 420, 1.75, S2 + 5 * B, 0.6);
+      move(150, 430, S2 + 5 * B, 0.6);
+      var pts = document.querySelectorAll(".point .d-type");
+      typeIn(pts[0], S2 + 6 * B + 0.1, 0.028);
+      typeIn(pts[1], S2 + 7.5 * B + 0.1, 0.028);
+      typeIn(pts[2], S2 + 9 * B + 0.1, 0.028);
+      // scroll to sources, paste a link
+      tl.to("#d-bf", { y: -430, duration: 0.6, ease: "power2.inOut" }, S2 + 11 * B);
+      cam(480, 470, 1.75, S2 + 11 * B, 0.6);
+      move(230, 452, S2 + 11 * B, 0.6);
+      click(S2 + 12 * B);
+      tl.set("#d-url-ph", { display: "none" }, S2 + 12 * B + 0.1); tl.set("#d-url-v", { display: "inline" }, S2 + 12 * B + 0.1);
+      tl.to("#d-reading", { opacity: 1, duration: 0.15 }, S2 + 13 * B);
+      tl.to("#d-reading", { opacity: 0, duration: 0.12 }, S2 + 15 * B);
+      tl.fromTo("#d-read", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)", transformOrigin: "0% 50%" }, S2 + 15 * B);
+      // pull out and head for Generate
+      tl.to("#d-bf", { y: -470, duration: 0.5, ease: "power2.inOut" }, S2 + 16 * B);
+      wide(S2 + 17 * B, 0.8);
+      move(262, 642, S2 + 18 * B, 0.8);
+
+      /* ---------- 03 generate (7 – 11 bars) ---------- */
+      var S3 = 7 * BAR;
+      step("#ls3", S3, "#ls2");
+      click(S3);
+      tl.set("#d-gen", { display: "none" }, S3 + 0.08); tl.set("#d-stop", { display: "flex" }, S3 + 0.08);
+      swap("#d-hint", 1, S3 + 0.1);
+      tl.set("#d-statusline", { display: "flex" }, S3 + 0.1);
+      tl.set("#d-placeholder", { display: "none" }, S3 + 0.1);
+      cam(820, 430, 1.4, S3 + 0.5, 0.8);
+      tl.to("#d-cursor", { x: 1320, y: 760, duration: 0.6, ease: "power2.inOut" }, S3 + 0.3);
+
+      var BLOCKS = [
+        ["h1", "Why small dApps win hackathons"],
+        ["p", "A hackathon goes by many names: hack day, hackfest, codefest {1}. Whatever you call it, you get one weekend to show something that works."],
+        ["h2", "Scope is a feature"],
+        ["p", "{SEL}Pick the one flow you can demo in under a minute and build only that.{/SEL} Everything else can wait for version two."],
+        ["h2", "Demo beats docs"],
+        ["p", "Show the result first, then explain how it works. A short live demo answers most questions before anyone asks them."],
+        ["h2", "Judges remember stories"],
+        ["p", "By Sunday afternoon the judges have seen a dozen dashboards. The team they talk about later is the one that told them who the product was for."],
+      ];
+      var doc = $("#d-doc"), steps = [], sectionAt = [];
+      BLOCKS.forEach(function (b, bi) {
+        var startIdx = steps.length;
+        var el = document.createElement(b[0]); el.className = "blk"; doc.appendChild(el);
+        var host = el, first = true;
+        var caret = document.createElement("span"); caret.className = "d-scaret";
+        b[1].split(" ").forEach(function (word, i) {
+          if (word.indexOf("{SEL}") === 0) {
+            var old = document.createElement("span"); old.id = "d-old";
+            var sel = document.createElement("span"); sel.id = "d-sel"; old.appendChild(sel); el.appendChild(old);
+            var nw = document.createElement("span"); nw.id = "d-new"; nw.textContent = "Build only the one flow you can demo in a minute."; el.appendChild(nw);
+            host = sel; word = word.slice(5);
+          }
+          var close = word.indexOf("{/SEL}") > -1;
+          word = word.replace("{/SEL}", "");
+          if (i > 0) host.appendChild(document.createTextNode(" "));
+          var tok = document.createElement("span");
+          if (word.indexOf("{1}") === 0) { tok.className = "cite-mark"; tok.id = "d-cite"; tok.textContent = "[1]"; host.appendChild(tok); steps.push({ el: tok, d: "inline-block", block: first ? el : null, caret: caret }); first = false; word = word.slice(3); tok = document.createElement("span"); }
+          if (word) { tok.className = "c"; tok.textContent = word; host.appendChild(tok); steps.push({ el: tok, d: "inline", block: first ? el : null, caret: caret }); }
+          first = false;
+          if (close) host = el;
+        });
+        el.appendChild(caret);
+        if (b[0] === "h2") sectionAt.push(startIdx);
+      });
+      var T0 = S3 + 1.1, DT = 0.034, prevCaret = null, citeAt = 0;
+      steps.forEach(function (s, i) {
+        var t = T0 + i * DT;
+        if (s.block) tl.set(s.block, { display: "block" }, t);
+        if (s.caret !== prevCaret) { if (prevCaret) tl.set(prevCaret, { display: "none" }, t); tl.set(s.caret, { display: "inline-block" }, t); prevCaret = s.caret; }
+        tl.set(s.el, { display: s.d }, t);
+        if (s.el.id === "d-cite") citeAt = t;
+      });
+      var END = T0 + steps.length * DT;
+      // status + counters follow the stream
+      [T0 + 0.3].concat(sectionAt.map(function (k) { return T0 + k * DT; })).forEach(function (t, i) {
+        swap("#d-hint", Math.min(i + 2, 5), t); swap("#d-stat", Math.min(i + 1, 4), t);
+      });
+      swap("#d-count", 1, T0 + (END - T0) * 0.3); swap("#d-count", 2, T0 + (END - T0) * 0.55); swap("#d-count", 3, T0 + (END - T0) * 0.8);
+      tl.fromTo("#d-cite", { scale: 1.8 }, { scale: 1, duration: 0.35, ease: "back.out(2)" }, citeAt);
+      // finish
+      tl.set(prevCaret, { display: "none" }, END + 0.2);
+      tl.set("#d-stop", { display: "none" }, END + 0.2); tl.set("#d-gen", { display: "flex" }, END + 0.2);
+      swap("#d-hint", 0, END + 0.2); swap("#d-count", 4, END + 0.2);
+      tl.set("#d-statusline", { display: "none" }, END + 0.2);
+      tl.set("#d-titles", { display: "flex" }, END + 0.2);
+      tl.fromTo("#d-titles .chip", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.08, ease: "expo.out" }, END + 0.22);
+      tl.to("#d-exports, #d-stamp", { opacity: 1, duration: 0.2 }, END + 0.2);
+      // hover the [1]: its source lights up in the brief
+      wide(END + 0.4, 0.8);
+      move(1037, 333, END + 0.7, 0.7);
+      tl.to("#d-cite", { boxShadow: "0 0 0 2px #1AB4D7", duration: 0.15 }, END + 1.4);
+      tl.to("#d-srcrow .num-badge", { backgroundColor: "#1AB4D7", color: "#FFFFFF", borderColor: "#1AB4D7", boxShadow: "0 0 0 4px rgba(26,180,215,.16)", duration: 0.15 }, END + 1.4);
+
+      /* ---------- 04 polish (11 – 14 bars) ---------- */
+      var S4 = 11 * BAR;
+      step("#ls4", S4, "#ls3");
+      tl.to("#d-cite", { boxShadow: "0 0 0 0px #1AB4D7", duration: 0.15 }, S4 - 0.3);
+      tl.to("#d-srcrow .num-badge", { backgroundColor: "#FAFAFA", color: "#666666", borderColor: "rgba(0,0,0,.06)", boxShadow: "0 0 0 0px rgba(26,180,215,0)", duration: 0.15 }, S4 - 0.3);
+      cam(900, 520, 1.7, S4, 0.8);
+      move(610, 507, S4 + 0.2, 0.6);
+      tl.to("#d-cursor", { x: 1180, y: 507, duration: 0.6, ease: "none" }, S4 + 2 * B);
+      tl.to("#d-sel", { backgroundSize: "100% 100%", duration: 0.6, ease: "none" }, S4 + 2 * B);
+      tl.fromTo("#d-bubble", { opacity: 0, y: 8, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "expo.out", transformOrigin: "30% 100%" }, S4 + 3.5 * B);
+      move(752, 452, S4 + 4.5 * B - 0.4, 0.4);
+      click(S4 + 4.5 * B);
+      tl.set("#d-shorten", { className: "on" }, S4 + 4.5 * B + 0.03);
+      tl.fromTo("#d-suggest", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, S4 + 5 * B);
+      tl.to("#d-shimmer", { opacity: 0, duration: 0.15 }, S4 + 6.5 * B);
+      tl.to("#d-snew", { opacity: 1, duration: 0.2 }, S4 + 6.5 * B);
+      move(1218, 680, S4 + 8.5 * B - 0.5, 0.5);
+      click(S4 + 8.5 * B);
+      tl.to("#d-suggest, #d-bubble", { opacity: 0, y: 6, duration: 0.2, ease: "power2.in" }, S4 + 8.5 * B + 0.1);
+      tl.set("#d-old", { display: "none" }, S4 + 8.5 * B + 0.2);
+      tl.set("#d-new", { display: "inline" }, S4 + 8.5 * B + 0.2);
+      tl.fromTo("#d-new", { backgroundColor: "rgba(26,180,215,.32)" }, { backgroundColor: "rgba(26,180,215,0)", duration: 1.4, ease: "power1.in" }, S4 + 8.5 * B + 0.2);
+      swap("#d-count", 5, S4 + 8.5 * B + 0.3);
+
+      /* ---------- 05 export (14 – 16 bars) ---------- */
+      var S5 = 14 * BAR;
+      step("#ls5", S5, "#ls4");
+      cam(900, 230, 1.6, S5 - 0.2, 0.8);
+      move(888, 32, S5 + 0.3, 0.55);
+      click(S5 + 2 * B);
+      tl.set("#d-menu", { display: "block" }, S5 + 2 * B + 0.05);
+      move(950, 82, S5 + 3.5 * B - 0.35, 0.35);
+      click(S5 + 3.5 * B);
+      tl.set("#d-menu", { display: "none" }, S5 + 3.5 * B + 0.1);
+      wide(S5 + 3.5 * B + 0.05, 0.6);
+      tl.fromTo("#d-toast", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.25, ease: "expo.out" }, S5 + 3.5 * B + 0.15);
+      tl.to("#d-toast", { opacity: 0, duration: 0.2 }, S5 + 7.6 * B);
+      move(1047, 32, S5 + 5.5 * B - 0.4, 0.4);
+      click(S5 + 5.5 * B);
+      tl.set("#d-docx-spin", { display: "inline-block" }, S5 + 5.5 * B + 0.05);
+      tl.set("#d-docx-spin", { display: "none" }, S5 + 6.5 * B);
+      tl.fromTo("#d-dl", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, S5 + 6.5 * B);
+
+      /* ---------- 06 stamp (16 – 19 bars) ---------- */
+      var S6 = 16 * BAR;
+      step("#ls6", S6, "#ls5");
+      tl.to("#d-dl", { opacity: 0, duration: 0.3 }, S6 + 0.4);
+      cam(900, 250, 1.6, S6, 0.8);
+      move(1178, 32, S6 + 0.2, 0.6);
+      click(S6 + 2 * B);
+      tl.set("#d-st0", { display: "none" }, S6 + 2 * B + 0.05); tl.set("#d-st1", { display: "inline-flex" }, S6 + 2 * B + 0.05);
+      tl.set("#d-st1", { display: "none" }, S6 + 4 * B); tl.set("#d-st2", { display: "inline-flex" }, S6 + 4 * B);
+      tl.set("#d-viewtx", { display: "inline" }, S6 + 4 * B);
+      tl.to("#d-cursor", { x: 1300, y: 300, opacity: 0, duration: 0.5, ease: "power2.in" }, S6 + 2.5 * B);
+      tl.fromTo(".d-spin", { rotation: 0 }, { rotation: 360 * 44, duration: 44, ease: "none" }, 0);
+      tl.set("#d-st2", { display: "none" }, S6 + 6 * B); tl.set("#d-st3", { display: "inline-flex" }, S6 + 6 * B);
+      tl.set("#d-viewtx", { display: "none" }, S6 + 6 * B);
+      tl.to("#d-stamp", { backgroundColor: "#2CA01C", duration: 0.12 }, S6 + 6 * B);
+      cam(820, 330, 1.35, S6 + 6 * B, 0.7);
+      tl.fromTo("#d-pop", { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, S6 + 6 * B + 0.1);
+      tl.fromTo("#d-pop .receipt", { clipPath: "inset(0% 0% 100% 0% round 20px)" }, { clipPath: "inset(0% 0% 0% 0% round 20px)", duration: 0.9, ease: "power2.out" }, S6 + 6 * B + 0.1);
+
+      /* ---------- 07 verify (19 – 21 bars) ---------- */
+      var S7 = 19 * BAR;
+      step("#ls7", S7, "#ls6");
+      tl.to("#pg-write", { opacity: 0, duration: 0.18 }, S7 - 0.2);
+      tl.set("#d-u2", { display: "none" }, S7 - 0.05); tl.set("#d-u3", { display: "inline" }, S7 - 0.05);
+      tl.to("#pg-verify", { opacity: 1, duration: 0.25 }, S7 - 0.1);
+      cam(720, 470, 1.35, S7 - 0.2, 0.8);
+      tl.set("#d-cursor", { x: 900, y: 420 }, S7);
+      tl.to("#d-cursor", { opacity: 1, duration: 0.2 }, S7 + 0.1);
+      move(700, 420, S7 + 0.2, 0.4);
+      click(S7 + 1 * B);
+      tl.set("#d-vph", { display: "none" }, S7 + 1 * B + 0.1); tl.set("#d-vpaste", { display: "inline" }, S7 + 1 * B + 0.1);
+      move(720, 560, S7 + 2.5 * B - 0.4, 0.4);
+      click(S7 + 2.5 * B);
+      tl.set("#d-vres", { display: "grid" }, S7 + 3 * B);
+      tl.fromTo("#d-vres", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, S7 + 3 * B);
+
+      window.__timelines["demo"] = tl;
+    })();
+  </script>
+</template>

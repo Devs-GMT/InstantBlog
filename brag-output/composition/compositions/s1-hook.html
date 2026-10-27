@@ -1,0 +1,51 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s1-paper {
+      position: absolute; inset: 0; background-color: #fff;
+      background-image:
+        linear-gradient(to right, transparent 250px, rgba(229, 57, 53, .35) 250px, rgba(229, 57, 53, .35) 252px, transparent 252px),
+        repeating-linear-gradient(to bottom, transparent 0, transparent 71px, rgba(0, 152, 242, .16) 71px, rgba(0, 152, 242, .16) 72px);
+    }
+    #s1-meta { position: absolute; left: 310px; top: 168px; font-family: var(--font-mono); font-size: 30px; color: var(--muted); }
+    #s1-text {
+      position: absolute; left: 310px; top: 362px; width: 1450px;
+      font-family: var(--font-display); font-weight: 700; font-size: 108px; line-height: 144px; letter-spacing: -3.2px; color: var(--text);
+    }
+    #s1-caret { display: inline-block; width: 8px; height: 100px; background: var(--accent); vertical-align: -14px; margin-left: 8px; border-radius: 3px; }
+  </style>
+  <div id="root" data-composition-id="s1" data-width="1920" data-height="1080">
+    <div id="s1-paper"></div>
+    <div id="s1-meta">untitled.md</div>
+    <div id="s1-text"><span class="s1-type" data-text="Blank pages are a slow"></span><span class="c s1-br"></span><span class="s1-type" data-text="way to start writing."></span><span id="s1-caret"></span></div>
+  </div>
+  <script>
+    (function () {
+      // Split each line into hidden per-character spans; the timeline reveals them one by one.
+      document.querySelectorAll("#s1-text .s1-type").forEach(function (el) {
+        el.textContent = "";
+        Array.from(el.dataset.text).forEach(function (ch) {
+          var s = document.createElement("span");
+          s.className = "c";
+          s.textContent = ch;
+          el.appendChild(s);
+        });
+      });
+      var chars = Array.from(document.querySelectorAll("#s1-text .c"));
+      var tl = gsap.timeline({ paused: true });
+      var t0 = 0.28, dt = 0.032;
+      chars.forEach(function (el, i) {
+        tl.set(el, { display: el.classList.contains("s1-br") ? "block" : "inline" }, t0 + i * dt);
+      });
+      // caret blinks on the half-beat once typing stops
+      var end = t0 + chars.length * dt;
+      for (var t = end + 0.25, on = false; t < 3.5; t += 0.25, on = !on) {
+        tl.set("#s1-caret", { opacity: on ? 1 : 0 }, t);
+      }
+      tl.fromTo("#s1-meta", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0);
+      // leave: push into the page
+      tl.to("#s1-text, #s1-meta", { opacity: 0, filter: "blur(10px)", scale: 1.04, duration: 0.36, ease: "power3.in", transformOrigin: "30% 50%" }, 3.6);
+      window.__timelines["s1"] = tl;
+    })();
+  </script>
+</template>

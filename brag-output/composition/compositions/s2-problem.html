@@ -1,0 +1,53 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s2-bg {
+      position: absolute; inset: 0; background: #fff;
+      background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 71px, rgba(0, 152, 242, .07) 71px, rgba(0, 152, 242, .07) 72px);
+    }
+    #s2-grid { position: absolute; left: 160px; right: 160px; top: 330px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 72px; }
+    .s2-col { position: relative; padding-top: 36px; }
+    .s2-rule { position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--text); transform-origin: 0 50%; }
+    .s2-num { font-family: var(--font-mono); font-size: 26px; color: var(--muted); display: block; }
+    .s2-word { position: relative; display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 112px; letter-spacing: -3.6px; line-height: 1.1; margin-top: 8px; color: var(--text); }
+    .s2-strike { position: absolute; left: -6px; right: -6px; top: 56%; height: 16px; border-radius: 8px; background: var(--accent); opacity: .85; transform-origin: 0 50%; }
+    .s2-desc { font-size: 30px; line-height: 1.4; color: var(--muted); margin-top: 18px; }
+  </style>
+  <div id="root" data-composition-id="s2" data-width="1920" data-height="1080">
+    <div id="s2-bg"></div>
+    <div id="s2-grid">
+      <div class="s2-col" id="s2-c1">
+        <span class="s2-rule"></span><span class="s2-num">01</span>
+        <div class="s2-word">Slow<span class="s2-strike"></span></div>
+        <p class="s2-desc">A first draft can take hours before any editing starts.</p>
+      </div>
+      <div class="s2-col" id="s2-c2">
+        <span class="s2-rule"></span><span class="s2-num">02</span>
+        <div class="s2-word">Generic<span class="s2-strike"></span></div>
+        <p class="s2-desc">Most AI text reads the same whatever topic you give it.</p>
+      </div>
+      <div class="s2-col" id="s2-c3">
+        <span class="s2-rule"></span><span class="s2-num">03</span>
+        <div class="s2-word">Unsourced<span class="s2-strike"></span></div>
+        <p class="s2-desc">A number with no link is hard to check and risky to publish.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var B = 0.49917;
+      var tl = gsap.timeline({ paused: true });
+      ["#s2-c1", "#s2-c2", "#s2-c3"].forEach(function (id, i) {
+        var t = i * 2 * B;
+        tl.fromTo(id + " .s2-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "expo.out" }, t);
+        tl.fromTo(id + " .s2-num", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t + 0.05);
+        tl.fromTo(id + " .s2-word", { opacity: 0, y: 26, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out" }, t + 0.04);
+        tl.fromTo(id + " .s2-desc", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.out" }, t + 0.22);
+      });
+      // the marker crosses all three out, right before InstantBlog arrives
+      tl.fromTo("#s2-grid .s2-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out", stagger: 0.12 }, 6 * B);
+      tl.to("#s2-grid", { opacity: 0, y: -24, filter: "blur(8px)", duration: 0.3, ease: "power3.in" }, 3.65);
+      window.__timelines["s2"] = tl;
+    })();
+  </script>
+</template>

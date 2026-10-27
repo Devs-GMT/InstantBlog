@@ -1,0 +1,129 @@
+<template>
+  <style>
+    @font-face { font-family: "Caveat"; font-weight: 600; src: url("assets/fonts/caveat-600.woff2") format("woff2"); }
+    #root { position: absolute; inset: 0; }
+    #s5-wrap { position: absolute; left: 130px; top: 70px; }
+    #s5-paper { zoom: 1.55; width: 640px; min-height: 700px; padding: 40px 52px; }
+    #s5-paper .ProseMirror { min-height: 0; }
+    #s5-paper .blk { display: none; }
+    #s5-paper .ProseMirror > .blk + .blk { margin-top: .85em; }
+    #s5-paper .ProseMirror h2.blk { margin-top: 1.3em; }
+    #s5-paper ol { padding-left: 1.4em; }
+    #s5-paper li a { color: var(--ink-blue); text-decoration: underline; }
+    .s5-caret { display: none; width: 2px; height: 1.05em; background: var(--accent); margin-left: 3px; vertical-align: -.18em; }
+    #s5-paper .cite-mark { display: none; }
+    #s5-cap { left: 1230px; top: 330px; width: 600px; }
+    #s5-cap h2 { font-size: 74px; }
+    #s5-note { position: absolute; left: 1150px; top: 200px; font-family: "Caveat", cursive; font-weight: 600; font-size: 52px; color: var(--ink-blue); white-space: nowrap; }
+  </style>
+  <div id="root" data-composition-id="s5" data-width="1920" data-height="1080">
+    <div class="stage dots"></div>
+    <div id="s5-wrap" data-layout-allow-overflow>
+      <div class="paper" id="s5-paper"><div class="ProseMirror" id="s5-doc"></div></div>
+    </div>
+    <div id="s5-note">← every fact gets a source</div>
+    <div class="cap" id="s5-cap">
+      <span class="chip chip-violet" id="s5-chip">02 · Draft</span>
+      <h2 id="s5-h"><span class="w">Every</span> <span class="w">fact</span> <span class="w">links</span> <span class="w">back</span> <span class="w">to</span> <span class="w">a</span> <span class="w">source.</span></h2>
+      <p id="s5-p">One section per key point, cited as [1], [2].</p>
+    </div>
+  </div>
+  <script>
+    (function () {
+      // The landing page's sample article (web/components/home/sample.ts), streamed word by word.
+      var BLOCKS = [
+        ["h1", "Why small dApps win hackathons"],
+        ["p", "A hackathon goes by many names: hack day, hackfest, codefest {1}. Whatever you call it, you get one weekend to show something that works."],
+        ["h2", "Scope is a feature"],
+        ["p", "Pick the one flow you can demo in under a minute and build only that. Everything else can wait for version two."],
+        ["h2", "Demo beats docs"],
+        ["p", "Show the result first, then explain how it works. A short live demo answers most questions before anyone asks them."],
+        ["h2", "Sources"],
+        ["ol", "[1] Hackathon — https://en.wikipedia.org/wiki/Hackathon"],
+      ];
+      var doc = document.getElementById("s5-doc");
+      var steps = []; // [element, display] in reveal order
+      var blocks = [];
+      BLOCKS.forEach(function (b) {
+        var el = document.createElement(b[0]);
+        el.className = "blk";
+        var host = el;
+        if (b[0] === "ol") {
+          host = document.createElement("li");
+          host.id = "s5-src";
+          el.appendChild(host);
+        }
+        doc.appendChild(el);
+        var caret = document.createElement("span");
+        caret.className = "s5-caret";
+        var first = true;
+        b[1].split(" ").forEach(function (word, i) {
+          var tok;
+          if (word.indexOf("{1}") === 0) {
+            tok = document.createElement("span");
+            tok.className = "cite-mark";
+            tok.id = "s5-cite";
+            tok.textContent = "[1]";
+            word = word.slice(3);
+          } else if (word.indexOf("https://") === 0) {
+            tok = document.createElement("a");
+            tok.className = "c";
+            tok.textContent = word;
+            word = "";
+          } else {
+            tok = document.createElement("span");
+            tok.className = "c";
+            tok.textContent = word;
+            word = "";
+          }
+          if (i > 0) host.appendChild(document.createTextNode(" "));
+          host.appendChild(tok);
+          steps.push({ el: tok, display: tok.id === "s5-cite" ? "inline-block" : "inline", block: first ? el : null, caret: caret });
+          if (word) {
+            var rest = document.createElement("span");
+            rest.className = "c";
+            rest.textContent = word;
+            host.appendChild(rest);
+            steps.push({ el: rest, display: "inline", block: null, caret: caret });
+          }
+          first = false;
+        });
+        host.appendChild(caret);
+        blocks.push(el);
+      });
+
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo("#s5-wrap", { opacity: 0, y: 40, scale: 1.03, filter: "blur(8px)" }, { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 0);
+
+      var t0 = 0.4, dt = 0.04, prevCaret = null, citeAt = 0;
+      steps.forEach(function (s, i) {
+        var t = t0 + i * dt;
+        if (s.block) tl.set(s.block, { display: s.block.tagName === "OL" ? "block" : "block" }, t);
+        if (s.caret !== prevCaret) {
+          if (prevCaret) tl.set(prevCaret, { display: "none" }, t);
+          tl.set(s.caret, { display: "inline-block" }, t);
+          prevCaret = s.caret;
+        }
+        tl.set(s.el, { display: s.display }, t);
+        if (s.el.id === "s5-cite") citeAt = t;
+      });
+      var streamEnd = t0 + steps.length * dt;
+      // the [1] pops when it streams in
+      tl.fromTo("#s5-cite", { scale: 1.8, boxShadow: "0 0 0 0px rgba(26,180,215,0)" }, { scale: 1, boxShadow: "0 0 0 2px rgba(26,180,215,1)", duration: 0.35, ease: "back.out(2)" }, citeAt);
+      // caret blinks after the stream ends
+      for (var t = streamEnd + 0.25, on = false; t < 5.6; t += 0.25, on = !on) tl.set(prevCaret, { opacity: on ? 1 : 0 }, t);
+      // the cited source lights up
+      tl.to("#s5-src", { backgroundColor: "rgba(26,180,215,.16)", boxShadow: "0 0 0 2px rgba(26,180,215,1)", borderRadius: 6, duration: 0.3 }, streamEnd + 0.2);
+
+      // caption + hand note
+      tl.fromTo("#s5-chip", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, 0.15);
+      tl.fromTo("#s5-h .w", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16, stagger: 0.067 }, 0.25);
+      tl.fromTo("#s5-p", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3 }, 0.8);
+      tl.fromTo("#s5-note", { opacity: 0, rotation: -4, y: -10 }, { opacity: 1, rotation: -4, y: 0, duration: 0.4, ease: "expo.out" }, citeAt + 0.35);
+
+      tl.to("#s5-cap, #s5-note", { opacity: 0, filter: "blur(8px)", duration: 0.25, ease: "power3.in" }, 5.62);
+      tl.to("#s5-wrap", { opacity: 0, x: 60, filter: "blur(10px)", duration: 0.3, ease: "power3.in" }, 5.62);
+      window.__timelines["s5"] = tl;
+    })();
+  </script>
+</template>

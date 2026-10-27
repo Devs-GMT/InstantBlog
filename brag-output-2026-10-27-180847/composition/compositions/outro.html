@@ -1,0 +1,59 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s9-ground { position: absolute; inset: 0; background: var(--primary); }
+    #s9-brand { position: absolute; left: 0; right: 0; top: 118px; display: flex; justify-content: center; align-items: center; gap: 18px; color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 54px; letter-spacing: -1.6px; }
+    #s9-brand svg { width: 64px; height: 64px; }
+    #s9-h { position: absolute; left: 0; right: 0; top: 236px; text-align: center; color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 104px; letter-spacing: -3.4px; line-height: 1.05; }
+    #s9-h .w { display: inline-block; }
+    #s9-sub { position: absolute; left: 0; right: 0; top: 368px; text-align: center; color: rgba(255, 255, 255, .72); font-size: 36px; }
+    #s9-cta { position: absolute; left: 0; right: 0; top: 452px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+    #s9-btn { zoom: 1.7; }
+    #s9-url { font-family: var(--font-mono); font-size: 40px; font-weight: 500; color: var(--accent); letter-spacing: -.5px; }
+    #s9-fine { color: rgba(255, 255, 255, .6); font-size: 26px; margin-top: -8px; }
+    #s9-fan { position: absolute; left: 50%; bottom: 0; width: 1200px; height: 300px; margin-left: -600px; }
+    .s9-card { position: absolute; bottom: -150px; width: 380px; height: 400px; }
+    .s9-card .fan-card { position: relative; left: auto; right: auto; bottom: auto; margin: 0; transform: none; width: 272px; height: 286px; zoom: 1.4; }
+    #s9-k1 { left: 40px; } #s9-k2 { left: 410px; bottom: -120px; z-index: 2; } #s9-k3 { left: 780px; }
+    #s9-credit { position: absolute; right: 28px; bottom: 18px; color: rgba(255, 255, 255, .55); font-size: 15px; z-index: 5; }
+  </style>
+  <div id="root" data-composition-id="outro" data-width="1920" data-height="1080">
+    <div id="s9-ground"></div>
+    <div id="s9-brand">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="7" y="3" width="21" height="26" rx="5" fill="#FFFFFF" /><path d="M12 11.5h10M12 16h10M12 20.5h6" stroke="#0D111B" stroke-width="1.8" stroke-linecap="round" opacity=".9" /><path d="M4 8.5h5M4 14h5M4 19.5h5M4 25h5" stroke="#1AB4D7" stroke-width="2.4" stroke-linecap="round" /><path d="m20.5 24.2 4.6-4.6 1.6 1.6-4.6 4.6-2.2.6.6-2.2Z" fill="#1AB4D7" /></svg>
+      <span>InstantBlog</span>
+    </div>
+    <h2 id="s9-h"><span class="w">Write</span> <span class="w">your</span> <span class="w">first</span> <span class="w">sourced</span> <span class="w">article</span></h2>
+    <p id="s9-sub">Bring a topic, three key points and a few links.</p>
+    <div id="s9-cta">
+      <span class="btn btn-invert btn-lg" id="s9-btn">Write my first post</span>
+      <span id="s9-url">instantblog.my.id</span>
+      <span id="s9-fine">Free. No sign-up.</span>
+    </div>
+    <div id="s9-fan" data-layout-allow-overflow>
+      <div class="s9-card" id="s9-k1"><div class="fan-card ruled"><div class="mini-chips"><span class="chip chip-violet">How-to</span><span class="chip chip-blue">Friendly</span><span class="chip chip-green">3 sources</span></div><h4>How to deploy your first contract</h4><div class="fan-lines"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="s9-card" id="s9-k2"><div class="fan-card ruled"><div class="mini-chips"><span class="chip chip-violet">Listicle</span><span class="chip chip-blue">Witty</span><span class="chip chip-green">3 sources</span></div><h4>7 tools every hackathon team needs</h4><div class="fan-lines"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+      <div class="s9-card" id="s9-k3"><div class="fan-card ruled"><div class="mini-chips"><span class="chip chip-violet">Opinion</span><span class="chip chip-blue">Inspiring</span><span class="chip chip-green">3 sources</span></div><h4>Small dApps win hackathons</h4><div class="fan-lines"><i></i><i></i><i></i><i></i><i></i></div></div></div>
+    </div>
+    <div id="s9-credit">Music: Sascha Ende, ende.app (CC BY 4.0)</div>
+  </div>
+  <script>
+    (function () {
+      var B = 0.52633;
+      var tl = gsap.timeline({ paused: true });
+      // colour flood from the centre
+      tl.fromTo("#s9-ground", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(75% at 50% 50%)", duration: 0.5, ease: "power2.inOut" }, 0);
+      tl.fromTo("#s9-brand", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, 0.3);
+      tl.fromTo("#s9-h .w", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16, stagger: 0.067 }, 2 * B);
+      tl.fromTo("#s9-sub", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3 }, 3 * B);
+      tl.fromTo("#s9-btn", { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 4 * B);
+      tl.fromTo("#s9-url", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, 5 * B);
+      tl.fromTo("#s9-fine, #s9-credit", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 5.5 * B);
+      // the three example posts fan up out of one stack
+      tl.fromTo("#s9-k1", { x: 370, y: 260, rotation: 0 }, { x: 0, y: 0, rotation: -8, duration: 0.9, ease: "expo.out" }, 3 * B);
+      tl.fromTo("#s9-k2", { y: 260 }, { y: 0, duration: 0.9, ease: "expo.out" }, 3 * B);
+      tl.fromTo("#s9-k3", { x: -370, y: 260, rotation: 0 }, { x: 0, y: 0, rotation: 8, duration: 0.9, ease: "expo.out" }, 3 * B);
+      window.__timelines["outro"] = tl;
+    })();
+  </script>
+</template>

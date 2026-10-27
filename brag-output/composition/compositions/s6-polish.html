@@ -1,0 +1,100 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #s6-cap { left: 150px; top: 300px; width: 700px; }
+    #s6-frag { position: absolute; left: 900px; top: 140px; }
+    #s6-card { zoom: 1.6; position: relative; width: 540px; height: 520px; min-height: 0; padding: 0; overflow: visible; }
+    #s6-card h2 { position: absolute; left: 44px; top: 40px; font-size: 26px; letter-spacing: -.5px; }
+    #s6-bubble { position: absolute; left: 44px; top: 90px; transform: none; z-index: 5; }
+    #s6-bubble button { font-family: var(--font-body); }
+    #s6-bubble .on { background: rgba(255, 255, 255, .18); }
+    #s6-text { position: absolute; left: 44px; top: 150px; width: 452px; font-size: 18px; line-height: 1.7; color: #262626; }
+    #s6-sel { background-image: linear-gradient(rgba(0, 152, 242, .24), rgba(0, 152, 242, .24)); background-repeat: no-repeat; background-size: 0% 100%; }
+    #s6-new { display: none; border-radius: 4px; }
+    #s6-suggest { left: 20px; right: 20px; top: 262px; font-size: 15.5px; }
+    #s6-suggest .suggest-foot .btn { pointer-events: none; }
+    #s6-shimmer { position: relative; }
+    #s6-shimmer i { display: block; height: 10px; border-radius: 6px; margin: 10px 0; background: #EEF0F3; }
+    #s6-shimmer i:nth-child(2) { width: 70%; }
+    #s6-newbox { position: absolute; left: 0; right: 0; top: 0; }
+    #s6-body { position: relative; min-height: 46px; }
+  </style>
+  <div id="root" data-composition-id="s6" data-width="1920" data-height="1080">
+    <div class="stage dots"></div>
+
+    <div class="cap" id="s6-cap">
+      <span class="chip chip-pink" id="s6-chip">03 · Polish</span>
+      <h2 id="s6-h"><span class="w">Edit</span> <span class="w">with</span> <span class="w">AI,</span> <span class="w">keep</span> <span class="w">your</span> <span class="w">voice.</span></h2>
+      <p id="s6-p">Nothing changes until you press Accept.</p>
+    </div>
+
+    <div id="s6-frag" data-layout-allow-overlap>
+      <div class="paper" id="s6-card">
+        <h2>Scope is a feature</h2>
+        <div class="bubble" id="s6-bubble">
+          <button type="button">Rewrite</button>
+          <button type="button" id="s6-shorten">Shorten</button>
+          <button type="button">Expand</button>
+          <span class="sep"></span>
+          <button type="button">Change tone ⌄</button>
+        </div>
+        <p id="s6-text"><span id="s6-old"><span id="s6-sel">Pick the one flow you can demo in under a minute and build only that.</span></span><span id="s6-new">Build only the one flow you can demo in a minute.</span> Everything else can wait for version two.</p>
+        <div class="suggest" id="s6-suggest">
+          <div class="suggest-head"><span>Suggestion · Shorten</span><span>×</span></div>
+          <div class="suggest-old">Pick the one flow you can demo in under a minute and build only that.</div>
+          <div id="s6-body">
+            <div id="s6-shimmer"><i></i><i></i></div>
+            <div class="suggest-new" id="s6-newbox">Build only the one flow you can demo in a minute.</div>
+          </div>
+          <div class="suggest-foot">
+            <span class="kbd">Esc to discard · Ctrl/⌘ + Enter to accept</span>
+            <span class="btn btn-ghost btn-xs">Discard</span>
+            <span class="btn btn-primary btn-xs" id="s6-accept">Accept</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cursor" id="s6-cursor"><svg viewBox="0 0 24 24"><path d="M5 2.5 19 11l-6.3 1.6L9.6 19z" fill="#0D111B" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" /></svg></div>
+  </div>
+  <script>
+    (function () {
+      var B = 0.49917;
+      var tl = gsap.timeline({ paused: true });
+      gsap.set("#s6-bubble, #s6-suggest, #s6-newbox", { opacity: 0 });
+
+      tl.fromTo("#s6-chip", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, 0.1);
+      tl.fromTo("#s6-h .w", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.16, stagger: 0.067 }, 0.2);
+      tl.fromTo("#s6-p", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3 }, 0.6);
+      tl.fromTo("#s6-frag", { opacity: 0, x: -70, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.55, ease: "expo.out" }, 0);
+
+      // drag-select the first sentence
+      tl.fromTo("#s6-cursor", { x: 1500, y: 1120 }, { x: 962, y: 400, duration: 0.55, ease: "power3.inOut" }, 0.25);
+      tl.to("#s6-cursor", { keyframes: [{ x: 1720, y: 400, duration: 0.42 }, { x: 1170, y: 449, duration: 0.18 }], ease: "none" }, 2 * B - 0.15);
+      tl.to("#s6-sel", { backgroundSize: "100% 100%", duration: 0.6, ease: "none" }, 2 * B - 0.15);
+
+      // the AI bubble appears; Shorten on beat 4
+      tl.fromTo("#s6-bubble", { opacity: 0, y: 8, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "expo.out", transformOrigin: "20% 100%" }, 3 * B);
+      tl.to("#s6-cursor", { x: 1138, y: 308, duration: 0.4, ease: "power3.inOut" }, 4 * B - 0.42);
+      tl.to("#s6-cursor", { scale: 0.86, duration: 0.07, yoyo: true, repeat: 1, transformOrigin: "20% 10%" }, 4 * B);
+      tl.set("#s6-shorten", { className: "on" }, 4 * B + 0.03);
+
+      // the suggestion writes itself
+      tl.fromTo("#s6-suggest", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 4.5 * B);
+      tl.to("#s6-shimmer", { opacity: 0, duration: 0.15 }, 5.5 * B);
+      tl.to("#s6-newbox", { opacity: 1, duration: 0.2 }, 5.5 * B);
+
+      // Accept on beat 7
+      tl.to("#s6-cursor", { x: 1636, y: 836, duration: 0.5, ease: "power3.inOut" }, 7 * B - 0.52);
+      tl.to("#s6-cursor", { scale: 0.86, duration: 0.07, yoyo: true, repeat: 1, transformOrigin: "20% 10%" }, 7 * B);
+      tl.to("#s6-suggest, #s6-bubble", { opacity: 0, y: 6, duration: 0.2, ease: "power2.in" }, 7 * B + 0.1);
+      tl.set("#s6-old", { display: "none" }, 7 * B + 0.2);
+      tl.set("#s6-new", { display: "inline" }, 7 * B + 0.2);
+      tl.fromTo("#s6-new", { backgroundColor: "rgba(26,180,215,.32)" }, { backgroundColor: "rgba(26,180,215,0)", duration: 1.4, ease: "power1.in" }, 7 * B + 0.2);
+      tl.to("#s6-cursor", { x: 1760, y: 1000, opacity: 0, duration: 0.5, ease: "power2.in" }, 7 * B + 0.4);
+
+      tl.to("#s6-cap, #s6-frag", { opacity: 0, filter: "blur(10px)", duration: 0.28, ease: "power3.in" }, 5.62);
+      window.__timelines["s6"] = tl;
+    })();
+  </script>
+</template>
